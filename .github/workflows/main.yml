@@ -1,0 +1,52 @@
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  mirror:
+    name: Mirror commits to public repo
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Import GPG key
+      shell: bash
+      env:
+        TECHRIDER_GPG_KEY: ${{ secrets.TECHRIDER_GPG_KEY }}
+      run: |
+        echo "$TECHRIDER_GPG_KEY" | gpg --import
+
+    - name: Rewrite commit history
+      shell: bash
+      env:
+        TECHRIDER_GPG_KEY_ID: ${{ vars.TECHRIDER_GPG_KEY_ID }}
+      run: |
+        rewriteFrom="$(git log --pretty="format:%an <%ae>/%h" | grep -m 1 -B 1 "TechRiderWR <techrider@wingriders.com" | head -n 1 | cut -d / -f 2)"
+        git config --local user.name "TechRiderWR"
+        git config --local user.email "techrider@wingriders.com"
+        git config --local user.signingkey "$TECHRIDER_GPG_KEY_ID"
+        git rebase --onto "$rewriteFrom~1" --exec "git commit --amend --no-edit --reset-author" "$rewriteFrom~1"
+        git log --pretty="format:%an <%ae> (%h): %s"
+
+    - name: Import SSH key
+      shell: bash
+      env:
+        TECHRIDER_SSH_PUBLIC_KEY: ${{ secrets.TECHRIDER_SSH_PUBLIC_KEY }}
+        TECHRIDER_SSH_PRIVATE_KEY: ${{ secrets.TECHRIDER_SSH_PRIVATE_KEY }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$TECHRIDER_SSH_PUBLIC_KEY" >~/.ssh/id_ed25519.pub
+        echo "$TECHRIDER_SSH_PRIVATE_KEY" >~/.ssh/id_ed25519
+        chmod 700 ~/.ssh
+        chmod 600 ~/.ssh/id_ed25519 ~/.ssh/id_ed25519.pub
+
+    - name: Push to public repo
+      shell: bash
+      run: |
+        git remote add public git@github.com:WingRiders/on-chain-dao-governance.git
+        git push public main
