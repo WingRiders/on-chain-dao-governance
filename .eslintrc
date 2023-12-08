@@ -1,0 +1,44 @@
+{
+  "extends": ["vacuumlabs", "prettier"],
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "plugins": ["@typescript-eslint", "import"],
+  "rules": {
+    "no-trailing-spaces": "error",
+    "no-bitwise": "off",
+    "guard-for-in": "off",
+    "no-undef": "off",
+    "no-duplicate-imports": "error",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "args": "none",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "no-redeclare": "off",
+    "@typescript-eslint/no-redeclare": ["error"],
+    "no-useless-constructor": "off",
+    "@typescript-eslint/no-useless-constructor": ["error"],
+    "no-unused-vars": "off",
+    "import/no-cycle": "error"
+  },
+  "parser": "@typescript-eslint/parser",
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts"]
+    },
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      },
+      "typescript": {
+        "alwaysTryTypes": true // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
+      }
+    }
+  }
+}

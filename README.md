@@ -1,6 +1,27 @@
 <p align="center"><img src="./.assets/wingriders_logo.png" /></p>
 
 # Open-Source On-Chain DAO Governance
+On-chain, decentralized, and auditable governance solution for Cardano. Our framework empowers projects with seamless community governance, enhancing transparency and trust for the project.
+
+## Get started
+TBD
+
+### Build from source
+TBD
+
+### Pre-built Docker containers
+TBD
+
+## Development roadmap
+* [ ] Backend
+  * [ ] Data aggregation
+  * [ ] API endpoints
+  * [ ] Configurable tokens and script UTxO sources
+* [ ] Library
+* [ ] Scripts
+* [ ] Frontend
+* [ ] Docker containers and sample `docker-compose` deployment
+* [ ] Documentation
 
 ## Solution Design and Architecture
 The DAO Governance solution builds on the following core pillars:
@@ -433,3 +454,11 @@ This module outlines how the frontend currently looks for WingRiders DAO voting.
     * **Results:** A breakdown of the voting results, presented in both numeric and percentage formats for each of the three voting options.
 6. **Community Discussion Action Button:**
     * Action button to take the use to a space where community members can post comments, share thoughts, or discuss the proposal.
+
+<p align="center">
+<a href="https://www.wingriders.com/">WingRiders</a> ·
+<a href="https://community.wingriders.com/">Community Portal</a> ·
+<a href="https://twitter.com/wingriderscom">Twitter</a> ·
+<a href="https://discord.gg/t7CdyhK8JA">Discord</a> ·
+<a href="https://medium.com/@wingriderscom">Medium</a>
+</p>

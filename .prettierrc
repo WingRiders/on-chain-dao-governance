@@ -1,0 +1,11 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "bracketSpacing": false,
+  "printWidth": 105,
+  "trailingComma": "es5",
+  "arrowParens": "always",
+  "importOrder": ["^@wingriders/(.*)$", "^[./]"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}

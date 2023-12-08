@@ -1,0 +1,26 @@
+{
+  "name": "@wingriders/governance-backend",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "yarn clean && tsc",
+    "start": "node ./dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts"
+  },
+  "dependencies": {
+    "@wingriders/governance-sdk": "0.1.0",
+    "commander": "^11.1.0",
+    "fastify": "^4.24.3",
+    "pino": "^8.16.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.3",
+    "pino-pretty": "^10.2.3",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.2"
+  },
+  "private": true
+}

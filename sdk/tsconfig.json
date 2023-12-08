@@ -1,0 +1,17 @@
+{
+  "include": ["src", "test"],
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["dom", "ES2022"],
+    "noEmit": true,
+    "declaration": true,
+    "declarationDir": "dist/types",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true
+  }
+}

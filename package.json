@@ -1,0 +1,32 @@
+{
+  "name": "@wingriders/governance",
+  "version": "0.1.0",
+  "description": "On-chain, decentralized, and auditable governance solution for Cardano",
+  "repository": "git@github.com:WingRiders/on-chain-dao-governance.git",
+  "author": "TechRiderWR <techrider@wingriders.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "eslint": "eslint --max-warnings=0 **/src/**/*"
+  },
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-vacuumlabs": "^8.0.2",
+    "eslint-plugin-import": "^2.29.0",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.2"
+  },
+  "workspaces": [
+    "backend",
+    "frontend",
+    "scripts",
+    "sdk"
+  ],
+  "private": true
+}

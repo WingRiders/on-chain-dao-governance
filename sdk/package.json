@@ -1,0 +1,31 @@
+{
+  "name": "@wingriders/governance-sdk",
+  "version": "0.1.0",
+  "main": "./dist/umd/index.js",
+  "module": "./dist/es/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "node": "./dist/node/index.cjs",
+      "import": "./dist/es/index.js",
+      "default": "./dist/cjs/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "yarn clean && rollup -c"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@types/node": "^20.10.3",
+    "rollup": "^4.6.1",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.2"
+  }
+}
