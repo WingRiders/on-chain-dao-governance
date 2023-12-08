@@ -81,9 +81,9 @@ The external dependencies for both services are
 The backend is the only configurable module if we don’t count modifications to the frontend. The configuration determines the parameters of the specific DAO deployment.
 
 The first options that are also exposed via an API call define the general parameters of the deployment, also called DAO Governance Options:
-*Governance token
-*Proposal creation collateral amount in governance tokens
-*DAO wallet address
+* Governance token
+* Proposal creation collateral amount in governance tokens
+* DAO wallet address
 
 And then some options have programmatic configuration.
 
