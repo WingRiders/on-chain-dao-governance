@@ -6,17 +6,22 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "yarn clean && tsc",
-    "start": "node ./dist/index.js",
-    "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts"
+    "start:aggregator": "cross-env MODE=aggregator node ./dist/index.js aggregator",
+    "start:server": "cross-env MODE=server node ./dist/index.js server",
+    "dev:aggregator": "cross-env MODE=aggregator ts-node-dev --respawn --transpile-only ./src/index.ts",
+    "dev:server": "cross-env MODE=server ts-node-dev --respawn --transpile-only ./src/index.ts"
   },
   "dependencies": {
+    "@wingriders/cab": "link:../../cardano-dex/common/cab/dist/",
     "@wingriders/governance-sdk": "0.1.0",
-    "commander": "^11.1.0",
+    "dotenv": "^16.3.1",
     "fastify": "^4.24.3",
-    "pino": "^8.16.2"
+    "pino": "^8.16.2",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20.10.3",
+    "cross-env": "^7.0.3",
     "pino-pretty": "^10.2.3",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
