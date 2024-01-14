@@ -1,4 +1,7 @@
-import {Asset, NetworkName} from '@wingriders/cab/types'
+import {Address, Asset, NetworkName} from '@wingriders/cab/types'
+import {networkNameToNetworkId} from '@wingriders/cab/helpers'
+import {encodeAddress} from '@wingriders/cab/ledger/address'
+import {packBaseAddress} from 'cardano-crypto.js'
 import z from 'zod'
 import pino from 'pino'
 import dotenv from 'dotenv'
@@ -33,6 +36,15 @@ const envSchema = z.object({
     .regex(/^[a-fA-F0-9]+$/)
     .length(56),
   GOVERNANCE_TOKEN_ASSET_NAME: z.string().regex(/^[a-fA-F0-9]+$/),
+  PROPOSALS_WALLET_PUBKEYHASH: z
+    .string()
+    .regex(/^[a-fA-F0-9]+$/)
+    .length(56),
+  PROPOSALS_WALLET_STAKEKEYHASH: z
+    .string()
+    .regex(/^[a-fA-F0-9]+$/)
+    .length(56),
+  PROPOSAL_COLLATERAL_QUANTITY: z.coerce.number().gte(0),
 })
 
 const result = envSchema.safeParse(process.env)
@@ -56,6 +68,14 @@ export const governanceToken: Asset = {
   policyId: config.GOVERNANCE_TOKEN_POLICY_ID,
   assetName: config.GOVERNANCE_TOKEN_ASSET_NAME,
 }
+
+export const proposalsAddress: Address = encodeAddress(
+  packBaseAddress(
+    Buffer.from(config.PROPOSALS_WALLET_PUBKEYHASH, 'hex'),
+    Buffer.from(config.PROPOSALS_WALLET_STAKEKEYHASH, 'hex'),
+    networkNameToNetworkId[config.NETWORK_NAME]
+  )
+)
 
 export const isServerMode = config.MODE === Mode.SERVER
 
