@@ -1,7 +1,7 @@
 import {logger} from '../logger'
 import {Prisma, prisma} from '../db/prismaClient'
 import {getNodeHealth} from '../ogmios'
-import {config} from '@wingriders/governance-scripts/src/config'
+import {config} from '../config'
 import {slotToDateFactory} from '@wingriders/cab/helpers'
 
 export type SyncHealthStatus = {

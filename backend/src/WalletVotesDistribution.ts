@@ -7,8 +7,8 @@ import {
   VOTING_WEIGHTS,
 } from '@wingriders/governance-sdk'
 import {alonzoDateToSlotFactory} from '@wingriders/cab/helpers'
-import {fetchWalletsUtxosWithAsset} from 'validation/fetchUTxOs'
-import {config, governanceToken} from 'config'
+import {fetchWalletsUtxosWithAsset} from './validation/fetchUTxOs'
+import {config, governanceToken} from './config'
 import {BigNumber} from '@wingriders/cab/types'
 import {uniq, mapValues} from 'lodash'
 import {VotesDistribution} from './VotesDistribution'
