@@ -4,15 +4,25 @@ import {
   UserVotingDistributionFilter,
   UserVotingDistributionResponse,
   UtxoId,
+  VOTING_WEIGHTS,
 } from '@wingriders/governance-sdk'
 import {alonzoDateToSlotFactory} from '@wingriders/cab/helpers'
-import {fetchWalletsUtxosWithAsset} from '../../validation/fetchUTxOs'
-import {config, governanceToken} from '../../config'
+import {fetchWalletsUtxosWithAsset} from 'validation/fetchUTxOs'
+import {config, governanceToken} from 'config'
 import {BigNumber} from '@wingriders/cab/types'
-import {calculateVotingDistribution} from '../../helpers/calculateVotingDistribution'
-import {uniq} from 'lodash'
+import {uniq, mapValues} from 'lodash'
+import {VotesDistribution} from './VotesDistribution'
 
-export const getUserVotingDistribution = async ({
+const calculateVotingDistribution = (tokenDistribution: TokenDistribution<BigNumber>) =>
+  mapValues(VOTING_WEIGHTS, (weight, key) => {
+    const tokenCount = tokenDistribution[key]?.tokenCount ?? new BigNumber(0)
+    return {
+      tokenCount,
+      votingPower: tokenCount.times(weight).integerValue(BigNumber.ROUND_FLOOR),
+    }
+  })
+
+const getUserVotingDistribution = async ({
   ownerStakeKeyHash,
   slot: optionalSlot,
 }: UserVotingDistributionFilter): Promise<UserVotingDistributionResponse> => {
@@ -31,4 +41,12 @@ export const getUserVotingDistribution = async ({
     utxoIds,
     slot,
   }
+}
+
+const getTheoreticalMaxVotingPower = async () =>
+  VOTING_WEIGHTS.walletTokens * config.TOTAL_MINTED_GOVERNANCE_TOKENS
+
+export const WalletVotesDistribution: VotesDistribution = {
+  getUserVotingDistribution,
+  getTheoreticalMaxVotingPower,
 }

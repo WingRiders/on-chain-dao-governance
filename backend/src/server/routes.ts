@@ -13,10 +13,9 @@ import {
   VotesFilter,
 } from '@wingriders/governance-sdk'
 import {getUserVotes, getVotes} from './routes/votes'
-import {getUserVotingDistribution} from './routes/getUserVotingDistribution'
-import {getTheoreticalMaxVotingPower} from './routes/getTheoreticalMaxVotingPower'
 import {getProposal} from './routes/getProposal'
 import {evaluateTxFromCbor} from './routes/evaluateTxFromCbor'
+import {votesDistribution} from '../config'
 
 export function registerRoutes(server: FastifyInstance) {
   server.get('/healthcheck', async (request, reply) => {
@@ -104,10 +103,10 @@ export function registerRoutes(server: FastifyInstance) {
         },
       },
     },
-    (request, _reply) => getUserVotingDistribution(request.body)
+    (request, _reply) => votesDistribution.getUserVotingDistribution(request.body)
   )
 
-  server.get('/theoreticalMaxVotingPower', getTheoreticalMaxVotingPower)
+  server.get('/theoreticalMaxVotingPower', votesDistribution.getTheoreticalMaxVotingPower)
 
   server.post<{Body: string}>(
     '/evaluateTx',

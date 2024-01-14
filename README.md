@@ -154,7 +154,11 @@ This programmatic configuration allows to set up script addresses that should be
 
 ##### Governance token max voting power calculation
 
-Optional, but recommended. For DAO votes usually, there is a certain voting participation required for proposals to pass. To determine the participation the system needs to know the maximum voting power. By default, this calculation just takes into account the total amount of governance tokens minted. However, a project could want to take into account its own tokenomics and modify this to more accurately reflect the available max voting power.
+Optional, but recommended. For DAO votes usually, there is a certain voting participation required for proposals to pass. To determine the participation the system needs to know the maximum voting power. By default, this calculation just takes into account the total amount of governance tokens minted. However, a project could want to take into account its own tokenomics and modify this to more accurately reflect the available max voting power. The backend uses a `VotesDistribution` interface to choose the implementation of the max voting power calculation. By default, the `WalletVotesDistribution` is used, which condsiders all possible tokens. Developers using this repository are encouraged to write their own interface implementations if they need a custom logic (e.g. excluding tokens from a treasury).
+
+##### User voting distribution calculation
+
+It's provided by the `VotesDistribution` interface as well. By default, only tokens from users' wallets are considered at a given slot.
 
 #### Aggregation Service
 

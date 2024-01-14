@@ -6,6 +6,8 @@ import z from 'zod'
 import pino from 'pino'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
+import {VotesDistribution} from './VotesDistribution'
+import {WalletVotesDistribution} from './WalletVotesDistribution'
 
 export const env = dotenv.config(
   process.env.DOTENV_CONFIG_PATH ? {path: process.env.DOTENV_CONFIG_PATH} : {}
@@ -82,3 +84,5 @@ export const proposalsAddress: Address = encodeAddress(
 export const isServerMode = config.MODE === Mode.SERVER
 
 export const isAggregatorMode = config.MODE === Mode.AGGREGATOR
+
+export const votesDistribution: VotesDistribution = WalletVotesDistribution
