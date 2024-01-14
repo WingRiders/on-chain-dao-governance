@@ -13,6 +13,9 @@ export enum Mode {
 const envSchema = z.object({
   NETWORK_NAME: z.nativeEnum(NetworkName),
   MODE: z.nativeEnum(Mode),
+  HTTP_SERVER_KEEP_ALIVE_SECONDS: z.coerce.number().gte(0).default(182),
+  SERVER_PORT: z.coerce.number(),
+  AGGREGATOR_PORT: z.coerce.number(),
   GOVERNANCE_TOKEN_POLICY_ID: z
     .string()
     .regex(/^[a-fA-F0-9]+$/)
@@ -41,3 +44,5 @@ export const governanceToken: Asset = {
   policyId: config.GOVERNANCE_TOKEN_POLICY_ID,
   assetName: config.GOVERNANCE_TOKEN_ASSET_NAME,
 }
+
+export const isServerMode = config.MODE === Mode.SERVER
