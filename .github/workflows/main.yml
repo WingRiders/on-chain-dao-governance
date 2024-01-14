@@ -21,18 +21,6 @@ jobs:
         run: |
           echo "$TECHRIDER_GPG_KEY" | gpg --import
 
-      - name: Rewrite commit history
-        shell: bash
-        env:
-          TECHRIDER_GPG_KEY_ID: ${{ vars.TECHRIDER_GPG_KEY_ID }}
-        run: |
-          rewriteFrom="$(git log --pretty="format:%an <%ae>/%h" | grep -m 1 -B 1 "TechRiderWR <techrider@wingriders.com" | head -n 1 | cut -d / -f 2)"
-          git config --local user.name "TechRiderWR"
-          git config --local user.email "techrider@wingriders.com"
-          git config --local user.signingkey "$TECHRIDER_GPG_KEY_ID"
-          git rebase --onto "$rewriteFrom~1" --exec "git commit --amend --no-edit --reset-author" "$rewriteFrom~1"
-          git log --pretty="format:%an <%ae> (%h): %s"
-
       - name: Import SSH key
         shell: bash
         env:
@@ -44,9 +32,27 @@ jobs:
           echo "$TECHRIDER_SSH_PRIVATE_KEY" >~/.ssh/id_ed25519
           chmod 700 ~/.ssh
           chmod 600 ~/.ssh/id_ed25519 ~/.ssh/id_ed25519.pub
+      
+      - name: Fetch public remote
+        shell: bash
+        run: |
+          git remote add public git@github.com:WingRiders/on-chain-dao-governance.git
+          git fetch public main
+
+      - name: Rewrite commit history
+        shell: bash
+        env:
+          TECHRIDER_GPG_KEY_ID: ${{ vars.TECHRIDER_GPG_KEY_ID }}
+        run: |
+          git config --local user.name "TechRiderWR"
+          git config --local user.email "techrider@wingriders.com"
+          git config --local user.signingkey "$TECHRIDER_GPG_KEY_ID"
+          git rebase public/main --exec "git commit --amend --no-edit --reset-author"
+          firstDivergentCommit=$(git log --pretty="format:%h" | tail -n $(($(git rev-list --count public/main)+1)) | head -1)
+          FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --msg-filter "sed -n '/Co-authored-by/Iq;p'" "$firstDivergentCommit~1..HEAD"
+          git log --pretty="format:%an <%ae> (%h): %s"
 
       - name: Push to public repo
         shell: bash
         run: |
-          git remote add public git@github.com:WingRiders/on-chain-dao-governance.git
           git push public main
