@@ -1,7 +1,7 @@
 import {BlockPraos, PointOrOrigin} from '@cardano-ogmios/schema'
 
 import {logger} from '../logger'
-import {Block, Prisma, prisma} from '../db/prismaClient'
+import {Block, prisma, PrismaTxClient} from '../db/prismaClient'
 import {slotToDateFactory} from '@wingriders/cab/helpers'
 import {config} from '../config'
 
@@ -11,8 +11,8 @@ const BLOCK_HASH_LENGTH = 64 // 32 Bytes in hex string
  * Insert block into database and calculate its creation time.
  * Function assumes block contains id, height and slot.
  */
-const insertBlock = (block: BlockPraos): Promise<Block> =>
-  prisma.block.create({
+const insertBlock = (prismaTx: PrismaTxClient, block: BlockPraos): Promise<Block> =>
+  prismaTx.block.create({
     data: {
       hash: Buffer.from(block.id, 'hex'),
       height: block.height,
@@ -32,7 +32,9 @@ export const insertPraosBlock = async (block: BlockPraos) => {
   }
   const debugInfo = {hash: block.id, height: block.height}
   logger.info(debugInfo, 'Inserting block')
-  await insertBlock(block)
+  await prisma.$transaction(async (prismaTx) => {
+    await insertBlock(prismaTx, block)
+  })
   logger.info(debugInfo, 'Block inserted')
 }
 
