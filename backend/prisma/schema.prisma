@@ -18,6 +18,7 @@ model Block {
   polls          Poll[]          @relation("ParentBlock")
   proposals      Proposal[]      @relation("ParentBlock")
   proposalStates ProposalState[] @relation("ParentBlock")
+  votes          Vote[]
 }
 
 model Poll {
@@ -33,6 +34,7 @@ model Poll {
 
   block     Block      @relation("ParentBlock", fields: [slot], references: [slot], onDelete: Cascade)
   proposals Proposal[]
+  votes     Vote[]
 
   @@index([slot])
 }
@@ -55,6 +57,7 @@ model Proposal {
   poll            Poll             @relation(fields: [pollId], references: [id], onDelete: Cascade)
   proposalChoices ProposalChoice[]
   proposalStates  ProposalState[]
+  votes           Vote[]
 
   @@index([slot])
   @@index([pollId])
@@ -91,6 +94,7 @@ model ProposalChoice {
   value      String
 
   proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  votes    Vote[]
 
   @@unique([proposalId, index])
   @@index([proposalId])
@@ -99,4 +103,50 @@ model ProposalChoice {
 enum ProposalChoiceType {
   ACCEPT
   REJECT
+}
+
+enum VerificationState {
+  UNVERIFIED
+  VERIFIED
+  INVALID
+}
+
+// Historical table of user
+model Vote {
+  id                BigInt   @id @default(autoincrement()) @db.BigInt
+  ownerAddress      String
+  ownerPubKeyHash   Bytes // this is just in case to identify the whole address
+  ownerStakeKeyHash Bytes // votes are tied to stakeKeyHash primarily
+  proposalId        BigInt   @db.BigInt
+  // selected choice, null means abstained from vote
+  choiceId          BigInt?  @db.BigInt
+  pollId            BigInt   @db.BigInt
+  // voting power claimed by user
+  votingPower       BigInt
+  // array of UTxOs ids (txHash#outputIndex)
+  votingUTxOs       String[]
+
+  // we are also storing the vote's state - votes need to be verified
+  // if the claimed votingPower is correct.
+  verificationState VerificationState @default(UNVERIFIED)
+
+  slot   BigInt @db.BigInt
+  txHash Bytes
+
+  proposal Proposal        @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  choice   ProposalChoice? @relation(fields: [choiceId], references: [id], onDelete: Cascade)
+  poll     Poll            @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  block    Block           @relation(fields: [slot], references: [slot], onDelete: Cascade)
+
+  // user can vote for multiple proposal in one transaction but only once for the same proposal
+  // if he wants to change the vote he creates the new transaction
+  // In theory a single tx could contain votes for multiple users, but for now we enforce
+  // a single person per txHash by not including in the unique index
+  @@unique([txHash, proposalId])
+  // index to easily find user's votes for polls
+  @@index([ownerStakeKeyHash, proposalId, pollId])
+  @@index([proposalId])
+  @@index([choiceId])
+  @@index([slot])
+  @@index([pollId])
 }
