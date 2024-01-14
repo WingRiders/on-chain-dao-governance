@@ -129,7 +129,7 @@ export enum DistributionKey {
   WALLET_TOKENS = 'walletTokens',
 }
 
-export const VOTING_WEIGHTS = {
+export const VOTING_WEIGHTS: {[key in DistributionKey]: number} = {
   [DistributionKey.WALLET_TOKENS]: 1,
 }
 

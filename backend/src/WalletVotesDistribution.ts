@@ -10,17 +10,23 @@ import {alonzoDateToSlotFactory} from '@wingriders/cab/helpers'
 import {fetchWalletsUtxosWithAsset} from './validation/fetchUTxOs'
 import {config, governanceToken} from './config'
 import {BigNumber} from '@wingriders/cab/types'
-import {uniq, mapValues} from 'lodash'
+import {uniq} from 'lodash'
 import {VotesDistribution} from './VotesDistribution'
 
-const calculateVotingDistribution = (tokenDistribution: TokenDistribution<BigNumber>) =>
-  mapValues(VOTING_WEIGHTS, (weight, key) => {
+const calculateVotingDistribution = (tokenDistribution: TokenDistribution<BigNumber>) => {
+  const calculateTokenCountAndVotingPower = (key: DistributionKey) => {
     const tokenCount = tokenDistribution[key]?.tokenCount ?? new BigNumber(0)
+    const weight = VOTING_WEIGHTS[key]
     return {
       tokenCount,
       votingPower: tokenCount.times(weight).integerValue(BigNumber.ROUND_FLOOR),
     }
-  })
+  }
+
+  return {
+    walletTokens: calculateTokenCountAndVotingPower(DistributionKey.WALLET_TOKENS),
+  }
+}
 
 const getUserVotingDistribution = async ({
   ownerStakeKeyHash,

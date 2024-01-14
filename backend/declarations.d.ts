@@ -1,4 +1,18 @@
 declare module 'cardano-crypto.js' {
+  export enum AddressTypes {
+    BASE = 0b0000,
+    BASE_SCRIPT_KEY = 0b0001,
+    BASE_KEY_SCRIPT = 0b0010,
+    BASE_SCRIPT_SCRIPT = 0b0011,
+    POINTER = 0b0100,
+    POINTER_SCRIPT = 0b0101,
+    ENTERPRISE = 0b0110,
+    ENTERPRISE_SCRIPT = 0b0111,
+    BOOTSTRAP = 0b1000,
+    REWARD = 0b1110,
+    REWARD_SCRIPT = 0b1111,
+  }
+
   export enum BaseAddressTypes {
     BASE = 0b00,
     SCRIPT_KEY = 0b01,

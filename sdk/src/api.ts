@@ -1,4 +1,4 @@
-import {Address, Asset, HexString, RegisteredTokenMetadata} from '@wingriders/cab/types'
+import {Address, Asset, BigNumber, HexString, RegisteredTokenMetadata} from '@wingriders/cab/types'
 import {UtxoId} from '@wingriders/governance-sdk'
 
 export type GovernanceVotingParamsResponse = {
@@ -61,7 +61,7 @@ export type UserVotingDistributionFilter = {
 
 export type UserVotingDistributionResponse = {
   utxoIds: UtxoId[]
-  walletTokens: string
+  walletTokens: {tokenCount: BigNumber; votingPower: BigNumber}
   slot: number
 }
 

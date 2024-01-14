@@ -5,7 +5,7 @@ import {compact} from 'lodash'
 
 import {logger} from '../logger'
 import {Block, PrismaTxClient} from '../db/prismaClient'
-import {assertArray, assertBuffer, parseAddressBuffer, parseInteger, parseNumber} from './metadataHelper'
+import {parseAddressBuffer, parseArray, parseBuffer, parseInteger, parseNumber} from './metadataHelper'
 import {assertMetadataMap, parseOgmios6Metadatum} from '../ogmios/metadata'
 import {Transaction} from '@cardano-ogmios/schema'
 import {CborVoteField, GovMetadatumLabel, UtxoId} from '@wingriders/governance-sdk'
@@ -22,18 +22,18 @@ type PollVotes = {
 }
 
 const parseVotingUTxO = (votingUTxOMetadatum: TxMetadatum): UtxoId => {
-  const votingUTxO = assertArray(votingUTxOMetadatum)
+  const votingUTxO = parseArray(votingUTxOMetadatum)
   if (votingUTxO.length !== 2) {
     throw new Error(`Incorrect votingUTxO format: ${votingUTxO}`)
   }
 
-  const txHash = assertBuffer(votingUTxO[0])
+  const txHash = parseBuffer(votingUTxO[0])
   const outputIndex = parseInteger(votingUTxO[1])
   return getUtxoId({txHash, outputIndex})
 }
 
 const parseVotingUTxOs = (votingUTxOsMetadatum: TxMetadatum | undefined): UtxoId[] => {
-  const votingUTxOs = assertArray(votingUTxOsMetadatum)
+  const votingUTxOs = parseArray(votingUTxOsMetadatum)
   return votingUTxOs.map((utxo) => parseVotingUTxO(utxo))
 }
 
@@ -43,7 +43,7 @@ function parseProposalsChoices(choicesMetadatum: TxMetadatum | undefined): Choic
   return [...choices.entries()].map(([proposalHashMetadatum, choiceIndexMetadatum]) => {
     const choiceIndex = parseInteger(choiceIndexMetadatum)
     assert(choiceIndex >= -1, `Incorrect choiceIndex value: ${choiceIndex}`)
-    return [assertBuffer(proposalHashMetadatum), choiceIndex]
+    return [parseBuffer(proposalHashMetadatum), choiceIndex]
   })
 }
 
@@ -65,7 +65,7 @@ function parsePollVotes(pollVotesMetadatum: TxMetadatum): PollVotes {
 function parseVotes(votesMetadatum: TxMetadatum): [Buffer, PollVotes][] {
   const votes = assertMetadataMap(votesMetadatum)
   return [...votes.entries()].map(([pollHashMetadatum, pollVoteMetadatum]) => {
-    return [assertBuffer(pollHashMetadatum), parsePollVotes(pollVoteMetadatum)]
+    return [parseBuffer(pollHashMetadatum), parsePollVotes(pollVoteMetadatum)]
   })
 }
 
