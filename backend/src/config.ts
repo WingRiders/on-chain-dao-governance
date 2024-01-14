@@ -21,6 +21,13 @@ const envSchema = z.object({
   SERVER_PORT: z.coerce.number(),
   AGGREGATOR_PORT: z.coerce.number(),
   DATABASE_URL: z.string().url(),
+  OGMIOS_HOST: z.string().optional(),
+  REMOTE_OGMIOS_PORT: z.coerce.number().gte(0).optional(),
+  SYNC_EARLIEST_SLOT: z.coerce.number().gte(0),
+  SYNC_EARLIEST_HASH: z
+    .string()
+    .regex(/^[a-fA-F0-9]+$/)
+    .length(64),
   GOVERNANCE_TOKEN_POLICY_ID: z
     .string()
     .regex(/^[a-fA-F0-9]+$/)

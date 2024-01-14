@@ -164,6 +164,40 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cardano-ogmios/client@npm:^6.0.0-rc6":
+  version: 6.0.0
+  resolution: "@cardano-ogmios/client@npm:6.0.0"
+  dependencies:
+    "@cardano-ogmios/schema": 6.0.0
+    "@cardanosolutions/json-bigint": ^1.0.1
+    "@types/json-bigint": ^1.0.1
+    bech32: ^2.0.0
+    cross-fetch: ^3.1.4
+    fastq: ^1.11.0
+    isomorphic-ws: ^4.0.1
+    nanoid: ^3.1.31
+    ts-custom-error: ^3.2.0
+    ws: ^7.4.6
+  checksum: c2f7cd2f5c70e7672ac6092c1077296f025a4255f1d50b8e0e8611afbceb6abf62225af7f11269efc605e00d9115e2461f691b3287c2f2c389f8f4f50b0eafae
+  languageName: node
+  linkType: hard
+
+"@cardano-ogmios/schema@npm:6.0.0, @cardano-ogmios/schema@npm:^6.0.0-rc6":
+  version: 6.0.0
+  resolution: "@cardano-ogmios/schema@npm:6.0.0"
+  checksum: 556d8e43d7a6b91fb141371813df9ab9a8143289d8adc2562acb5449c9d10389ee05af625020c9aa613631d129d4293540b615d6748f5dd46ce5b286a805509c
+  languageName: node
+  linkType: hard
+
+"@cardanosolutions/json-bigint@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@cardanosolutions/json-bigint@npm:1.0.1"
+  dependencies:
+    bignumber.js: ^9.0.0
+  checksum: cd52446a76516c528c69d431c1b593a029e87106968bd2b8e6074761025b77fc18a1b8ae6a10a6e5897446058ca79e0864de6c7d609240275e30cc9f0d2f2fd1
+  languageName: node
+  linkType: hard
+
 "@cspotcode/source-map-support@npm:^0.8.0":
   version: 0.8.1
   resolution: "@cspotcode/source-map-support@npm:0.8.1"
@@ -635,6 +669,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/json-bigint@npm:^1.0.1":
+  version: 1.0.4
+  resolution: "@types/json-bigint@npm:1.0.4"
+  checksum: 7aee137b3796121cec755247ea56577611c8e5df89224c567fa71999764d01e12199c4089c6be8a9e4e6a6a8f5c6f309eee2965cc3dd8d576f4c4ba432566041
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:^7.0.12":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
@@ -830,6 +871,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wingriders/governance-backend@workspace:backend"
   dependencies:
+    "@cardano-ogmios/client": ^6.0.0-rc6
+    "@cardano-ogmios/schema": ^6.0.0-rc6
     "@prisma/client": 5.7.0
     "@types/node": ^20.10.3
     "@wingriders/cab": "link:../../cardano-dex/common/cab/dist/"
@@ -838,6 +881,7 @@ __metadata:
     dotenv: ^16.3.1
     dotenv-expand: ^10.0.0
     fastify: ^4.24.3
+    lodash: ^4.17.21
     pino: ^8.16.2
     pino-pretty: ^10.2.3
     prisma: ^5.7.0
@@ -1200,6 +1244,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bech32@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "bech32@npm:2.0.0"
+  checksum: fa15acb270b59aa496734a01f9155677b478987b773bf701f465858bf1606c6a970085babd43d71ce61895f1baa594cb41a2cd1394bd2c6698f03cc2d811300e
+  languageName: node
+  linkType: hard
+
+"bignumber.js@npm:^9.0.0":
+  version: 9.1.2
+  resolution: "bignumber.js@npm:9.1.2"
+  checksum: 582c03af77ec9cb0ebd682a373ee6c66475db94a4325f92299621d544aa4bd45cb45fd60001610e94aef8ae98a0905fa538241d9638d4422d57abbeeac6fadaf
+  languageName: node
+  linkType: hard
+
 "binary-extensions@npm:^2.0.0":
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
@@ -1420,6 +1478,15 @@ __metadata:
     cross-env: src/bin/cross-env.js
     cross-env-shell: src/bin/cross-env-shell.js
   checksum: 26f2f3ea2ab32617f57effb70d329c2070d2f5630adc800985d8b30b56e8bf7f5f439dd3a0358b79cee6f930afc23cf8e23515f17ccfb30092c6b62c6b630a79
+  languageName: node
+  linkType: hard
+
+"cross-fetch@npm:^3.1.4":
+  version: 3.1.8
+  resolution: "cross-fetch@npm:3.1.8"
+  dependencies:
+    node-fetch: ^2.6.12
+  checksum: 78f993fa099eaaa041122ab037fe9503ecbbcb9daef234d1d2e0b9230a983f64d645d088c464e21a247b825a08dc444a6e7064adfa93536d3a9454b4745b3632
   languageName: node
   linkType: hard
 
@@ -2021,6 +2088,15 @@ __metadata:
     semver: ^7.5.4
     toad-cache: ^3.3.0
   checksum: 944b5762766b510f6303ca488cd9b47e320881741be3a1c3196a7912d6bc73c353f7a37cd37fb563b6ac0d82282b9bb41949502f3a44dd432782807fe33db5d8
+  languageName: node
+  linkType: hard
+
+"fastq@npm:^1.11.0":
+  version: 1.16.0
+  resolution: "fastq@npm:1.16.0"
+  dependencies:
+    reusify: ^1.0.4
+  checksum: 1d40ed1f100ae625e5720484e8602b7ad07649370f1cbc3e34a6b9630a0bfed6946bab0322d8a368a1e3cde87bb9bbb8d3bc2ae01a0c1f022fac1d07c04e4feb
   languageName: node
   linkType: hard
 
@@ -2718,6 +2794,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"isomorphic-ws@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "isomorphic-ws@npm:4.0.1"
+  peerDependencies:
+    ws: "*"
+  checksum: d7190eadefdc28bdb93d67b5f0c603385aaf87724fa2974abb382ac1ec9756ed2cfb27065cbe76122879c2d452e2982bc4314317f3d6c737ddda6c047328771a
+  languageName: node
+  linkType: hard
+
 "jackspeak@npm:^2.3.5":
   version: 2.3.6
   resolution: "jackspeak@npm:2.3.6"
@@ -3073,6 +3158,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nanoid@npm:^3.1.31":
+  version: 3.3.7
+  resolution: "nanoid@npm:3.3.7"
+  bin:
+    nanoid: bin/nanoid.cjs
+  checksum: d36c427e530713e4ac6567d488b489a36582ef89da1d6d4e3b87eded11eb10d7042a877958c6f104929809b2ab0bafa17652b076cdf84324aa75b30b722204f2
+  languageName: node
+  linkType: hard
+
 "natural-compare@npm:^1.4.0":
   version: 1.4.0
   resolution: "natural-compare@npm:1.4.0"
@@ -3084,6 +3178,20 @@ __metadata:
   version: 0.6.3
   resolution: "negotiator@npm:0.6.3"
   checksum: b8ffeb1e262eff7968fc90a2b6767b04cfd9842582a9d0ece0af7049537266e7b2506dfb1d107a32f06dd849ab2aea834d5830f7f4d0e5cb7d36e1ae55d021d9
+  languageName: node
+  linkType: hard
+
+"node-fetch@npm:^2.6.12":
+  version: 2.7.0
+  resolution: "node-fetch@npm:2.7.0"
+  dependencies:
+    whatwg-url: ^5.0.0
+  peerDependencies:
+    encoding: ^0.1.0
+  peerDependenciesMeta:
+    encoding:
+      optional: true
+  checksum: d76d2f5edb451a3f05b15115ec89fc6be39de37c6089f1b6368df03b91e1633fd379a7e01b7ab05089a25034b2023d959b47e59759cb38d88341b2459e89d6e5
   languageName: node
   linkType: hard
 
@@ -4083,6 +4191,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tr46@npm:~0.0.3":
+  version: 0.0.3
+  resolution: "tr46@npm:0.0.3"
+  checksum: 726321c5eaf41b5002e17ffbd1fb7245999a073e8979085dacd47c4b4e8068ff5777142fc6726d6ca1fd2ff16921b48788b87225cbc57c72636f6efa8efbffe3
+  languageName: node
+  linkType: hard
+
 "tree-kill@npm:^1.2.2":
   version: 1.2.2
   resolution: "tree-kill@npm:1.2.2"
@@ -4098,6 +4213,13 @@ __metadata:
   peerDependencies:
     typescript: ">=4.2.0"
   checksum: 441cc4489d65fd515ae6b0f4eb8690057add6f3b6a63a36073753547fb6ce0c9ea0e0530220a0b282b0eec535f52c4dfc315d35f8a4c9a91c0def0707a714ca6
+  languageName: node
+  linkType: hard
+
+"ts-custom-error@npm:^3.2.0":
+  version: 3.3.1
+  resolution: "ts-custom-error@npm:3.3.1"
+  checksum: 50a1e825fced68d70049bd8d282379a635e43aa023a370fa8e736b12a6edba7f18a2d731fa194ac35303a8b625be56e121bdb31d8a0318250d1a8b277059fce3
   languageName: node
   linkType: hard
 
@@ -4340,6 +4462,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"webidl-conversions@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "webidl-conversions@npm:3.0.1"
+  checksum: c92a0a6ab95314bde9c32e1d0a6dfac83b578f8fa5f21e675bc2706ed6981bc26b7eb7e6a1fab158e5ce4adf9caa4a0aee49a52505d4d13c7be545f15021b17c
+  languageName: node
+  linkType: hard
+
+"whatwg-url@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "whatwg-url@npm:5.0.0"
+  dependencies:
+    tr46: ~0.0.3
+    webidl-conversions: ^3.0.0
+  checksum: b8daed4ad3356cc4899048a15b2c143a9aed0dfae1f611ebd55073310c7b910f522ad75d727346ad64203d7e6c79ef25eafd465f4d12775ca44b90fa82ed9e2c
+  languageName: node
+  linkType: hard
+
 "which-boxed-primitive@npm:^1.0.2":
   version: 1.0.2
   resolution: "which-boxed-primitive@npm:1.0.2"
@@ -4414,6 +4553,21 @@ __metadata:
   version: 1.0.2
   resolution: "wrappy@npm:1.0.2"
   checksum: 159da4805f7e84a3d003d8841557196034155008f817172d4e986bd591f74aa82aa7db55929a54222309e01079a65a92a9e6414da5a6aa4b01ee44a511ac3ee5
+  languageName: node
+  linkType: hard
+
+"ws@npm:^7.4.6":
+  version: 7.5.9
+  resolution: "ws@npm:7.5.9"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ^5.0.2
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: c3c100a181b731f40b7f2fddf004aa023f79d64f489706a28bc23ff88e87f6a64b3c6651fbec3a84a53960b75159574d7a7385709847a62ddb7ad6af76f49138
   languageName: node
   linkType: hard
 
