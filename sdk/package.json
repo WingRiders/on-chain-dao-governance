@@ -27,6 +27,8 @@
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.5",
     "@types/node": "^20.10.3",
+    "date-fns": "^3.2.0",
+    "lodash": "^4.17.21",
     "rollup": "^4.6.1",
     "tslib": "^2.6.2",
     "typescript": "^5.3.2"
