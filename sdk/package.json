@@ -22,7 +22,7 @@
     "build": "yarn clean && rollup -c"
   },
   "dependencies": {
-    "@wingriders/cab": "link:../../cardano-dex/common/cab/dist/"
+    "@wingriders/cab": "^2.0.25"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.5",
