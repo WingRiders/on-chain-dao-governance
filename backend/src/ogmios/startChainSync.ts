@@ -1,11 +1,12 @@
 import {Point} from '@cardano-ogmios/schema'
 import {config, Mode} from '../config'
-import {getLastStableBlock, insertPraosBlock, rollBackToPoint} from '../sync/blocks'
+import {insertPraosBlock, rollBackToPoint} from '../sync/blocks'
 import {setLatestBlock} from './latestBlock'
 import {InsertBlockFunction, RollBackToPointFunction, startSync} from './chainSyncClient'
 import {ogmiosClientInitializerLoop} from './ogmios'
 import {logger} from '../logger'
 import {noop} from 'lodash'
+import {getLastDbBlock} from '../db/getLastDbBlock'
 
 export const startChainSync = () => {
   const postInitCallback = async () => {
@@ -14,7 +15,9 @@ export const startChainSync = () => {
       slot: config.SYNC_EARLIEST_SLOT,
       id: config.SYNC_EARLIEST_HASH,
     }
-    const lastSyncedBlock = await getLastStableBlock()
+    // The last block might have been reverted, so we should start sync from few blocks behind.
+    // For now using hardcoded constant.
+    const lastSyncedBlock = await getLastDbBlock(50)
     if (lastSyncedBlock !== 'origin') {
       setLatestBlock(lastSyncedBlock)
     }

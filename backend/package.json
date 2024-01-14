@@ -17,12 +17,15 @@
   "dependencies": {
     "@cardano-ogmios/client": "^6.0.0-rc6",
     "@prisma/client": "5.7.0",
+    "@types/lodash": "^4.14.202",
     "@wingriders/cab": "link:../../cardano-dex/common/cab/dist/",
     "@wingriders/governance-sdk": "0.1.0",
     "dotenv": "^16.3.1",
     "dotenv-expand": "^10.0.0",
     "fastify": "^4.24.3",
     "lodash": "^4.17.21",
+    "pg": "^8.11.3",
+    "pg-listen": "^1.7.0",
     "pino": "^8.16.2",
     "prisma": "^5.7.0",
     "zod": "^3.22.4"

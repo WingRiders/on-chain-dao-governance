@@ -54,22 +54,3 @@ export const rollBackToPoint = async (point: PointOrOrigin) => {
   }
   logger.info({point, rolledBackCount}, 'Rollback finished')
 }
-
-// This method is called on startup when MODE = aggregator
-export const getLastStableBlock = async (): Promise<PointOrOrigin> => {
-  const block = await prisma.block.findFirst({
-    orderBy: {
-      id: Prisma.SortOrder.desc,
-    },
-    // The last block might have been reverted, so we should start sync from few blocks behind.
-    // For now using hardcoded constant.
-    skip: 50,
-  })
-  if (!block) {
-    return 'origin'
-  }
-  return {
-    id: block.hash.toString('hex'),
-    slot: Number(block.slot),
-  }
-}
