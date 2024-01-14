@@ -20,6 +20,7 @@
     "@types/lodash": "^4.14.202",
     "@wingriders/cab": "link:../../cardano-dex/common/cab/dist/",
     "@wingriders/governance-sdk": "0.1.0",
+    "axios": "^1.6.5",
     "cardano-crypto.js": "^6.1.2",
     "cbor": "^9.0.1",
     "dotenv": "^16.3.1",

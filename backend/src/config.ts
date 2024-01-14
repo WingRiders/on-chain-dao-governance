@@ -36,6 +36,7 @@ const envSchema = z.object({
     .regex(/^[a-fA-F0-9]+$/)
     .length(56),
   GOVERNANCE_TOKEN_ASSET_NAME: z.string().regex(/^[a-fA-F0-9]+$/),
+  TOTAL_MINTED_GOVERNANCE_TOKENS: z.coerce.number().gte(0),
   PROPOSALS_WALLET_PUBKEYHASH: z
     .string()
     .regex(/^[a-fA-F0-9]+$/)

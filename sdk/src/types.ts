@@ -46,9 +46,25 @@ export enum CborPollField {
 export type TxMetadatum = number | string | Buffer | TxMetadatum[] | Map<TxMetadatum, TxMetadatum>
 
 // (U)TxO identifier string in format: `<txHash>#<outputIndex>`
-type UtxoId = string
+export type UtxoId = string
 
 export type TokenCountWithUtxoIds<T extends string | BigNumber> = {
   tokenCount: T
   utxoIds: UtxoId[]
+}
+
+export enum DistributionKey {
+  WALLET_TOKENS = 'walletTokens',
+}
+
+export const VOTING_WEIGHTS = {
+  [DistributionKey.WALLET_TOKENS]: 1,
+}
+
+type TokenCountWithPower = {tokenCount: BigNumber; votingPower: BigNumber}
+
+export type VotingDistribution = {[key in keyof typeof VOTING_WEIGHTS]: TokenCountWithPower}
+
+export type TokenDistribution<T extends string | BigNumber> = {
+  [DistributionKey.WALLET_TOKENS]: TokenCountWithUtxoIds<T>
 }
