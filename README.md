@@ -251,8 +251,6 @@ Example results JSON taken from a successful WingRiders DAO proposal:
 }
 ```
 
-
-
 ### Scripts
 
 Simple off-chain command line utility to manage proposals using the DAO wallet. A proposal is just a UTxO in the DAO wallet. Managing the proposal therefore means spending it in various ways, the action distinguished by the transaction metadata. The script takes as a configuration the mnemonic to the assigned DAO wallet and based on the selected action spends the proposal UTxO accordingly.
@@ -393,7 +391,9 @@ Well-typed fetchers for all 5 endpoints exposed by the backend, each as a separa
 
 ### Frontend
 
-This module outlines how the frontend currently looks for WingRiders DAO voting. It for example shows the different sources of voting power that are possible to configure and how they show for the user. This is a breakdown of the necessary screens and flows to provide a functioning UI. The resulting frontend will comply with the outlined functionalities but will differ in the UI to offer a white-label option for all interested projects.
+This module outlines how the frontend currently looks for WingRiders DAO voting. It for example shows the different sources of voting power that are possible to configure and how they show for the user. This is a breakdown of the necessary screens and flows to provide a functioning UI. The resulting frontend will comply with the outlined functionalities but will offer a headless option for all interested projects.
+
+Currently, you can build your own UI according to your tech-stack and use the [API](#api-service) and [Library](#library) to communicate with the backend or create actions.
 
 #### UI Flow Documentation: Create Proposal Screen
 
