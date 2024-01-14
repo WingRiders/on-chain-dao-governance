@@ -5,3 +5,4 @@ yarn-error.log
 .vscode
 .idea
 .env
+/backend/prisma/dao-governance-client/

@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "dao-governance-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Block {
+  id     BigInt   @id @default(autoincrement()) @db.BigInt
+  hash   Bytes    @unique
+  height BigInt   @db.BigInt
+  slot   BigInt   @unique @db.BigInt
+  time   DateTime @db.Timestamptz(6)
+}

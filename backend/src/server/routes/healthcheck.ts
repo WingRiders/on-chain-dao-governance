@@ -1,6 +1,10 @@
+import {checkPrismaConnection} from '../../db/prismaClient'
+
 export const getHealthStatus = async () => {
+  const dbConnected = await checkPrismaConnection()
   return {
-    healthy: true,
+    healthy: dbConnected,
+    dbConnected,
     uptime: process.uptime(),
   }
 }

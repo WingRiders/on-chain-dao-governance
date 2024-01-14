@@ -2,8 +2,12 @@ import {Asset, NetworkName} from '@wingriders/cab/types'
 import z from 'zod'
 import pino from 'pino'
 import dotenv from 'dotenv'
+import dotenvExpand from 'dotenv-expand'
 
-dotenv.config(process.env.DOTENV_CONFIG_PATH ? {path: process.env.DOTENV_CONFIG_PATH} : {})
+export const env = dotenv.config(
+  process.env.DOTENV_CONFIG_PATH ? {path: process.env.DOTENV_CONFIG_PATH} : {}
+)
+dotenvExpand.expand(env)
 
 export enum Mode {
   AGGREGATOR = 'aggregator',
@@ -16,6 +20,7 @@ const envSchema = z.object({
   HTTP_SERVER_KEEP_ALIVE_SECONDS: z.coerce.number().gte(0).default(182),
   SERVER_PORT: z.coerce.number(),
   AGGREGATOR_PORT: z.coerce.number(),
+  DATABASE_URL: z.string().url(),
   GOVERNANCE_TOKEN_POLICY_ID: z
     .string()
     .regex(/^[a-fA-F0-9]+$/)
@@ -46,3 +51,5 @@ export const governanceToken: Asset = {
 }
 
 export const isServerMode = config.MODE === Mode.SERVER
+
+export const isAggregatorMode = config.MODE === Mode.AGGREGATOR
