@@ -45,14 +45,6 @@ export enum CborPollField {
   POLL_DESCRIPTION = 'description',
 }
 
-// (U)TxO identifier string in format: `<txHash>#<outputIndex>`
-export type UtxoId = string
-
-export type TokenCountWithUtxoIds<T extends string | BigNumber> = {
-  tokenCount: T
-  utxoIds: UtxoId[]
-}
-
 export type GovernanceVotingParams = {
   proposalsAddress: Address
   collateral: Token
@@ -103,10 +95,6 @@ export type Vote = {
   choices: Record<HexString, number>
   //note: string /* potential future extension */
 }
-
-/**
- * INTERFACE types
- */
 
 export enum ProposalStatus {
   AVAILABLE = 'AVAILABLE',

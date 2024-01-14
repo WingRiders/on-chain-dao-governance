@@ -1,18 +1,11 @@
 import {Address, Asset, BigNumber, HexString, RegisteredTokenMetadata} from '@wingriders/cab/types'
-import {UtxoId} from '@wingriders/governance-sdk'
+import {UtxoId, ProposalStatus} from './types'
 
 export type GovernanceVotingParamsResponse = {
   governanceToken: Asset & RegisteredTokenMetadata
   totalMintedGovernanceTokens: number
   proposalCollateralQuantity: number
   proposalsAddress: Address
-}
-
-export enum ProposalStatus {
-  AVAILABLE = 'AVAILABLE',
-  CANCELLED = 'CANCELLED',
-  PASSED = 'PASSED',
-  FAILED = 'FAILED',
 }
 
 export enum VoteVerificationState {

@@ -44,11 +44,12 @@ export const buildCastVote =
 
     const apiUtxos = await jsApi.getUtxos()
 
-    // spend the first utxo we get from the wallet
-    const firstUtxo = apiUtxos[0]
-    if (!firstUtxo) {
+    if (!apiUtxos || apiUtxos.length === 0) {
       throw new LibError(LibErrorCode.InsufficientAdaForTx, 'No UTxOs found on the wallet')
     }
+
+    // spend the first utxo we get from the wallet
+    const firstUtxo = apiUtxos[0]!
     const spendUtxo = reverseUtxo(firstUtxo)
 
     const vote: Vote = {
