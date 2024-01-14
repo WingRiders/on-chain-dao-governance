@@ -1,0 +1,10 @@
+{
+  "result": "PASSED",
+  "choices": {
+    "choiceA": "5000",
+    "choiceB": "9000"
+  },
+  "total": "15000",
+  "abstained": "1000",
+  "note": ""
+}

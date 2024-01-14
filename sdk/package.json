@@ -21,6 +21,9 @@
     "clean": "rm -rf dist",
     "build": "yarn clean && rollup -c"
   },
+  "dependencies": {
+    "@wingriders/cab": "link:../../cardano-dex/common/cab/dist/"
+  },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.5",
     "@types/node": "^20.10.3",

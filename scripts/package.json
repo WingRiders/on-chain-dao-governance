@@ -3,11 +3,15 @@
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
-    "manage-proposal": "ts-node --transpile-only src/index.ts"
+    "lint": "",
+    "manage-proposal": "ts-node --transpile-only src/manageProposal.ts"
   },
   "dependencies": {
+    "@wingriders/cab": "link:../../cardano-dex/common/cab/dist/",
     "@wingriders/governance-sdk": "0.1.0",
     "commander": "^11.1.0",
+    "dotenv": "^16.3.1",
+    "lodash": "^4.17.21",
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
