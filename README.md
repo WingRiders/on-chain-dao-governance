@@ -47,35 +47,49 @@ The system by itself doesn't support any discussions. In the end, it wouldn't be
 
 As mentioned above the system builds around transactions with special metadata. The overall system has three main building blocks - polls, proposals, and votes.
 
-Polls group together multiple proposals and define a voting power snapshot time and the voting timeframe. The voting power snapshot is required to happen before the start of the voting timeframe. This ensures that maximum theoretical voting power doesn’t suddenly change after voting on the proposal has started. Grouping multiple proposals into one poll means a user can submit just one transaction with multiple votes, lowering TX fees, and improving the UX Hopefully this leads to higher participation rates than in many small fragmented separate standalone proposals.
+Polls group together multiple proposals and define a voting power snapshot slot and the voting timeframe. The voting power snapshot is required to happen before the start of the voting timeframe. This ensures that maximum theoretical voting power doesn’t suddenly change after voting on the proposal has started. Grouping multiple proposals into one poll means a user can submit just one transaction with multiple votes, lowering TX fees, and improving the UX Hopefully this leads to higher participation rates than in many small fragmented separate standalone proposals.
 
-A proposal belongs to exactly one poll and can have multiple votes. On-chain it is defined by transaction metadata - owner, name, short description, accept and reject choices, IPFS link to additional documentation, and link to a community portal. The space to define the proposal on-chain is limited by the transaction size limits, therefore the full documentation is hosted on IPFS.
+A proposal belongs to exactly one poll and can have multiple choices and multiple votes for the choices. On-chain it is defined by transaction metadata - owner, name, short description, accept and reject choices, IPFS link to additional documentation, and link to a community portal. The space to define the proposal on-chain is limited by the transaction size limits, therefore the full documentation is hosted on IPFS.
 
 The vote belongs to exactly one proposal. It identifies the voter, tallies up the voting power, and lists UTxOs used to calculate the voting power.
 
 ```mermaid
 erDiagram
-  Poll |{--o| Proposal : has
   Poll {
-    int snapshotTime
-    int startTime
-    int endTime
+    DateTime snapshot
+    DateTime start
+    DateTime end
   }
-  Proposal }o--|| Vote : has
+  Poll ||--o{ Proposal : has
   Proposal {
-    string owner
-    string name
-    string description
-    string communityUri
-    string ipfsUri
-    string[] acceptChoices
-    string[] rejectChoices
+    Bytes txHash
+    BigInt slot
+    String ownerAddress
+    String name
+    String description
+    String uri
+    String communityUri
+    ProposalChoice[] proposalChoices
   }
+  Proposal ||--o{ ProposalState : has
+  ProposalState {
+    BigInt slot
+    ProposalStatus status
+  }
+  Proposal ||--|{ ProposalChoice : has
+  ProposalChoice {
+    Int index
+    String value
+    ProposalChoiceType type
+  }
+  ProposalChoice ||--o{ Vote : has
   Vote {
-    string owner
-    int power
-    TxId[] utxos
+    String ownerAddress
+    BigInt votingPower
+    String[] votingUTxOs
     string choice
+    VerificationState verificationState
+    BigInt slot
   }
 ```
 
@@ -83,7 +97,7 @@ erDiagram
 
 From a technical perspective, the system is built around 4 modules:
 
-- **Backend** - Handles aggregating DAO governance transactions from the blockchain and serving them to other components
+- **Backend** - Handles aggregating DAO governance transactions from the blockchain and serving them to other components. Validates the claimed voting power.
 - **Scripts** - Suite of scripts for managing proposals from the DAO wallet
 - **Library** - Glue between the backend and the frontend with actions to create proposals and cast voted
 - **Frontend** - Example white-label UI using the library to connect to a deployed backend
@@ -101,9 +115,15 @@ The backend service is responsible for aggregating governance-related transactio
 
 From experience with building backend services at WingRiders, this setup has the advantage of enabling easier horizontal scaling of the server part, which is the one with variable loads.
 
-Both services share the same codebase as for example the DB schema and some utilities are common. The services are differentiated during runtime based on command line arguments.
+Both services share the same codebase as for example the DB schema and some utilities are common. The services are differentiated during runtime based on environment variable.
 
 The external dependencies for both services are
+
+- **Fastify** - A web framework used for exposing API endpoints. Aggregator service only needs to expose a healthcheck endpoint.
+- **Postgres** - A relational database for storing aggregated data.
+- **Prisma** - ORM used for building and running database queries and migrations
+
+The external dependencies for aggregator service are:
 
 - **Ogmios** - ChainSync for aggregating data, and StateQueryClient to get current blockchain information
 - **Kupo** - for querying UTxOs for users’ voting power
@@ -142,46 +162,71 @@ The aggregation service connects to the blockchain using Ogmios ChainSync. It ag
 
 - Poll and proposal creation transactions
 - Proposal conclusion
-- Proposal cancelation
+- Proposal cancellation
 - Vote casts
 
 The first three all either have outputs or spend outputs on the defined DAO wallet, so they are easy to aggregate. The vote casts are transactions users send to their own wallets with specific metadata and signed by their staking key, all of these identifiers are used to locate such transactions on the blockchain.
 
 ##### Vote validation
 
-In addition to simple aggregation the backend also needs to validate votes. This process is deferred from the main aggregation loop as it can be more time-consuming to validate a vote with all of the referenced voting power UTxOs a user might have. Therefore, there is a periodical vote validation job running, which validates any new votes asynchronously.
+In addition to simple aggregation the backend also needs to validate votes. This process is deferred from the main aggregation loop as it can be more time-consuming to validate a vote with all of the referenced voting power UTxOs a user might have at the snapshot slot. Therefore, there is a periodical vote validation job running, which validates any new votes asynchronously.
 
 #### API Service
 
 API calls just retrieve data from the PostgreSQL database that gets aggregated by the aggregation service. No transactions or data are submitted through the API.
+See backend/src/server/routes.ts for the route definitions.
 
-##### `GET /api/options`
+##### `GET /params`
 
 **Inputs:** None
 
 **Returns:** DAO Governance options from configuration. (These are mainly needed when creating a proposal)
 
-##### `GET /api/maxVotingPower`
-
-**Inputs:** (optional) slot
-
-**Returns:** Theoretical max voting power for the given governance deployment calculated as configured. If the slot is specified then the voting power is a historical snapshot for the given slot.
-
-##### `GET /api/userVotingPower`
-
-**Inputs:** User’s stake key hash, (optional) slot
-
-**Returns:** List of UTxOs defining the user’s voting power selected from the configured set of UTxO sources, grouped by source, and the total tally of the user’s voting power. If the slot is specified then the voting power is a historical snapshot for the given slot.
-
-##### `GET /api/proposals`
+##### `GET /proposals`
 
 **Inputs:** None
 
 **Returns:** List of proposals, with their ID, name, and status (ongoing, passed, or failed)
 
-##### `GET /api/proposal`
+##### `GET /activeProposalsCount`
 
-**Inputs:** proposal ID
+**Inputs:** None
+
+**Returns:** Count of ongoing proposals
+
+##### `POST /userVotableProposalsCount`
+
+**Inputs:** User’s stake key hash
+
+**Returns:** Count of ongoing proposals with no vote cast by the user
+
+##### `GET /theoreticalMaxVotingPower`
+
+**Inputs:** None
+
+**Returns:** Theoretical max voting power for the given governance deployment calculated as configured.
+
+##### `POST /votes`
+
+**Inputs:** List of proposal ids (proposalTxHashes)
+
+**Returns:** Voting power and vote count per verification state, choice and proposal
+
+##### `POST /userVotes`
+
+**Inputs:** User’s stake key hash, list of proposal ids (proposalTxHashes)
+
+**Returns:** Voting power, verification state and choice of the vote case by the user, per proposal
+
+##### `POST /userVotingDistribution`
+
+**Inputs:** User’s stake key hash, (optional) slot
+
+**Returns:** List of UTxOs defining the user’s voting power selected from the configured set of UTxO sources, grouped by source, and the total tally of the user’s voting power. If the slot is specified then the voting power is a historical snapshot for the given slot.
+
+##### `POST /proposal`
+
+**Inputs:** proposal ID (txHash)
 
 **Returns:** Details about the proposal, plus the current up-to-date results JSON from validated votes
 
@@ -189,7 +234,7 @@ Example results JSON taken from a successful WingRiders DAO proposal:
 
 ```json
 {
-  "result": "PASSED",
+  "status": "PASSED",
   "choices": {
     "Keep the current threshold, use WRM01 as the default stake pool": "77393892650",
     "Set a new threshold to 20%, use WRM01 as the default stake pool": "507340931932",
@@ -201,6 +246,8 @@ Example results JSON taken from a successful WingRiders DAO proposal:
   "note": "'Set a new threshold to 15%, use WRM01 as the default stake pool' has won"
 }
 ```
+
+
 
 ### Scripts
 
@@ -223,7 +270,7 @@ This creates a transaction spending the proposal UTxO with metadata specifying t
 **Inputs:**
 
 - Proposal txHash
-- Results JSON (can be obtained from /api/proposal endpoint)
+- Results JSON (can be obtained from /proposal endpoint)
 - Beneficiary - address where the collateral for creating a proposal should be sent.
 
 This creates a transaction spending the proposal UTxO with metadata specifying the “Conclude Proposal” action and other fields parsed from the results JSON. The overall result can be either that the proposal passed or failed depending on if the proposal met the participation criteria. The metadata further includes a final tally of the validated votes. The governance tokens collateral is sent to the beneficiary.
@@ -334,11 +381,11 @@ The first key defines the poll id that the user is casting his vote for. Then gl
 
 Well-typed fetchers for all 5 endpoints exposed by the backend, each as a separate method:
 
-- `/api/options` - `fetchOptions`
-- `/api/maxVotingPower` - `fetchMaxVotingPower`
-- `/api/userVotingPower` - `fetchUserVotingPower`
-- `/api/proposals` - `fetchProposals`
-- `/api/proposal` - `fetchProposal`
+- `/params` - `fetchParams`
+- `/theoreticalMaxVotingPower` - `fetchTheoreticalMaxVotingPower`
+- `/userVotingDistribution` - `fetchUserVotingDistribution`
+- `/proposals` - `fetchProposals`
+- `/proposal` - `fetchProposal`
 
 ### Frontend
 
