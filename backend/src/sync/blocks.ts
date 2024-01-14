@@ -5,6 +5,7 @@ import {Block, prisma, PrismaTxClient} from '../db/prismaClient'
 import {slotToDateFactory} from '@wingriders/cab/helpers'
 import {config} from '../config'
 import {processGovernance} from './governanceOp'
+import {insertGovernanceVotes} from './votesSync'
 
 const BLOCK_HASH_LENGTH = 64 // 32 Bytes in hex string
 
@@ -42,6 +43,7 @@ export const insertPraosBlock = async (block: BlockPraos) => {
           continue
         }
         const dbInsertPromises = []
+        dbInsertPromises.push(insertGovernanceVotes(prismaTx, dbBlock, tx))
         dbInsertPromises.push(processGovernance(prismaTx, dbBlock, tx))
         const settledPromises = await Promise.allSettled(dbInsertPromises)
         settledPromises.forEach((promise) => {

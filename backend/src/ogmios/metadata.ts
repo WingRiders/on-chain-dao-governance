@@ -24,7 +24,9 @@ export const parseOgmiosMetadatum = (metadatum: Metadatum): TxMetadatum => {
     return metadatum.map(parseOgmiosMetadatum)
   } else {
     const map = new Map<TxMetadatum, TxMetadatum>()
-    for (const [key, value] of Object.entries(metadatum)) {
+    // When data from ogmios contains cborized metadata, there are Maps instead of objects
+    const entries = metadatum instanceof Map ? Array.from(metadatum) : Object.entries(metadatum)
+    for (const [key, value] of entries) {
       map.set(key, parseOgmiosMetadatum(value))
     }
     return map
