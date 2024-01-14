@@ -45,6 +45,7 @@ const envSchema = z.object({
     .regex(/^[a-fA-F0-9]+$/)
     .length(56),
   PROPOSAL_COLLATERAL_QUANTITY: z.coerce.number().gte(0),
+  BLOCKCHAIN_EXPLORER_URL: z.string().url(),
 })
 
 const result = envSchema.safeParse(process.env)

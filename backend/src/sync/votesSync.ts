@@ -6,14 +6,12 @@ import {compact} from 'lodash'
 import {logger} from '../logger'
 import {Block, PrismaTxClient} from '../db/prismaClient'
 import {assertArray, assertBuffer, parseAddressBuffer, parseInteger, parseNumber} from './metadataHelper'
-import {assertMetadataMap, parseOgmios6Metadatum, parseOgmiosMetadatum} from '../ogmios/metadata'
+import {assertMetadataMap, parseOgmios6Metadatum} from '../ogmios/metadata'
 import {Transaction} from '@cardano-ogmios/schema'
-import {CborVoteField, GovMetadatumLabel} from '@wingriders/governance-sdk'
+import {CborVoteField, GovMetadatumLabel, UtxoId} from '@wingriders/governance-sdk'
+import {getUtxoId} from '../helpers/getUtxoId'
 
 type Choice = [Buffer, number]
-
-// (U)TxO identifier string in format: `<txHash>#<outputIndex>`
-type UtxoId = string
 
 type PollVotes = {
   owner: Address
@@ -22,14 +20,6 @@ type PollVotes = {
   votingUTxOs: UtxoId[]
   choices: Choice[]
 }
-
-const getUtxoId = ({
-  txHash,
-  outputIndex,
-}: {
-  txHash: string | Buffer
-  outputIndex: number | bigint
-}): UtxoId => `${Buffer.isBuffer(txHash) ? txHash.toString('hex') : txHash}#${outputIndex}`
 
 const parseVotingUTxO = (votingUTxOMetadatum: TxMetadatum): UtxoId => {
   const votingUTxO = assertArray(votingUTxOMetadatum)

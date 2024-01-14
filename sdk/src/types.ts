@@ -1,3 +1,5 @@
+import {BigNumber} from '@wingriders/cab/types'
+
 export enum GovMetadatumLabel {
   COMMUNITY_VOTING_MANAGE = 5752,
   COMMUNITY_VOTING_VOTE = 5753,
@@ -42,3 +44,11 @@ export enum CborPollField {
 }
 
 export type TxMetadatum = number | string | Buffer | TxMetadatum[] | Map<TxMetadatum, TxMetadatum>
+
+// (U)TxO identifier string in format: `<txHash>#<outputIndex>`
+type UtxoId = string
+
+export type TokenCountWithUtxoIds<T extends string | BigNumber> = {
+  tokenCount: T
+  utxoIds: UtxoId[]
+}

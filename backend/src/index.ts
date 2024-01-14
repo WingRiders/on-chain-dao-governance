@@ -3,6 +3,7 @@ import {config, isAggregatorMode} from './config'
 import {startServer} from './server/server'
 import {startChainSync} from './ogmios'
 import {initPgListen} from './db/initPgListen'
+import {voteValidationLoop} from './validation/voteValidationJob'
 
 const start = async () => {
   logger.info(
@@ -12,7 +13,8 @@ const start = async () => {
   )
 
   if (isAggregatorMode) {
-    startChainSync()
+    await startChainSync()
+    voteValidationLoop()
   } else {
     await initPgListen()
   }
