@@ -894,6 +894,7 @@ __metadata:
     "@wingriders/cab": "link:../../cardano-dex/common/cab/dist/"
     "@wingriders/governance-sdk": 0.1.0
     cardano-crypto.js: ^6.1.2
+    cbor: ^9.0.1
     cross-env: ^7.0.3
     dotenv: ^16.3.1
     dotenv-expand: ^10.0.0
@@ -1424,6 +1425,15 @@ __metadata:
     borc: ^2.1.1
     pbkdf2: ^3.0.17
   checksum: c91c595bc5787f781cafbd43d5e2e3a936ce503e01cd75e62edd3cfb73edbdd5d5a409004e9f80a9b4ef865a2f9589b314bad94909980511697be8ee3e1bfe4a
+  languageName: node
+  linkType: hard
+
+"cbor@npm:^9.0.1":
+  version: 9.0.1
+  resolution: "cbor@npm:9.0.1"
+  dependencies:
+    nofilter: ^3.1.0
+  checksum: 42333ac3d42cc3f6fcc7a529e68417a2dd8099eda43ca4be1304cdc5bc7494efe058e2db8a3d3b46ae60d69c7331ea813c22dbd019c4ac592d23e599d72bbcc9
   languageName: node
   linkType: hard
 
@@ -3346,6 +3356,13 @@ __metadata:
   bin:
     node-gyp: bin/node-gyp.js
   checksum: 60a74e66d364903ce02049966303a57f898521d139860ac82744a5fdd9f7b7b3b61f75f284f3bfe6e6add3b8f1871ce305a1d41f775c7482de837b50c792223f
+  languageName: node
+  linkType: hard
+
+"nofilter@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "nofilter@npm:3.1.0"
+  checksum: 58aa85a5b4b35cbb6e42de8a8591c5e338061edc9f3e7286f2c335e9e9b9b8fa7c335ae45daa8a1f3433164dc0b9a3d187fa96f9516e04a17a1f9ce722becc4f
   languageName: node
   linkType: hard
 

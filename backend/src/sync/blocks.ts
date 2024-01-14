@@ -4,6 +4,7 @@ import {logger} from '../logger'
 import {Block, prisma, PrismaTxClient} from '../db/prismaClient'
 import {slotToDateFactory} from '@wingriders/cab/helpers'
 import {config} from '../config'
+import {processGovernance} from './governanceOp'
 
 const BLOCK_HASH_LENGTH = 64 // 32 Bytes in hex string
 
@@ -33,7 +34,23 @@ export const insertPraosBlock = async (block: BlockPraos) => {
   const debugInfo = {hash: block.id, height: block.height}
   logger.info(debugInfo, 'Inserting block')
   await prisma.$transaction(async (prismaTx) => {
-    await insertBlock(prismaTx, block)
+    const dbBlock = await insertBlock(prismaTx, block)
+    if (block.transactions) {
+      for (const tx of block.transactions) {
+        if (tx.spends !== 'inputs') {
+          logger.warn(`Found failed tx ${tx.id}`)
+          continue
+        }
+        const dbInsertPromises = []
+        dbInsertPromises.push(processGovernance(prismaTx, dbBlock, tx))
+        const settledPromises = await Promise.allSettled(dbInsertPromises)
+        settledPromises.forEach((promise) => {
+          if (promise.status === 'rejected' && promise.reason !== undefined) {
+            logger.error(promise.reason)
+          }
+        })
+      }
+    }
   })
   logger.info(debugInfo, 'Block inserted')
 }

@@ -21,6 +21,7 @@
     "@wingriders/cab": "link:../../cardano-dex/common/cab/dist/",
     "@wingriders/governance-sdk": "0.1.0",
     "cardano-crypto.js": "^6.1.2",
+    "cbor": "^9.0.1",
     "dotenv": "^16.3.1",
     "dotenv-expand": "^10.0.0",
     "fastify": "^4.24.3",
