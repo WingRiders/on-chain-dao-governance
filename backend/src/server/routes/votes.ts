@@ -15,7 +15,7 @@ import {VerificationState as DbVoteVerificationState, Prisma, prisma} from '../.
 
 type VoteAggregation = {
   proposalTxHash: HexString
-  proposalId: bigint
+  proposalId: number
   index: number
   votingPower: bigint
   votingCount: bigint

@@ -9,10 +9,10 @@ datasource db {
 }
 
 model Block {
-  id     BigInt   @id @default(autoincrement()) @db.BigInt
+  id     Int      @id @default(autoincrement())
   hash   Bytes    @unique
-  height BigInt   @db.BigInt
-  slot   BigInt   @unique @db.BigInt
+  height Int
+  slot   Int      @unique
   time   DateTime @db.Timestamptz(6)
 
   polls          Poll[]          @relation("ParentBlock")
@@ -22,9 +22,9 @@ model Block {
 }
 
 model Poll {
-  id          BigInt   @id @default(autoincrement()) @db.BigInt
+  id          Int      @id @default(autoincrement())
   // slot and txHash are referring to the first proposal
-  slot        BigInt   @db.BigInt
+  slot        Int
   txHash      Bytes    @unique
   start       DateTime @db.Timestamptz(6)
   end         DateTime @db.Timestamptz(6)
@@ -40,14 +40,14 @@ model Poll {
 }
 
 model Proposal {
-  id                BigInt @id @default(autoincrement()) @db.BigInt
+  id                Int    @id @default(autoincrement())
   ownerAddress      String
   ownerPubKeyHash   Bytes
   ownerStakeKeyHash Bytes?
   txHash            Bytes  @unique
-  outputIndex       BigInt @db.BigInt
-  slot              BigInt @db.BigInt
-  pollId            BigInt @db.BigInt
+  outputIndex       Int
+  slot              Int
+  pollId            Int
   uri               String
   name              String
   description       String
@@ -64,9 +64,9 @@ model Proposal {
 }
 
 model ProposalState {
-  id           BigInt         @id @default(autoincrement()) @db.BigInt
-  proposalId   BigInt         @db.BigInt
-  slot         BigInt         @db.BigInt
+  id           Int            @id @default(autoincrement())
+  proposalId   Int
+  slot         Int
   txHash       Bytes
   // cancelReason is nonempty if status = CANCELLED
   cancelReason String?
@@ -87,8 +87,8 @@ enum ProposalStatus {
 }
 
 model ProposalChoice {
-  id         BigInt             @id @default(autoincrement()) @db.BigInt
-  proposalId BigInt             @db.BigInt
+  id         Int                @id @default(autoincrement())
+  proposalId Int
   index      Int
   type       ProposalChoiceType
   value      String
@@ -113,14 +113,14 @@ enum VerificationState {
 
 // Historical table of user
 model Vote {
-  id                BigInt   @id @default(autoincrement()) @db.BigInt
+  id                Int      @id @default(autoincrement())
   ownerAddress      String
   ownerPubKeyHash   Bytes // this is just in case to identify the whole address
   ownerStakeKeyHash Bytes // votes are tied to stakeKeyHash primarily
-  proposalId        BigInt   @db.BigInt
+  proposalId        Int
   // selected choice, null means abstained from vote
-  choiceId          BigInt?  @db.BigInt
-  pollId            BigInt   @db.BigInt
+  choiceId          Int?
+  pollId            Int
   // voting power claimed by user
   votingPower       BigInt
   // array of UTxOs ids (txHash#outputIndex)
@@ -130,7 +130,7 @@ model Vote {
   // if the claimed votingPower is correct.
   verificationState VerificationState @default(UNVERIFIED)
 
-  slot   BigInt @db.BigInt
+  slot   Int
   txHash Bytes
 
   proposal Proposal        @relation(fields: [proposalId], references: [id], onDelete: Cascade)

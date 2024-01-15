@@ -63,7 +63,7 @@ erDiagram
   Poll ||--o{ Proposal : has
   Proposal {
     Bytes txHash
-    BigInt slot
+    Int slot
     String ownerAddress
     String name
     String description
@@ -73,7 +73,7 @@ erDiagram
   }
   Proposal ||--o{ ProposalState : has
   ProposalState {
-    BigInt slot
+    Int slot
     ProposalStatus status
   }
   Proposal ||--|{ ProposalChoice : has
@@ -89,7 +89,7 @@ erDiagram
     String[] votingUTxOs
     string choice
     VerificationState verificationState
-    BigInt slot
+    Int slot
   }
 ```
 
