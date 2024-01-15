@@ -1,6 +1,7 @@
+import {SetRequired} from 'type-fest'
+
 import type * as api from '@wingriders/cab/dappConnector'
 import {Address, BigNumber, HexString, Token} from '@wingriders/cab/types'
-import {SetRequired} from 'type-fest'
 
 export enum GovMetadatumLabel {
   COMMUNITY_VOTING_MANAGE = 5752,

@@ -1,5 +1,6 @@
 import {Address, Asset, BigNumber, HexString, RegisteredTokenMetadata} from '@wingriders/cab/types'
-import {UtxoId, ProposalStatus} from './types'
+
+import {ProposalStatus, UtxoId} from './types'
 
 export type GovernanceVotingParamsResponse = {
   governanceToken: Asset & RegisteredTokenMetadata

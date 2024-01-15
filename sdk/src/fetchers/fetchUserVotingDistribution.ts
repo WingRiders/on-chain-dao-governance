@@ -1,4 +1,5 @@
 import {request} from '@wingriders/cab/helpers'
+
 import {UserVotingDistributionFilter, UserVotingDistributionResponse} from '../api'
 
 type RequiredContext = {

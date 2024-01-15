@@ -1,4 +1,5 @@
 import {request} from '@wingriders/cab/helpers'
+
 import {ProposalsResponse} from '../api'
 
 type RequiredContext = {
