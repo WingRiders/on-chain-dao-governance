@@ -2,3 +2,4 @@ export const sdk = 'WingRiders DAO Governance SDK v0.1.0'
 
 export * from './api'
 export * from './types'
+export * from './fetchers'
