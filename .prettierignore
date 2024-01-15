@@ -1,1 +1,3 @@
 backend/prisma/dao-governance-client
+/docker/*-data/
+/cardano-configurations/

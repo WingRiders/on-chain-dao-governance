@@ -1,0 +1,90 @@
+version: '3.5'
+
+services:
+  governance-db:
+    container_name: ${COMPOSE_PROJECT_NAME}-governance-db
+    image: postgres:14.10-alpine
+    shm_size: 256m
+    ports:
+      - ${GOVERNANCE_DB_PORT}:5432
+    environment:
+      - POSTGRES_LOGGING=true
+      - POSTGRES_DB=${GOVERNANCE_DB}
+      - POSTGRES_USER=${GOVERNANCE_DB_USER}
+      - POSTGRES_PASSWORD=${GOVERNANCE_DB_PASSWORD}
+    volumes:
+      - ${DATA_PATH}/governance-db:/var/lib/postgresql/data
+    restart: unless-stopped
+    command:
+      [
+        'postgres',
+        '-c',
+        'log_statement=${POSTGRES_LOG_STATEMENT-none}',
+        '-c',
+        'log_duration=${POSTGRES_LOG_DURATION-off}',
+      ]
+
+  cardano-node:
+    container_name: ${COMPOSE_PROJECT_NAME}-cardano-node
+    image: ghcr.io/intersectmbo/cardano-node:8.7.3
+    ports:
+      - ${CARDANO_NODE_PORT}:3001
+    volumes:
+      - ${DATA_PATH}/node-db:/data/db
+      - ${DATA_PATH}/node-ipc:/ipc
+      - ../cardano-configurations/network/${NETWORK}:/configs
+    command: 'run --port 3001 --config /configs/cardano-node/config.json --database-path /data/db --topology /configs/cardano-node/topology.json --socket-path /ipc/node.socket --host-addr 0.0.0.0'
+    restart: unless-stopped
+
+  ogmios:
+    image: cardanosolutions/ogmios:v6.0.0
+    depends_on:
+      - cardano-node
+    command:
+      [
+        '--host',
+        '0.0.0.0',
+        '--node-socket',
+        '/ipc/node.socket',
+        '--node-config',
+        '/configs/cardano-node/config.json',
+      ]
+    volumes:
+      - ../cardano-configurations/network/${NETWORK}:/configs
+      - ${DATA_PATH}/node-ipc:/ipc
+    ports:
+      - ${OGMIOS_PORT:-1337}:1337 # CONTAINER PORT MUST BE 1337
+    restart: on-failure
+
+  kupo:
+    image: cardanosolutions/kupo:v2.7.2
+    depends_on:
+      - cardano-node
+    ports:
+      - ${KUPO_PORT}:1442
+    command: [
+        # when trying with ogmios - ChainSyncFailedToConnectOrConnectionLost
+        '--node-socket',
+        '/ipc/node.socket',
+        '--node-config',
+        '/configs/cardano-node/config.json',
+        '--match',
+        '${KUPO_PATTERN}',
+        '--since',
+        '${KUPO_SINCE_SLOT}.${KUPO_SINCE_HEADER_HASH}',
+        '--workdir',
+        '/kupo-db',
+        '--defer-db-indexes',
+        '--host',
+        '0.0.0.0',
+      ]
+    volumes:
+      - ../cardano-configurations/network/${NETWORK}:/configs
+      - ${DATA_PATH}/node-ipc:/ipc
+      - ${DATA_PATH}/kupo-db:/kupo-db
+
+volumes:
+  governance-db:
+  node-db:
+  node-ipc:
+  kupo-db:
