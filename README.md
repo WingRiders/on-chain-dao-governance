@@ -1,16 +1,50 @@
 <p align="center"><img src="./.assets/wingriders_logo.png" /></p>
 
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+
 # Open-Source On-Chain DAO Governance
 
 On-chain, decentralized, and auditable governance solution for Cardano. Our framework empowers projects with seamless community governance, enhancing transparency and trust for the project.
 
 ## Get started
 
-TBD
+To initiate DAO governance solution, follow these steps:
+
+1. **Governance token**: You will need a governance token that will represent voting power in your DAO. If you don't have a governance token, mint one using services like https://cardano-native-token.com/ or https://minter.wingriders.com/.
+2. **Update Token Metadata Registry**: Ensure your governance token's metadata is up-to-date in the Cardano Metadata Registry. If it's not listed, submit your token's metadata for inclusion: https://developers.cardano.org/docs/native-tokens/token-registry/how-to-submit-an-entry-to-the-registry/
 
 ### Build from source
 
-TBD
+Prerequisites:
+- Yarn
+- Docker
+
+Prepare yarn environment:
+```bash
+yarn set version 3.2.4
+yarn plugin import workspace-tools
+```
+
+Build backend:
+```bash
+docker build -f backend/Dockerfile .
+```
+
+Fetch the latest config files for Cardano node we use from cardano-configurations repo.
+You should have these configurations in the folder cardano-configurations/:
+```bash
+git clone git@github.com:WingRiders/cardano-configurations.git
+```
+This repo is kept up-to date, so feel free to pull new changes from time to time.
+
+Run backend with all required services:
+```bash
+cd docker/
+cp .env.example .env # Change any settings you wish; the defaults should do just fine
+COMPOSE_PROJECT_NAME=governance docker-compose up -d cardano-node ogmios6 kupo governance-db governance-backend
+```
+
+If you are starting the cardano-node for the first time it will take some time to sync all the blocks, so it's recommended to leave it running overnight, and then you should be good to go.
 
 ### Pre-built Docker containers
 
@@ -30,28 +64,28 @@ TBD
 
 ## Solution Design and Architecture
 
-The DAO Governance solution builds on the following core pillars:
+Our DAO Governance solution is grounded in these key principles:
 
-- Open-source
-- Fully on-chain
-- Transparent and auditable voting
-- Built around transaction metadata
+- **Open-Source**: Ensuring accessibility and community-driven enhancements.
+- **Fully On-Chain**: All operations, including voting, are recorded on the blockchain for transparency.
+- **Transparent and Auditable Voting**: Anyone can verify vote integrity, ensuring trust in the governance process.
+- **Based on Transaction Metadata**: Utilizes blockchain metadata for governance actions.
 
-It doesn't use smart contracts meaning the results are not enforced. However, the system by being open source and auditable has a safety check that can be run by anyone to verify if the entity is truthful or not. Anybody has the right and way to verify the votes.
+Key Features:
 
-Furthermore, not using smart contracts enables the system to be more flexible, for example in terms of what can constitute a user's voting power. It isn't limited to users locking governance tokens to some special voting script or a similar mechanism. It can use the user's governance tokens directly in their wallet, use governance tokens locked in various scripts, or even use LP tokens from DEXes that can be translated in value to the original governance tokens. Being this flexible enables the system to adapt to almost all limitations and specific setups an established dApp might have. Also, thanks to not being based on smart contracts the transaction costs users need to pay are lower.
-
-The system by itself doesn't support any discussions. In the end, it wouldn't be very practical to use the Cardano blockchain for passing messages. However, from the experience of WingRiders and other well-established DAOs, the discussions are best suited for community portals. Therefore the system encourages each proposal to be linked to a specific discussion on the community portal of the project.
+- **No Smart Contracts**: This design choice avoids enforced outcomes, allowing manual verification of results for authenticity.
+- **Flexible Voting Power Definition**: Voting power can be determined by various assets, including directly held governance tokens, tokens in scripts, or LP tokens from DEXes. This flexibility caters to diverse dApp requirements and lowers transaction costs.
+- **External Discussion Platforms**: While the system doesn't support on-chain discussions, it integrates with external community portals for proposal deliberations, enhancing the governance process.
 
 ### Polls, Proposals and Votes
 
-As mentioned above the system builds around transactions with special metadata. The overall system has three main building blocks - polls, proposals, and votes.
+Our system hinges on three key elements: polls, proposals, and votes, each defined using transaction metadata.
 
-Polls group together multiple proposals and define a voting power snapshot slot and the voting timeframe. The voting power snapshot is required to happen before the start of the voting timeframe. This ensures that maximum theoretical voting power doesn’t suddenly change after voting on the proposal has started. Grouping multiple proposals into one poll means a user can submit just one transaction with multiple votes, lowering TX fees, and improving the UX Hopefully this leads to higher participation rates than in many small fragmented separate standalone proposals.
+Polls group together multiple proposals and define a voting power snapshot slot and the voting timeframe. The voting power snapshot is required to happen before the start of the voting timeframe. This ensures that maximum theoretical voting power doesn't suddenly change after voting on the proposal has started. Grouping multiple proposals into one poll means a user can submit just one transaction with multiple votes, lowering TX fees, and improving the UX Hopefully this leads to higher participation rates than in many small fragmented separate standalone proposals.
 
-A proposal belongs to exactly one poll and can have multiple choices and multiple votes for the choices. On-chain it is defined by transaction metadata - owner, name, short description, accept and reject choices, IPFS link to additional documentation, and link to a community portal. The space to define the proposal on-chain is limited by the transaction size limits, therefore the full documentation is hosted on IPFS.
+A proposal belongs to exactly one poll and can have multiple choices and multiple votes for the choices. On-chain it is defined by transaction metadata - owner, name, short description, accept and reject choices, IPFS link to additional documentation, and link to a community portal. The space to define the proposal on-chain is limited by the transaction size limits, therefore the full documentation is hosted on IPFS. There is a script for changing state of the proposal - this is represented by appending ProposalState entries making this representation immutable. There are four possible states: AVAILABLE, CANCELLED, PASSED, FAILED.
 
-The vote belongs to exactly one proposal. It identifies the voter, tallies up the voting power, and lists UTxOs used to calculate the voting power.
+The vote belongs to exactly one proposal and one choice of that proposal. It identifies the voter, tallies up the voting power, and lists UTxOs used to calculate the voting power.
 
 ```mermaid
 erDiagram
@@ -97,36 +131,33 @@ erDiagram
 
 From a technical perspective, the system is built around 4 modules:
 
-- **Backend** - Handles aggregating DAO governance transactions from the blockchain and serving them to other components. Validates the claimed voting power.
+- **Backend** - Aggregates DAO governance transactions from the blockchain, validates voting power, and provides data to other modules.
 - **Scripts** - Suite of scripts for managing proposals from the DAO wallet
-- **Library** - Glue between the backend and the frontend with actions to create proposals and cast voted
+- **Library** - Glue between the backend and the frontend with actions to create proposals and cast votes
 - **Frontend** - Example white-label UI using the library to connect to a deployed backend
 
 How these modules interact with each other is also described in the following graph of interactions. The blue squares represent external dependencies, green ovals represent individual modules, and green squares important submodules.
 
-<p align="cetner"><img src="./.assets/graph-of-interactions.svg"></p>
+<p align="center"><img src="./.assets/graph-of-interactions.svg"></p>
 
 ### Backend
 
-The backend service is responsible for aggregating governance-related transactions from the blockchain (proposal creation, finalization, cancellation, and votes) and exposing APIs to fetch this data. The architecture splits it into two services:
+The backend is split into two core services, both sharing the same codebase but differentiated at runtime via environment variables:
 
-- First handles the aggregation of data into a PostgreSQL database
-- Second is the server counterpart that handles incoming requests and queries data from the PostgreSQL database.
+- **Data Aggregator**: Gathers governance-related transactions (proposals, votes, etc.) and stores them in a PostgreSQL database.
+- **API Server**: Handles requests and queries the PostgreSQL database to retrieve data.
 
-From experience with building backend services at WingRiders, this setup has the advantage of enabling easier horizontal scaling of the server part, which is the one with variable loads.
+This setup, inspired by our experiences at WingRiders, allows for more efficient horizontal scaling of the server part to manage variable loads.
 
-Both services share the same codebase as for example the DB schema and some utilities are common. The services are differentiated during runtime based on environment variable.
+External dependencies
 
-The external dependencies for both services are
-
-- **Fastify** - A web framework used for exposing API endpoints. Aggregator service only needs to expose a healthcheck endpoint.
-- **Postgres** - A relational database for storing aggregated data.
-- **Prisma** - ORM used for building and running database queries and migrations
-
-The external dependencies for aggregator service are:
-
-- **Ogmios** - ChainSync for aggregating data, and StateQueryClient to get current blockchain information
-- **Kupo** - for querying UTxOs for users’ voting power
+- **Common**
+  - **Fastify** - Web framework for API endpoints (Aggregator exposes only healthcheck and transaction evaluation endpoints).
+  - **Postgres** - Relational database for storing aggregated data.
+  - **Prisma** - ORM for database queries and migrations
+  - **Ogmios** - ChainSync for aggregating data, StateQueryClient to get current blockchain information, TransactionSubmissionClient for evaluation of transactions
+- **Aggregator specific**
+  - **Kupo** - Querying UTxOs to determine user voting power
 
 > 🔶 With proper encapsulation it might be possible to bring support for additional databases other than PostgreSQL as well as alternatives to Ogmios and Kupo. However, in the initial phase only these will be considered.
 
@@ -134,27 +165,27 @@ The external dependencies for aggregator service are:
 
 The backend is the only configurable module if we don’t count modifications to the frontend. The configuration determines the parameters of the specific DAO deployment.
 
-The first options that are also exposed via an API call define the general parameters of the deployment, also called DAO Governance Options:
+Configuration options, accessible through an API call, include:
 
-- Governance token
-- Proposal creation collateral amount in governance tokens
-- DAO wallet address
+- **Governance token** Policy ID, asset name and total minted amount
+- **Proposal collateral** Required amount in governance tokens for creating proposals
+- **DAO wallet address** Proposal creation transaction has output on this address
 
-And then some options have programmatic configuration.
+Additional configurations are programmable, ensuring flexibility for various deployment needs.
 
 ##### Tokens
 
-By default, only the defined governance token is represented in the user’s voting power and his voting UTxOs. However, the project could want to enable users to even use LP tokens from DEXes to vote, or any other token that can have its value “translated” into a governance token. This option enables configuring custom additional tokens and their value translations.
+By default, only the defined governance token is represented in the user’s voting power and his voting UTxOs. However, the project could want to enable users to even use LP tokens from DEXes to vote, or any other token that can have its value “translated” into a governance token. `VotesDistribution` interface enables configuring custom additional tokens and their value translations.
 
 ##### Script UTxOs
 
-By default, the DAO system can take into account any UTxOs sharing the user’s stake key hash. However, depending on the application, there might be other UTxOs that need to be considered, such as a staking script of the governance token, farms on DEXes, etc.
+The system inherently considers UTxOs linked to a user's stake key hash. Depending on the application, configuration can include additional UTxOs, like staking scripts or DEX farms.
 
-This programmatic configuration allows to set up script addresses that should be considered for user voting power and how to proof ownership based on datum schema.
+`VotesDistribution` interface allows specifying script addresses for voting power calculations and ownership verification guided by the datum schema.
 
 ##### Governance token max voting power calculation
 
-Optional, but recommended. For DAO votes usually, there is a certain voting participation required for proposals to pass. To determine the participation the system needs to know the maximum voting power. By default, this calculation just takes into account the total amount of governance tokens minted. However, a project could want to take into account its own tokenomics and modify this to more accurately reflect the available max voting power. The backend uses a `VotesDistribution` interface to choose the implementation of the max voting power calculation. By default, the `WalletVotesDistribution` is used, which condsiders all possible tokens. Developers using this repository are encouraged to write their own interface implementations if they need a custom logic (e.g. excluding tokens from a treasury).
+Optional, but recommended. For DAO votes usually, there is a certain voting participation required for proposals to pass. To determine the participation the system needs to know the maximum voting power. By default, this calculation just takes into account the total amount of governance tokens minted. However, a project could want to take into account its own tokenomics and modify this to more accurately reflect the available max voting power. The backend uses a `VotesDistribution` interface to choose the implementation of the max voting power calculation. By default, the `WalletVotesDistribution` is used, which considers all possible tokens. Developers using this repository are encouraged to write their own interface implementations if they need a custom logic (e.g. excluding tokens from a treasury).
 
 ##### User voting distribution calculation
 
@@ -169,11 +200,11 @@ The aggregation service connects to the blockchain using Ogmios ChainSync. It ag
 - Proposal cancellation
 - Vote casts
 
-The first three all either have outputs or spend outputs on the defined DAO wallet, so they are easy to aggregate. The vote casts are transactions users send to their own wallets with specific metadata and signed by their staking key, all of these identifiers are used to locate such transactions on the blockchain.
+The first three all either have outputs or spend outputs on the defined DAO wallet address, so they are easy to aggregate. The vote casts are transactions users send to their own wallets with specific metadata and signed by their staking key, all of these identifiers are used to locate such transactions on the blockchain.
 
 ##### Vote validation
 
-In addition to simple aggregation the backend also needs to validate votes. This process is deferred from the main aggregation loop as it can be more time-consuming to validate a vote with all of the referenced voting power UTxOs a user might have at the snapshot slot. Therefore, there is a periodical vote validation job running, which validates any new votes asynchronously.
+In addition to simple aggregation the backend also needs to validate votes. This process is deferred from the main aggregation loop as it can be more time-consuming to validate a vote with all the referenced voting power UTxOs a user might have at the snapshot slot. Therefore, there is a periodical vote validation job running, which validates any new votes asynchronously.
 
 #### API Service
 
@@ -255,19 +286,17 @@ Example results JSON taken from a successful WingRiders DAO proposal:
 
 Simple off-chain command line utility to manage proposals using the DAO wallet. A proposal is just a UTxO in the DAO wallet. Managing the proposal therefore means spending it in various ways, the action distinguished by the transaction metadata. The script takes as a configuration the mnemonic to the assigned DAO wallet and based on the selected action spends the proposal UTxO accordingly.
 
-#### Actions
-
-##### Cancel proposal
+#### Cancel proposal
 
 **Inputs:**
 
 - Proposal txHash
 - Cancellation reason
-- Beneficiary - address where the collateral for creating a proposal should be sent\
+- Beneficiary - address where the collateral for creating a proposal should be sent
 
-This creates a transaction spending the proposal UTxO with metadata specifying the “Cancel Proposal” action and the reason for cancellation. The governance tokens collateral is sent to the beneficiary.
+This creates a transaction spending the proposal UTxO with metadata specifying the “Cancel Proposal” operation and the reason for cancellation. The governance tokens collateral is sent to the beneficiary.
 
-##### Finalize proposal
+#### Finalize proposal
 
 **Inputs:**
 
@@ -275,7 +304,7 @@ This creates a transaction spending the proposal UTxO with metadata specifying t
 - Results JSON (can be obtained from /proposal endpoint)
 - Beneficiary - address where the collateral for creating a proposal should be sent.
 
-This creates a transaction spending the proposal UTxO with metadata specifying the “Conclude Proposal” action and other fields parsed from the results JSON. The overall result can be either that the proposal passed or failed depending on if the proposal met the participation criteria. The metadata further includes a final tally of the validated votes. The governance tokens collateral is sent to the beneficiary.
+This creates a transaction spending the proposal UTxO with metadata specifying the “Conclude Proposal” operation and other fields parsed from the results JSON. The overall result can be either that the proposal passed or failed depending on if the proposal met the participation criteria. The metadata further includes a final tally of the validated votes. The governance tokens collateral is sent to the beneficiary.
 
 ### Library
 
