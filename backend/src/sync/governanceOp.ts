@@ -1,11 +1,8 @@
 import {Transaction, TransactionOutput} from '@cardano-ogmios/schema'
-import {spendingHashFromAddress, stakingHashFromAddress} from '@wingriders/cab/ledger/address'
-import {HexString, TxMetadatum} from '@wingriders/cab/types'
 import {isString} from 'lodash'
 
-import {logger} from '../logger'
-import {Block, PrismaTxClient, ProposalChoiceType, ProposalStatus} from '../db/prismaClient'
-import {assertMetadataMap, parseOgmios6Metadatum} from '../ogmios/metadata'
+import {spendingHashFromAddress, stakingHashFromAddress} from '@wingriders/cab/ledger/address'
+import {HexString, TxMetadatum} from '@wingriders/cab/types'
 import {
   CborPollField,
   CborProposalField,
@@ -15,15 +12,19 @@ import {
   PollMetadatum,
   ProposalMetadatum,
 } from '@wingriders/governance-sdk'
+
+import {config, governanceToken, proposalsAddress} from '../config'
+import {Block, PrismaTxClient, ProposalChoiceType, ProposalStatus} from '../db/prismaClient'
+import {logger} from '../logger'
+import {getTokenQuantity} from '../ogmios/getTokenQuantity'
+import {assertMetadataMap, parseOgmios6Metadatum} from '../ogmios/metadata'
 import {
-  parseBuffer,
   parseAddressBuffer,
+  parseBuffer,
   parsePosixTime,
   parseString,
   parseStringArray,
 } from './metadataHelper'
-import {config, governanceToken, proposalsAddress} from '../config'
-import {getTokenQuantity} from '../ogmios/getTokenQuantity'
 
 const parseProposal = (proposalMetadatum: TxMetadatum): ProposalMetadatum => {
   const proposalMetadata = assertMetadataMap(proposalMetadatum)

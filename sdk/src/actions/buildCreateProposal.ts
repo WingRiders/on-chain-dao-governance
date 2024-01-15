@@ -9,10 +9,10 @@ import {
   ZeroLovelace,
 } from '@wingriders/cab/types'
 
-import {GovernanceVotingParams, GovMetadatumLabel, PollMetadatum, ProposalMetadatum} from '../types'
+import {BuildAction, BuildActionParams} from '../actions'
 import {buildTx} from '../helpers/actions'
 import {encodeProposal} from '../helpers/encodeMetadatum'
-import {BuildAction, BuildActionParams} from '../actions'
+import {GovMetadatumLabel, GovernanceVotingParams, PollMetadatum, ProposalMetadatum} from '../types'
 
 type BuildCreateProposalParams = {
   proposal: ProposalMetadatum

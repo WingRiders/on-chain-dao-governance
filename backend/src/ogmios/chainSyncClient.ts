@@ -1,7 +1,7 @@
 import {
-  createChainSynchronizationClient,
   ChainSynchronization,
   InteractionContext,
+  createChainSynchronizationClient,
   isBlockPraos,
 } from '@cardano-ogmios/client'
 import {BlockPraos, PointOrOrigin} from '@cardano-ogmios/schema'

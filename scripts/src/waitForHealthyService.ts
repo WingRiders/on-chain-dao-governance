@@ -1,5 +1,6 @@
-import {request, sleep} from '@wingriders/cab/helpers'
 import {capitalize} from 'lodash'
+
+import {request, sleep} from '@wingriders/cab/helpers'
 
 import {config} from './config'
 

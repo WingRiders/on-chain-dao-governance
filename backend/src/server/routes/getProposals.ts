@@ -1,9 +1,10 @@
-import {ProposalsResponse} from '@wingriders/governance-sdk'
 import {chain} from 'lodash'
 
-import {prisma, ProposalStatus as DbProposalStatus} from '../../db/prismaClient'
-import {toApiProposalDetails} from './toApiProposalDetails'
+import {ProposalsResponse} from '@wingriders/governance-sdk'
+
+import {ProposalStatus as DbProposalStatus, prisma} from '../../db/prismaClient'
 import {proposalDetailsPrismaSelect} from '../../db/proposalDetailsPrismaSelect'
+import {toApiProposalDetails} from './toApiProposalDetails'
 
 /**
  * Fetch all proposals assuming the number of proposals will be very limited,

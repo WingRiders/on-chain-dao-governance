@@ -1,16 +1,17 @@
-import {HexString} from '@wingriders/cab/types'
 import {chain, mapValues} from 'lodash'
 
-import {Prisma, prisma, VerificationState as DbVoteVerificationState} from '../../db/prismaClient'
+import {HexString} from '@wingriders/cab/types'
 import {
   ChoiceVoteAggregation,
   UserVotesFilter,
   UserVotesResponse,
   VoteAggregationByProposalResponse,
+  VoteVerificationState,
   VotesByState,
   VotesFilter,
-  VoteVerificationState,
 } from '@wingriders/governance-sdk'
+
+import {VerificationState as DbVoteVerificationState, Prisma, prisma} from '../../db/prismaClient'
 
 type VoteAggregation = {
   proposalTxHash: HexString

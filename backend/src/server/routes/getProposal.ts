@@ -1,10 +1,11 @@
+import {sum} from 'lodash'
+
 import {HexString} from '@wingriders/cab/types'
 import {ProposalResponse, VoteVerificationState} from '@wingriders/governance-sdk'
 
-import {prisma, Vote} from '../../db/prismaClient'
+import {Vote, prisma} from '../../db/prismaClient'
 import {proposalDetailsPrismaSelect} from '../../db/proposalDetailsPrismaSelect'
 import {toApiProposalDetails} from './toApiProposalDetails'
-import {sum} from 'lodash'
 
 const isVerified = (vote: Vote) => vote.verificationState === VoteVerificationState.VERIFIED
 const isAbstained = (vote: Vote) => vote.choiceId == null

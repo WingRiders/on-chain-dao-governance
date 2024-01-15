@@ -1,8 +1,8 @@
+import {getTokenFromBundle} from '@wingriders/cab/ledger/assets'
 import {UTxO} from '@wingriders/cab/types'
 
-import {createAndSubmitTxPlan, CreateAndSubmitTxPlanArgs} from './createAndSubmitTxPlan'
 import {config, governanceToken} from './config'
-import {getTokenFromBundle} from '@wingriders/cab/ledger/assets'
+import {CreateAndSubmitTxPlanArgs, createAndSubmitTxPlan} from './createAndSubmitTxPlan'
 import {initWallet} from './initWallet'
 
 export async function initGovernanceWallet() {

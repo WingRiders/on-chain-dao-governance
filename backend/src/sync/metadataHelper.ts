@@ -1,6 +1,7 @@
+import {isArray, isString} from 'lodash'
+
 import {encodeAddress} from '@wingriders/cab/ledger/address'
 import {Address, TxMetadatum} from '@wingriders/cab/types'
-import {isArray, isString} from 'lodash'
 
 export function parseBuffer(datum: TxMetadatum | undefined): Buffer {
   if (!Buffer.isBuffer(datum)) {

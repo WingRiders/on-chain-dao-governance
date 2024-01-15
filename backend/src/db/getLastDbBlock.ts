@@ -1,4 +1,5 @@
 import {PointOrOrigin} from '@cardano-ogmios/schema'
+
 import {Prisma, prisma} from './prismaClient'
 
 // This method is called:

@@ -5,6 +5,7 @@
   "printWidth": 105,
   "trailingComma": "es5",
   "arrowParens": "always",
+  "plugins": ["@trivago/prettier-plugin-sort-imports", "prettier-plugin-prisma"],
   "importOrder": ["^@wingriders/(.*)$", "^[./]"],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true

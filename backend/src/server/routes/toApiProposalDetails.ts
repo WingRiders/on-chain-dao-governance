@@ -1,16 +1,17 @@
+import {Address} from '@wingriders/cab/types'
 import {
   ProposalDetails as ApiProposalDetails,
   ProposalStatus as ApiProposalStatus,
 } from '@wingriders/governance-sdk'
+
 import {
-  ProposalChoiceType,
   ProposalStatus as DbProposalStatus,
-  Proposal,
   Poll,
-  ProposalState,
+  Proposal,
   ProposalChoice,
+  ProposalChoiceType,
+  ProposalState,
 } from '../../db/prismaClient'
-import {Address} from '@wingriders/cab/types'
 
 const dbProposalStatusToApiProposalStatus = (dbProposalStatus: DbProposalStatus): ApiProposalStatus =>
   ({

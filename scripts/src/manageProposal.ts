@@ -1,11 +1,12 @@
-import {splitMetadatumString} from '@wingriders/cab/ledger/transaction'
-import {Address, TxPlanArgs} from '@wingriders/cab/types'
 import {Command} from 'commander'
 import {readFileSync} from 'fs'
 
-import {waitForHealthyAggregator, waitForHealthyExplorer} from './waitForHealthyService'
-import {initGovernanceWallet, isPotentialProposalUTxO} from './common'
+import {splitMetadatumString} from '@wingriders/cab/ledger/transaction'
+import {Address, TxPlanArgs} from '@wingriders/cab/types'
 import {GovManagementOp, GovMetadatumLabel, TxMetadatum} from '@wingriders/governance-sdk'
+
+import {initGovernanceWallet, isPotentialProposalUTxO} from './common'
+import {waitForHealthyAggregator, waitForHealthyExplorer} from './waitForHealthyService'
 
 /**
  * Cancels a proposal. It does not necessarily cancel the associated Poll with it.

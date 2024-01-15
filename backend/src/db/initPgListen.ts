@@ -1,9 +1,10 @@
+import {debounce, noop} from 'lodash'
 import createSubscriber from 'pg-listen'
+
 import {config} from '../config'
 import {logger} from '../logger'
 import {setLatestBlock} from '../ogmios'
 import {getLastDbBlock} from './getLastDbBlock'
-import {debounce, noop} from 'lodash'
 
 const channelName = 'block_update'
 

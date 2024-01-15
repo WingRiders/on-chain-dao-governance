@@ -1,7 +1,8 @@
+import {compact} from 'lodash'
+
 import {addressToHex} from '@wingriders/cab/ledger/address'
 import {splitMetadatumString} from '@wingriders/cab/ledger/transaction'
 import {TxMetadatum} from '@wingriders/cab/types'
-import {compact} from 'lodash'
 
 import {
   CborPollField,

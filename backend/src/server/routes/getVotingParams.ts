@@ -1,4 +1,5 @@
 import {GovernanceVotingParamsResponse} from '@wingriders/governance-sdk'
+
 import {config, governanceToken, proposalsAddress} from '../../config'
 import {fetchGovernanceTokenMetadata} from '../../helpers/fetchGovernanceTokenMetadata'
 

@@ -1,7 +1,9 @@
-import {createTokenRegistrySubject, TokenRegistry} from '@wingriders/cab/blockchainExplorer'
-import {NetworkName, RegisteredTokenMetadata} from '@wingriders/cab/types'
-import {config, governanceToken} from '../config'
 import axios from 'axios'
+
+import {TokenRegistry, createTokenRegistrySubject} from '@wingriders/cab/blockchainExplorer'
+import {NetworkName, RegisteredTokenMetadata} from '@wingriders/cab/types'
+
+import {config, governanceToken} from '../config'
 
 const tokenRegistryUrl = {
   [NetworkName.MAINNET]: 'https://tokens.cardano.org/metadata/query',

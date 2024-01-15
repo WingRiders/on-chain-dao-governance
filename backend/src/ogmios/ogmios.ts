@@ -1,4 +1,5 @@
-import {createInteractionContext, InteractionContext} from '@cardano-ogmios/client'
+import {InteractionContext, createInteractionContext} from '@cardano-ogmios/client'
+
 import {sleep} from '@wingriders/cab/helpers'
 
 import {logger} from '../logger'

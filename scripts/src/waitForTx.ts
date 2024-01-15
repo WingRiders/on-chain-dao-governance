@@ -3,11 +3,11 @@
  * the transaction is not accepted. If we reach the ttl, we assume
  * that the transaction failed
  */
-
 import {CabInternalError, CabInternalErrorReason} from '@wingriders/cab/errors'
 import {sleep, slotToDateFactory} from '@wingriders/cab/helpers'
 import {HexString} from '@wingriders/cab/types'
 import {Wallet} from '@wingriders/cab/wallet'
+
 import {config} from './config'
 
 const TTL_BUFFER = 60000 // 1 minute, we add this buffer on top of TTL because sync might be a bit behind

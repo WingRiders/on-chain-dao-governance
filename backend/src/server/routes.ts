@@ -1,8 +1,5 @@
 import {FastifyInstance} from 'fastify'
-import {getHealthStatus} from './routes/healthcheck'
-import {getVotingParams} from './routes/getVotingParams'
-import {getProposals} from './routes/getProposals'
-import {getActiveProposalsCount, getUserVotableProposalsCount} from './routes/activeProposalsCount'
+
 import {HexString} from '@wingriders/cab/types'
 import {
   UserVotesFilter,
@@ -12,10 +9,15 @@ import {
   VoteAggregationByProposalResponse,
   VotesFilter,
 } from '@wingriders/governance-sdk'
-import {getUserVotes, getVotes} from './routes/votes'
-import {getProposal} from './routes/getProposal'
-import {evaluateTxFromCbor} from './routes/evaluateTxFromCbor'
+
 import {votesDistribution} from '../config'
+import {getActiveProposalsCount, getUserVotableProposalsCount} from './routes/activeProposalsCount'
+import {evaluateTxFromCbor} from './routes/evaluateTxFromCbor'
+import {getProposal} from './routes/getProposal'
+import {getProposals} from './routes/getProposals'
+import {getVotingParams} from './routes/getVotingParams'
+import {getHealthStatus} from './routes/healthcheck'
+import {getUserVotes, getVotes} from './routes/votes'
 
 export function registerRoutes(server: FastifyInstance) {
   server.get('/healthcheck', async (request, reply) => {

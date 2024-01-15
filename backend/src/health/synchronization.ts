@@ -1,8 +1,9 @@
-import {logger} from '../logger'
-import {Prisma, prisma} from '../db/prismaClient'
-import {getNodeHealth} from '../ogmios'
-import {config} from '../config'
 import {slotToDateFactory} from '@wingriders/cab/helpers'
+
+import {config} from '../config'
+import {Prisma, prisma} from '../db/prismaClient'
+import {logger} from '../logger'
+import {getNodeHealth} from '../ogmios'
 
 export type SyncHealthStatus = {
   dbBestBlock: number | null

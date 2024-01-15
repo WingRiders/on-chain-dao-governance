@@ -1,3 +1,7 @@
+import {uniq} from 'lodash'
+
+import {alonzoDateToSlotFactory} from '@wingriders/cab/helpers'
+import {BigNumber} from '@wingriders/cab/types'
 import {
   DistributionKey,
   TokenDistribution,
@@ -6,12 +10,10 @@ import {
   UtxoId,
   VOTING_WEIGHTS,
 } from '@wingriders/governance-sdk'
-import {alonzoDateToSlotFactory} from '@wingriders/cab/helpers'
-import {fetchWalletsUtxosWithAsset} from './validation/fetchUTxOs'
-import {config, governanceToken} from './config'
-import {BigNumber} from '@wingriders/cab/types'
-import {uniq} from 'lodash'
+
 import {VotesDistribution} from './VotesDistribution'
+import {config, governanceToken} from './config'
+import {fetchWalletsUtxosWithAsset} from './validation/fetchUTxOs'
 
 const calculateVotingDistribution = (tokenDistribution: TokenDistribution<BigNumber>) => {
   const calculateTokenCountAndVotingPower = (key: DistributionKey) => {

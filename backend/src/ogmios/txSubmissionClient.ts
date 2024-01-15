@@ -1,9 +1,10 @@
-import {logger} from '../logger'
 import {
-  createTransactionSubmissionClient,
   InteractionContext,
   TransactionSubmission,
+  createTransactionSubmissionClient,
 } from '@cardano-ogmios/client'
+
+import {logger} from '../logger'
 
 export let txSubmissionClient: TransactionSubmission.TransactionSubmissionClient | null
 export const initializeTxSubmissionClient = async (context: InteractionContext) => {

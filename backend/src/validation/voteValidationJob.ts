@@ -1,11 +1,12 @@
-import {alonzoDateToSlotFactory, cacheResults, sleep} from '@wingriders/cab/helpers'
-import {BigNumber} from '@wingriders/cab/types'
 import {chunk} from 'lodash'
 
+import {alonzoDateToSlotFactory, cacheResults, sleep} from '@wingriders/cab/helpers'
+import {BigNumber} from '@wingriders/cab/types'
+
 import {config, governanceToken} from '../config'
+import {Poll, VerificationState, Vote, prisma} from '../db/prismaClient'
 import {getSyncHealthStatus} from '../health/synchronization'
 import {logger} from '../logger'
-import {Poll, prisma, VerificationState, Vote} from '../db/prismaClient'
 import {fetchWalletsUtxosWithAsset} from './fetchUTxOs'
 
 const userWalletsCountsCache = {}

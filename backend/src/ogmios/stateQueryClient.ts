@@ -1,8 +1,8 @@
 import {
-  createLedgerStateQueryClient,
-  getServerHealth,
   InteractionContext,
   LedgerStateQuery,
+  createLedgerStateQueryClient,
+  getServerHealth,
 } from '@cardano-ogmios/client'
 import {Tip} from '@cardano-ogmios/schema'
 

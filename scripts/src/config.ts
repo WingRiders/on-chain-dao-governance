@@ -1,7 +1,8 @@
-import {Asset, NetworkName} from '@wingriders/cab/types'
-import z from 'zod'
-import pino from 'pino'
 import dotenv from 'dotenv'
+import pino from 'pino'
+import z from 'zod'
+
+import {Asset, NetworkName} from '@wingriders/cab/types'
 
 dotenv.config(process.env.DOTENV_CONFIG_PATH ? {path: process.env.DOTENV_CONFIG_PATH} : {})
 

@@ -1,12 +1,13 @@
 import {Point} from '@cardano-ogmios/schema'
-import {config, Mode} from '../config'
-import {insertPraosBlock, rollBackToPoint} from '../sync/blocks'
-import {setLatestBlock} from './latestBlock'
-import {InsertBlockFunction, RollBackToPointFunction, startSync} from './chainSyncClient'
-import {ogmiosClientInitializerLoop} from './ogmios'
-import {logger} from '../logger'
 import {noop} from 'lodash'
+
+import {Mode, config} from '../config'
 import {getLastDbBlock} from '../db/getLastDbBlock'
+import {logger} from '../logger'
+import {insertPraosBlock, rollBackToPoint} from '../sync/blocks'
+import {InsertBlockFunction, RollBackToPointFunction, startSync} from './chainSyncClient'
+import {setLatestBlock} from './latestBlock'
+import {ogmiosClientInitializerLoop} from './ogmios'
 
 export const startChainSync = () => {
   const postInitCallback = async () => {

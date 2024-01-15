@@ -1,9 +1,10 @@
 import {BlockPraos, PointOrOrigin} from '@cardano-ogmios/schema'
 
-import {logger} from '../logger'
-import {Block, prisma, PrismaTxClient} from '../db/prismaClient'
 import {slotToDateFactory} from '@wingriders/cab/helpers'
+
 import {config} from '../config'
+import {Block, PrismaTxClient, prisma} from '../db/prismaClient'
+import {logger} from '../logger'
 import {processGovernance} from './governanceOp'
 import {insertGovernanceVotes} from './votesSync'
 
