@@ -16,28 +16,34 @@ To initiate DAO governance solution, follow these steps:
 ### Build from source
 
 Prerequisites:
+
 - Yarn
 - Docker
 
 Prepare yarn environment:
+
 ```bash
 yarn set version 3.2.4
 yarn plugin import workspace-tools
 ```
 
 Build backend:
+
 ```bash
 docker build -f backend/Dockerfile .
 ```
 
 Fetch the latest config files for Cardano node we use from cardano-configurations repo.
 You should have these configurations in the folder cardano-configurations/:
+
 ```bash
 git clone git@github.com:WingRiders/cardano-configurations.git
 ```
+
 This repo is kept up-to date, so feel free to pull new changes from time to time.
 
 Run backend with all required services:
+
 ```bash
 cd docker/
 cp .env.example .env # Change any settings you wish; the defaults should do just fine

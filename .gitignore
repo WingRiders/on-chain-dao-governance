@@ -4,6 +4,9 @@ node_modules
 yarn-error.log
 .vscode
 .idea
-.env
+.env*
+!.env.prod
+!.env.test
+!.env.example
 /backend/prisma/dao-governance-client/
 /cardano-configurations/
