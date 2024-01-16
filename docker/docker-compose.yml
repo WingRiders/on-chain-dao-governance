@@ -69,7 +69,7 @@ services:
         '--node-config',
         '/configs/cardano-node/config.json',
         '--match',
-        '${KUPO_PATTERN}',
+        '${GOVERNANCE_TOKEN_POLICY_ID}.${GOVERNANCE_TOKEN_ASSET_NAME}',
         '--since',
         '${KUPO_SINCE_SLOT}.${KUPO_SINCE_HEADER_HASH}',
         '--workdir',

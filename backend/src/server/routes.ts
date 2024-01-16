@@ -10,7 +10,8 @@ import {
   VotesFilter,
 } from '@wingriders/governance-sdk'
 
-import {votesDistribution} from '../config'
+import {isServerMode} from '../config'
+import {votesDistribution} from '../votesDistribution/votesDistribution'
 import {getActiveProposalsCount, getUserVotableProposalsCount} from './routes/activeProposalsCount'
 import {evaluateTxFromCbor} from './routes/evaluateTxFromCbor'
 import {getProposal} from './routes/getProposal'

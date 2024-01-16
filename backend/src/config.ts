@@ -8,9 +8,6 @@ import {networkNameToNetworkId} from '@wingriders/cab/helpers'
 import {encodeAddress} from '@wingriders/cab/ledger/address'
 import {Address, Asset, NetworkName} from '@wingriders/cab/types'
 
-import {VotesDistribution} from './VotesDistribution'
-import {WalletVotesDistribution} from './WalletVotesDistribution'
-
 export const env = dotenv.config(
   process.env.DOTENV_CONFIG_PATH ? {path: process.env.DOTENV_CONFIG_PATH} : {}
 )
@@ -50,7 +47,7 @@ const envSchema = z.object({
     .regex(/^[a-fA-F0-9]+$/)
     .length(56),
   PROPOSAL_COLLATERAL_QUANTITY: z.coerce.number().gte(0),
-  BLOCKCHAIN_EXPLORER_URL: z.string().url(),
+  KUPO_URL: z.string().url(),
 })
 
 const result = envSchema.safeParse(process.env)
@@ -86,5 +83,3 @@ export const proposalsAddress: Address = encodeAddress(
 export const isServerMode = config.MODE === Mode.SERVER
 
 export const isAggregatorMode = config.MODE === Mode.AGGREGATOR
-
-export const votesDistribution: VotesDistribution = WalletVotesDistribution

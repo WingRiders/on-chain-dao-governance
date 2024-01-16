@@ -47,10 +47,31 @@ Run backend with all required services:
 ```bash
 cd docker/
 cp .env.example .env # Change any settings you wish; the defaults should do just fine
-COMPOSE_PROJECT_NAME=governance docker-compose up -d cardano-node ogmios6 kupo governance-db governance-backend
 ```
 
-If you are starting the cardano-node for the first time it will take some time to sync all the blocks, so it's recommended to leave it running overnight, and then you should be good to go.
+#### Settings for Kupo
+
+Set the governance token for Kupo to know which transactions to sync:
+
+```dotenv
+GOVERNANCE_TOKEN_POLICY_ID=<hex_string>
+GOVERNANCE_TOKEN_ASSET_NAME=<hex_string>
+```
+
+Set the slot and hash of the block for the minting transaction of the governance token. We are not interested in syncing blocks before that slot:
+
+```dotenv
+KUPO_SINCE_SLOT=<number>
+KUPO_SINCE_HEADER_HASH=<hex_string># Block hash at KUPO_SINCE_SLOT
+```
+
+Start the `cardano-node`, `ogmios`, `kupo`, `governance-db` and `governance-backend` services.
+
+```bash
+COMPOSE_PROJECT_NAME=governance docker-compose up -d cardano-node ogmios kupo governance-db governance-backend
+```
+
+If you are starting the cardano-node for the first time it will take some time to sync all the blocks, so it's recommended to leave it running overnight, and then you should be good to go. Check the cardano-node sync status and ogmios health at `http://localhost:1338`. Check the kupo sync status at `http://localhost:1442/health`.
 
 ### Pre-built Docker containers
 

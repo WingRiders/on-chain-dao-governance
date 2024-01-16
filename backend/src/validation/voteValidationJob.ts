@@ -3,20 +3,18 @@ import {chunk} from 'lodash'
 import {alonzoDateToSlotFactory, cacheResults, sleep} from '@wingriders/cab/helpers'
 import {BigNumber} from '@wingriders/cab/types'
 
-import {config, governanceToken} from '../config'
+import {config} from '../config'
 import {Poll, VerificationState, Vote, prisma} from '../db/prismaClient'
 import {getSyncHealthStatus} from '../health/synchronization'
 import {logger} from '../logger'
-import {fetchWalletsUtxosWithAsset} from './fetchUTxOs'
+import {fetchUtxos} from './fetchUtxos'
 
-const userWalletsCountsCache = {}
+const userWalletsUtxosCache = {}
 
-const getUserWalletsUtxosWithAsset = cacheResults(
+const getUserWalletsUtxos = cacheResults(
   {maxAge: 1000 * 60 * 60 * 24 * 5}, // cache for 5 days
-  userWalletsCountsCache
-)((args: Parameters<typeof fetchWalletsUtxosWithAsset>[1]) => {
-  return fetchWalletsUtxosWithAsset({explorerUrl: config.BLOCKCHAIN_EXPLORER_URL}, args)
-})
+  userWalletsUtxosCache
+)(fetchUtxos)
 
 // to prevent aggregator overloading
 const VOTE_VERIFICATION_CHUNK_SIZE = 5
@@ -38,18 +36,16 @@ const verifyVotesInPoll = async (poll: Poll & {votes: Vote[]}) => {
         const expectedVotingPower =
           vote.votingUTxOs.length === 0
             ? {tokenCount: new BigNumber(0), utxoIds: []}
-            : await getUserWalletsUtxosWithAsset({
+            : await getUserWalletsUtxos({
                 slot: snapshotSlot,
-                utxoIds: vote.votingUTxOs,
-                stakingCredentials: [ownerStakeKeyHash],
-                asset: governanceToken,
+                ownerStakeKeyHash,
               })
         logger.debug({voteId: vote.id, expectedVotingPower, actualVotingPower: vote.votingPower})
 
         // If the expectedVotingPower is bigger or equal to the reported voting
         // power we consider the vote to be valid and thus VERIFIED,
         // otherwise we mark it as INVALID
-        if (expectedVotingPower.tokenCount.gte(vote.votingPower)) {
+        if (expectedVotingPower.tokenCount.gte(new BigNumber(`${vote.votingPower}`))) {
           await prisma.vote.update({
             where: {id: vote.id},
             data: {verificationState: VerificationState.VERIFIED},
