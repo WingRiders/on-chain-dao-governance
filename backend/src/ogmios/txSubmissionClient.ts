@@ -12,7 +12,7 @@ export const initializeTxSubmissionClient = async (context: InteractionContext) 
     logger.debug('initializeTxSubmissionClient')
     txSubmissionClient = await createTransactionSubmissionClient(context)
   }
-  logger.info(txSubmissionClient, 'Ogmios tx submission client initialized.')
+  logger.info('Ogmios tx submission client initialized.')
 }
 
 export const isTxSubmissionReady = () => !!txSubmissionClient

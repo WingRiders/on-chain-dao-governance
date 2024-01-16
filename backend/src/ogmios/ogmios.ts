@@ -2,80 +2,40 @@ import {InteractionContext, createInteractionContext} from '@cardano-ogmios/clie
 
 import {sleep} from '@wingriders/cab/helpers'
 
+import {config} from '../config'
 import {logger} from '../logger'
-import {
-  ChainSyncInitParams,
-  closeChainSyncClient,
-  initializeChainSyncClient,
-  isChainSyncReady,
-  shutDownChainSyncClient,
-} from './chainSyncClient'
-import {
-  closeStateQueryClient,
-  initializeStateQueryClient,
-  isStateQueryReady,
-  shutDownStateQueryClient,
-} from './stateQueryClient'
+import {ogmiosInitParams} from './ogmiosInitParams'
 
-type OgmiosConfig = {
-  OGMIOS_HOST?: string
-  REMOTE_OGMIOS_PORT?: number
-}
-type OgmiosInitParams = Omit<ChainSyncInitParams, 'context'> & {
-  postInitCallback: () => void
-  config: OgmiosConfig
-}
-
-export async function initializeOgmiosClients({
-  postInitCallback,
-  config,
-  rollBackToPoint,
-  insertBlock,
-}: OgmiosInitParams) {
-  try {
-    const context: InteractionContext = await createInteractionContext(
-      (err) => {
-        throw err
+const initInteractionContext = (closeClientsFn: () => void): Promise<InteractionContext> =>
+  createInteractionContext(
+    (err) => {
+      throw err
+    },
+    () => {
+      closeClientsFn()
+      logger.error('Ogmios Client connection closed.')
+    },
+    {
+      connection: {
+        host: config.OGMIOS_HOST,
+        port: config.REMOTE_OGMIOS_PORT || 1337,
       },
-      () => {
-        closeChainSyncClient()
-        closeStateQueryClient()
-        logger.error('Ogmios Client connection closed.')
-      },
-      {
-        connection: {
-          host: config.OGMIOS_HOST,
-          port: config.REMOTE_OGMIOS_PORT || 1337,
-          // docker containers must communicate through 1337
-          // if connecting another way, you can specify remoteOgmiosPort
-        },
-      }
-    )
-    await initializeStateQueryClient(context)
-    await initializeChainSyncClient({context, rollBackToPoint, insertBlock})
-    postInitCallback()
-  } catch (e) {
-    logger.error(e, 'Error during initialization of Ogmios clients')
-    throw e
-  }
-}
+    }
+  )
 
-export async function ogmiosClientInitializerLoop(initParams: OgmiosInitParams) {
+export const ogmiosClientInitializerLoop = async () => {
+  logger.info('Starting ogmios client initializer loop')
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    if (!isChainSyncReady() || !isStateQueryReady()) {
+    if (!ogmiosInitParams.isReadyFn()) {
       try {
-        await initializeOgmiosClients(initParams)
+        const context = await initInteractionContext(ogmiosInitParams.closeClientsFn)
+        await ogmiosInitParams.initializeClientsFn(context)
       } catch (e) {
-        logger.error('Failed to initialize Ogmios, retrying in 20 seconds')
+        logger.error(e, 'Failed to initialize Ogmios clients, retrying in 20 seconds')
       }
     }
     // eslint-disable-next-line no-await-in-loop
     await sleep(20_000)
   }
-}
-
-export async function shutdown() {
-  await shutDownChainSyncClient()
-  await shutDownStateQueryClient()
 }

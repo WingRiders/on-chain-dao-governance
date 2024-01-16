@@ -7,15 +7,11 @@ import {
 import {BlockPraos, PointOrOrigin} from '@cardano-ogmios/schema'
 
 import {logger} from '../logger'
+import {insertPraosBlock, rollBackToPoint} from '../sync/blocks'
 import {setLatestBlock} from './latestBlock'
 
 export type InsertBlockFunction = (blockData: BlockPraos) => void
 export type RollBackToPointFunction = (point: PointOrOrigin) => void
-export type ChainSyncInitParams = {
-  context: InteractionContext
-  insertBlock: InsertBlockFunction
-  rollBackToPoint: RollBackToPointFunction
-}
 
 const rollForward =
   (
@@ -67,16 +63,12 @@ const rollBackward =
 
 let chainSyncClient: ChainSynchronization.ChainSynchronizationClient | null
 
-export async function initializeChainSyncClient({
-  context,
-  insertBlock,
-  rollBackToPoint,
-}: ChainSyncInitParams) {
+export async function initializeChainSyncClient(context: InteractionContext) {
   if (!chainSyncClient) {
     logger.debug('initializeChainSyncClient')
     chainSyncClient = await createChainSynchronizationClient(context, {
       rollBackward: rollBackward(rollBackToPoint),
-      rollForward: rollForward(insertBlock),
+      rollForward: rollForward(insertPraosBlock),
     })
     logger.info('Ogmios chainsync client initialized.')
   }

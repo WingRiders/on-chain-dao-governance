@@ -37,7 +37,7 @@ export const waitForHealthyExplorer = waitForHealthyService(
   'explorer'
 )
 
-export const waitForHealthyAggregator = waitForHealthyService(
-  `${config.AGGREGATOR_URL}/healthcheck`,
-  'aggregator'
+export const waitForHealthyGovernance = waitForHealthyService(
+  `${config.GOVERNANCE_SERVER_URL}/healthcheck`,
+  'governance'
 )

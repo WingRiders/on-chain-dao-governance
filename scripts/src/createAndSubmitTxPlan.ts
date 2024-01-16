@@ -31,7 +31,7 @@ export const createAndSubmitTxPlan = async ({
     changeAddress: account.getChangeAddress(),
     ttl: ttlSlot,
     validityIntervalStart,
-    evaluateTxBodyFn: evaluateTxBodyFactory(config.API_SERVER_URL),
+    evaluateTxBodyFn: evaluateTxBodyFactory(config.GOVERNANCE_SERVER_URL),
   })
 
   if (!txPlanResult.success) {

@@ -2,9 +2,9 @@ import {logger} from '../../logger'
 import {txSubmissionClient} from '../../ogmios/txSubmissionClient'
 
 export async function evaluateTxFromCbor(cborizedTx: string): Promise<string> {
-  logger.debug(cborizedTx, 'evaluating tx')
+  logger.debug({cborizedTx}, 'evaluating tx')
   if (!txSubmissionClient) {
-    throw 'Ogmios client is not initialized'
+    throw new Error('Ogmios client is not initialized')
   }
   try {
     const ogmiosReply = await txSubmissionClient.evaluateTransaction(cborizedTx)

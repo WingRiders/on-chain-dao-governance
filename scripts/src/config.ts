@@ -9,8 +9,7 @@ dotenv.config(process.env.DOTENV_CONFIG_PATH ? {path: process.env.DOTENV_CONFIG_
 const envSchema = z.object({
   NETWORK_NAME: z.nativeEnum(NetworkName),
   BLOCKCHAIN_EXPLORER_URL: z.string().url(),
-  AGGREGATOR_URL: z.string().url(),
-  API_SERVER_URL: z.string().url(),
+  GOVERNANCE_SERVER_URL: z.string().url(),
   GOVERNANCE_VOTING_PROPOSALS_WALLET: z.string(),
   GOVERNANCE_VOTING_PROPOSALS_ACCOUNT_INDEX: z.coerce.number().gte(0),
   GOVERNANCE_TOKEN_POLICY_ID: z

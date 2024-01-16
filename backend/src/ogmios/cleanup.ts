@@ -1,5 +1,5 @@
 import {logger} from '../logger'
-import {shutdown} from './ogmios'
+import {ogmiosInitParams} from './ogmiosInitParams'
 
 type ExitOptions = {
   caller?: string
@@ -9,7 +9,7 @@ type ExitOptions = {
 const onExit = (options: ExitOptions) => async () => {
   logger.info('Cleaning the APP')
   try {
-    await shutdown()
+    await ogmiosInitParams.shutdownFn()
     logger.info(`Stopped sync (${options.caller})`)
     if (options.exit) {
       process.exit()

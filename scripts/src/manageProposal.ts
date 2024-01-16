@@ -6,7 +6,7 @@ import {Address, TxPlanArgs} from '@wingriders/cab/types'
 import {GovManagementOp, GovMetadatumLabel, TxMetadatum} from '@wingriders/governance-sdk'
 
 import {initGovernanceWallet, isPotentialProposalUTxO} from './common'
-import {waitForHealthyAggregator, waitForHealthyExplorer} from './waitForHealthyService'
+import {waitForHealthyExplorer, waitForHealthyGovernance} from './waitForHealthyService'
 
 /**
  * Cancels a proposal. It does not necessarily cancel the associated Poll with it.
@@ -147,8 +147,8 @@ const start = async () => {
 
   program.parse()
 
-  console.log('Waiting for healthy explorer & aggregator')
-  await Promise.all([waitForHealthyExplorer(), waitForHealthyAggregator])
+  console.log('Waiting for healthy explorer & governance')
+  await Promise.all([waitForHealthyExplorer, waitForHealthyGovernance])
 }
 
 start()

@@ -1,7 +1,8 @@
-import {config, isAggregatorMode} from './config'
+import {config, isAggregatorMode, isServerMode} from './config'
 import {initPgListen} from './db/initPgListen'
 import {logger} from './logger'
-import {startChainSync} from './ogmios'
+import {registerCleanUp} from './ogmios'
+import {ogmiosClientInitializerLoop} from './ogmios/ogmios'
 import {startServer} from './server/server'
 import {voteValidationLoop} from './validation/voteValidationJob'
 
@@ -12,13 +13,16 @@ const start = async () => {
     )} ${config.MODE}`
   )
 
-  if (isAggregatorMode) {
-    await startChainSync()
-    voteValidationLoop()
-  } else {
+  if (isServerMode) {
     await initPgListen()
+  }
+  await ogmiosClientInitializerLoop()
+
+  if (isAggregatorMode) {
+    voteValidationLoop()
   }
   startServer()
 }
 
+registerCleanUp()
 start()
