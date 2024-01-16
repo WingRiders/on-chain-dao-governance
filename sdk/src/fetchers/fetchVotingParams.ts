@@ -1,6 +1,6 @@
 import {request} from '@wingriders/cab/helpers'
 
-import {GovernanceVotingParamsResponse} from '../api'
+import {GovernanceVotingParamsResponse} from '../types'
 
 type RequiredContext = {
   governanceUrl: string

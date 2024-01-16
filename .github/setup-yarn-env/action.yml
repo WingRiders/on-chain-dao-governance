@@ -1,0 +1,31 @@
+name: Prepare yarn environment
+description: Install yarn dependencies and check lock file
+
+env:
+  CACHE_VERSION: 'v1'
+
+runs:
+  using: composite
+
+  steps:
+    - name: Restore cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          .yarn/cache
+        key: yarn-deps-${{ env.CACHE_VERSION }}-${{ hashFiles('yarn.lock') }}
+        restore-keys: yarn-deps-${{ env.CACHE_VERSION }}-
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install YARN packages
+      run: yarn workspaces focus --all
+      shell: bash
+
+    - name: Check yarn.lock
+      run: |
+        yarn
+        git diff --exit-code
+      shell: bash

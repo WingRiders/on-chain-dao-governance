@@ -45,7 +45,7 @@ const fallbackState = {
 export const getNodeHealth = async (): Promise<NodeHealth> => {
   if (stateQueryClient && stateQueryClient.context.connection) {
     try {
-      return getServerHealth(stateQueryClient.context)
+      return await getServerHealth(stateQueryClient.context)
     } catch (err) {
       logger.error(err)
       return fallbackState

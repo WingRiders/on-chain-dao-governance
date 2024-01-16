@@ -1,7 +1,7 @@
 import {request} from '@wingriders/cab/helpers'
 import {HexString} from '@wingriders/cab/types'
 
-import {ProposalResponse} from '../api'
+import {ProposalResponse} from '../types'
 
 type RequiredContext = {
   governanceUrl: string

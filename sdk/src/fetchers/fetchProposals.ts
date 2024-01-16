@@ -1,6 +1,6 @@
 import {request} from '@wingriders/cab/helpers'
 
-import {ProposalsResponse} from '../api'
+import {ProposalsResponse} from '../types'
 
 type RequiredContext = {
   governanceUrl: string

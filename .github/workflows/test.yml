@@ -1,0 +1,32 @@
+name: Test
+
+on:
+  pull_request:
+    paths:
+      - '**'
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # "ref" and "fetch-depth: 0" are required for determining changed workspaces. Otherwise github creates
+          # a temporary PR branch and is unable to find a commit parent (thus diff) of the PR and develop/master.
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Setup environment
+        uses: ./.github/setup-yarn-env
+
+      - name: Generate prisma client
+        run: yarn workspace @wingriders/governance-backend prisma:generate
+
+      - name: Prettier
+        run: yarn prettier-check
+
+      - name: Build SDK
+        run: yarn workspace @wingriders/governance-sdk build
+
+      - name: ESLint
+        run: yarn eslint

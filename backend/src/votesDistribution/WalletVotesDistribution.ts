@@ -48,7 +48,7 @@ const getUserVotingDistribution = async ({
   }
 }
 
-const getTheoreticalMaxVotingPower = async () =>
+const getTheoreticalMaxVotingPower = () =>
   Promise.resolve(VOTING_WEIGHTS.walletTokens * config.TOTAL_MINTED_GOVERNANCE_TOKENS)
 
 export const WalletVotesDistribution: IVotesDistribution = {

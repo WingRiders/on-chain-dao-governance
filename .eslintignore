@@ -1,0 +1,4 @@
+**/node_modules/
+**/dist/
+/docker/*-data/
+backend/prisma/dao-governance-client/

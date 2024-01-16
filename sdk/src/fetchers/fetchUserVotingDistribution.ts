@@ -1,6 +1,6 @@
 import {request} from '@wingriders/cab/helpers'
 
-import {UserVotingDistributionFilter, UserVotingDistributionResponse} from '../api'
+import {UserVotingDistributionFilter, UserVotingDistributionResponse} from '../types'
 
 type RequiredContext = {
   governanceUrl: string
