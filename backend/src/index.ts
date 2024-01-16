@@ -16,7 +16,7 @@ const start = async () => {
   if (isServerMode) {
     await initPgListen()
   }
-  await ogmiosClientInitializerLoop()
+  ogmiosClientInitializerLoop()
 
   if (isAggregatorMode) {
     voteValidationLoop()
