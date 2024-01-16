@@ -180,7 +180,7 @@ export async function insertGovernanceVotes(
 
   try {
     logger.info(metadata)
-    const decodedMetadata: TxMetadatum = parseOgmios6Metadatum(metadata)
+    const decodedMetadata: TxMetadatum | null = parseOgmios6Metadatum(metadata)
     if (decodedMetadata === null) {
       logger.error('Metadata with no json nor cbor field')
       return

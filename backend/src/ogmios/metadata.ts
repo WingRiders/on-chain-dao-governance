@@ -2,7 +2,7 @@ import {Metadatum} from '@cardano-ogmios/schema'
 import {decode as decodeCbor} from 'cbor'
 import {isMap} from 'lodash'
 
-import {TxMetadatum} from '@wingriders/cab/types/transaction'
+import {TxMetadatum} from '@wingriders/cab/types'
 
 import {logger} from '../logger'
 

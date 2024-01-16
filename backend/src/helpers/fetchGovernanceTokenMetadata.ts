@@ -18,5 +18,9 @@ export const fetchGovernanceTokenMetadata = async (): Promise<RegisteredTokenMet
     headers: {'Content-Type': 'application/json'},
   })
   const parsedMetadata = TokenRegistry.parseTokensMetadata({Right: response.data.subjects})
-  return parsedMetadata.get(subject)
+  const registeredTokenMetadata = parsedMetadata.get(subject)
+  if (!registeredTokenMetadata) {
+    throw new Error(`Metadata for ${subject} is not available`)
+  }
+  return registeredTokenMetadata
 }

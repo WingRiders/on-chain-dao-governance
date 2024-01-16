@@ -135,7 +135,7 @@ export const processGovernance = async (
   }
 
   try {
-    const decodedMetadata: TxMetadatum = parseOgmios6Metadatum(metadata)
+    const decodedMetadata: TxMetadatum | null = parseOgmios6Metadatum(metadata)
     if (decodedMetadata === null) {
       logger.error('Metadata with no json nor cbor field')
       return

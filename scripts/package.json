@@ -7,7 +7,7 @@
     "manage-proposal": "ts-node --transpile-only src/manageProposal.ts"
   },
   "dependencies": {
-    "@wingriders/cab": "^2.0.25",
+    "@wingriders/cab": "^2.0.26",
     "@wingriders/governance-sdk": "0.1.0",
     "commander": "^11.1.0",
     "dotenv": "^16.3.1",

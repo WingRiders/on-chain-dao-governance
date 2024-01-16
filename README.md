@@ -27,12 +27,6 @@ yarn set version 3.2.4
 yarn plugin import workspace-tools
 ```
 
-Build backend:
-
-```bash
-docker build -f backend/Dockerfile .
-```
-
 Fetch the latest config files for Cardano node we use from cardano-configurations repo.
 You should have these configurations in the folder cardano-configurations/:
 
@@ -65,10 +59,10 @@ KUPO_SINCE_SLOT=<number>
 KUPO_SINCE_HEADER_HASH=<hex_string># Block hash at KUPO_SINCE_SLOT
 ```
 
-Start the `cardano-node`, `ogmios`, `kupo`, `governance-db` and `governance-backend` services.
+Start the `cardano-node`, `ogmios`, `kupo`, `governance-db`, `governance-aggregator` and `governance-server` services.
 
 ```bash
-COMPOSE_PROJECT_NAME=governance docker-compose up -d cardano-node ogmios kupo governance-db governance-backend
+COMPOSE_PROJECT_NAME=governance docker-compose up -d cardano-node ogmios kupo governance-db governance-aggregator governance-server
 ```
 
 If you are starting the cardano-node for the first time it will take some time to sync all the blocks, so it's recommended to leave it running overnight, and then you should be good to go. Check the cardano-node sync status and ogmios health at `http://localhost:1338`. Check the kupo sync status at `http://localhost:1442/health`.

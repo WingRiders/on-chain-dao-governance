@@ -887,9 +887,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wingriders/cab@npm:^2.0.25":
-  version: 2.0.25
-  resolution: "@wingriders/cab@npm:2.0.25"
+"@wingriders/cab@npm:^2.0.26":
+  version: 2.0.26
+  resolution: "@wingriders/cab@npm:2.0.26"
   dependencies:
     bignumber.js: ^9.1.1
     bip39-light: ^1.0.7
@@ -900,7 +900,7 @@ __metadata:
     json-bigint: ^1.0.0
     lodash: ^4.17.21
     randombytes: ^2.1.0
-  checksum: 90753134690c3fb19c84586e3324bff532c5758402d6d09ed65dcf40ade4241861711122c361461247114e99175b73a274e039d0924f36c763af5695989fa4ac
+  checksum: 4bbb626febce9195ac45af3f7a3d266c8280692b3850d212632c3266180c613fb970e3b5c4216a5440f5242676257cef504659bb02cef09cd2b7161da2739b8f
   languageName: node
   linkType: hard
 
@@ -913,7 +913,7 @@ __metadata:
     "@prisma/client": 5.7.0
     "@types/lodash": ^4.14.202
     "@types/node": ^20.10.3
-    "@wingriders/cab": ^2.0.25
+    "@wingriders/cab": ^2.0.26
     "@wingriders/governance-sdk": 0.1.0
     axios: ^1.6.5
     cardano-crypto.js: ^6.1.2
@@ -950,7 +950,7 @@ __metadata:
   resolution: "@wingriders/governance-scripts@workspace:scripts"
   dependencies:
     "@types/node": ^20.10.3
-    "@wingriders/cab": ^2.0.25
+    "@wingriders/cab": ^2.0.26
     "@wingriders/governance-sdk": 0.1.0
     commander: ^11.1.0
     dotenv: ^16.3.1
@@ -968,7 +968,7 @@ __metadata:
   dependencies:
     "@rollup/plugin-typescript": ^11.1.5
     "@types/node": ^20.10.3
-    "@wingriders/cab": ^2.0.25
+    "@wingriders/cab": ^2.0.26
     date-fns: ^3.2.0
     lodash: ^4.17.21
     rollup: ^4.6.1

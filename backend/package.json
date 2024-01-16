@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "yarn clean && tsc",
+    "start": "node ./dist/index.js",
     "start:aggregator": "cross-env MODE=aggregator node ./dist/index.js",
     "start:server": "cross-env MODE=server node ./dist/index.js",
     "dev:aggregator": "cross-env MODE=aggregator ts-node-dev --respawn --transpile-only ./src/index.ts",
@@ -18,7 +19,7 @@
     "@cardano-ogmios/client": "^6.0.0-rc6",
     "@prisma/client": "5.7.0",
     "@types/lodash": "^4.14.202",
-    "@wingriders/cab": "^2.0.25",
+    "@wingriders/cab": "^2.0.26",
     "@wingriders/governance-sdk": "0.1.0",
     "axios": "^1.6.5",
     "cardano-crypto.js": "^6.1.2",
