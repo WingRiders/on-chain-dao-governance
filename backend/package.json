@@ -16,7 +16,7 @@
     "prisma:deploy": "prisma migrate deploy"
   },
   "dependencies": {
-    "@cardano-ogmios/client": "^6.0.0-rc6",
+    "@cardano-ogmios/client": "^6.0.0-latest",
     "@prisma/client": "5.7.0",
     "@types/lodash": "^4.14.202",
     "@wingriders/cab": "^2.0.26",
