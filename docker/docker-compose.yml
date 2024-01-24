@@ -37,7 +37,7 @@ services:
     restart: unless-stopped
 
   ogmios:
-    image: cardanosolutions/ogmios:v6.0.0
+    image: cardanosolutions/ogmios:v6.0.1
     depends_on:
       - cardano-node
     command:
