@@ -78,7 +78,6 @@ TBD
   - [ ] API endpoints
   - [ ] Configurable tokens and script UTxO sources
 - [ ] Library
-- [ ] Scripts
 - [ ] Frontend
 - [ ] Docker containers and sample `docker-compose` deployment
 - [ ] Documentation
@@ -153,8 +152,7 @@ erDiagram
 From a technical perspective, the system is built around 4 modules:
 
 - **Backend** - Aggregates DAO governance transactions from the blockchain, validates voting power, and provides data to other modules.
-- **Scripts** - Suite of scripts for managing proposals from the DAO wallet
-- **Library** - Glue between the backend and the frontend with actions to create proposals and cast votes
+- **Library** - Glue between the backend and the frontend with actions to create proposals, cast votes, and managing proposals with the DAO wallet
 - **Frontend** - Example white-label UI using the library to connect to a deployed backend
 
 How these modules interact with each other is also described in the following graph of interactions. The blue squares represent external dependencies, green ovals represent individual modules, and green squares important submodules.
@@ -303,30 +301,6 @@ Example results JSON taken from a successful WingRiders DAO proposal:
 }
 ```
 
-### Scripts
-
-Simple off-chain command line utility to manage proposals using the DAO wallet. A proposal is just a UTxO in the DAO wallet. Managing the proposal therefore means spending it in various ways, the action distinguished by the transaction metadata. The script takes as a configuration the mnemonic to the assigned DAO wallet and based on the selected action spends the proposal UTxO accordingly.
-
-#### Cancel proposal
-
-**Inputs:**
-
-- Proposal txHash
-- Cancellation reason
-- Beneficiary - address where the collateral for creating a proposal should be sent
-
-This creates a transaction spending the proposal UTxO with metadata specifying the “Cancel Proposal” operation and the reason for cancellation. The governance tokens collateral is sent to the beneficiary.
-
-#### Finalize proposal
-
-**Inputs:**
-
-- Proposal txHash
-- Results JSON (can be obtained from /proposal endpoint)
-- Beneficiary - address where the collateral for creating a proposal should be sent.
-
-This creates a transaction spending the proposal UTxO with metadata specifying the “Conclude Proposal” operation and other fields parsed from the results JSON. The overall result can be either that the proposal passed or failed depending on if the proposal met the participation criteria. The metadata further includes a final tally of the validated votes. The governance tokens collateral is sent to the beneficiary.
-
 ### Library
 
 The library is not specific to one deployment of the governance framework. It gets the required configuration options and deployment-specific data from the backend which acts as the configuration store. This enables the library and associated example white-label UI to be easy to deploy without any additional manual build steps needed.
@@ -428,6 +402,57 @@ Example metadata of a voting transaction
 ```
 
 The first key defines the poll id that the user is casting his vote for. Then globally for the poll user’s voting power and its source UTxOs are defined and then follow the user’s voting choices.
+
+##### Action - Finalize proposal
+
+Action to finalize a proposal in an on-chain transaction. Finalizing a proposal means spending the proposal UTxO that belongs to the DAO wallet.
+
+**Inputs:**
+
+- Proposal txHash
+- Results (passed/failed, total votes, votes for each choice, abstained votes)
+- Beneficiary - address where the collateral for creating a proposal should be sent.
+
+This creates a transaction spending the proposal UTxO with metadata specifying the “Conclude Proposal” operation and other fields based on the proposal results. The overall result can be either that the proposal passed or failed depending on if the proposal met the participation criteria. The metadata further includes a final tally of the validated votes. The governance tokens collateral is sent to the beneficiary.
+
+Example metadata of a proposal finalization transaction
+
+```json
+{
+  "op": "concludeProposal",
+  "id": "7a70f8fe21707a2864bf3597ba73727a834f55d2ec49650871e6d571aec6acaf",
+  "result": "PASSED",
+  "choices": {
+    "choice1": 10,
+    "choice2": 20
+  },
+  "total": 40,
+  "abstained": 10,
+  "note": "..."
+}
+```
+
+##### Action - Cancel proposal
+
+Action to cancel a proposal in an on-chain transaction. Cancelling a proposal means spending the proposal UTxO that belongs to the DAO wallet.
+
+**Inputs:**
+
+- Proposal txHash
+- Cancellation reason
+- Beneficiary - address where the collateral for creating a proposal should be sent
+
+This creates a transaction spending the proposal UTxO with metadata specifying the “Cancel Proposal” operation and the reason for cancellation. The governance tokens collateral is sent to the beneficiary.
+
+Example metadata of a proposal cancellation transaction
+
+```json
+{
+  "op": "cancelProposal",
+  "id": "7a70f8fe21707a2864bf3597ba73727a834f55d2ec49650871e6d571aec6acaf",
+  "reason": "..."
+}
+```
 
 ##### Fetchers
 

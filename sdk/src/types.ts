@@ -56,6 +56,7 @@ export enum CborPollField {
 export type GovernanceVotingParams = {
   proposalsAddress: Address
   collateral: Token
+  governanceToken: Asset
 }
 
 /**

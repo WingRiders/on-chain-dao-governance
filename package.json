@@ -29,7 +29,6 @@
   "workspaces": [
     "backend",
     "frontend",
-    "scripts",
     "sdk"
   ],
   "private": true,

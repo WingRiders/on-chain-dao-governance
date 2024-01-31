@@ -19,7 +19,7 @@ type BuildCastVoteParams = {
 
 export type CastVoteMetadata = {
   transactionFee: api.Coin
-  txHash?: api.TxHash
+  txHash: api.TxHash
   vote: Vote
   // change UTxO returned back to the user
   utxoRef: api.TxInput
@@ -76,13 +76,14 @@ export const buildCastVote =
 
     const transactionFee = new BigNumber(txAux.fee) as api.Coin
 
+    const txHash = txAux.getId() as api.TxHash
     const metadata: CastVoteMetadata = {
       transactionFee,
-      txHash: undefined,
+      txHash,
       vote,
       utxoRef: {
         index: new BigNumber(0) as api.UInt,
-        txHash: txAux.getId() as api.TxHash,
+        txHash,
       },
     }
 
