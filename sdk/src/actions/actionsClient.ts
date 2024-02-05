@@ -9,6 +9,8 @@ import {buildCancelProposalAction} from './buildCancelProposal'
 import {buildCastVoteAction} from './buildCastVote'
 import {buildCreateProposalAction} from './buildCreateProposal'
 import {buildFinalizeProposalAction} from './buildFinalizeProposal'
+import {signTxAction} from './signTx'
+import {submitTxAction} from './submitTx'
 import {ActionContext} from './types'
 
 type CreateActionsClientArgs = {
@@ -45,5 +47,7 @@ export const createActionsClient = async ({
     castVote: withJsAPI(walletApi, buildCastVoteAction(actionContext)),
     createProposal: withJsAPI(walletApi, buildCreateProposalAction(actionContext)),
     finalizeProposal: withJsAPI(walletApi, buildFinalizeProposalAction(actionContext)),
+    signTx: withJsAPI(walletApi, signTxAction()),
+    submitTx: withJsAPI(walletApi, submitTxAction()),
   }
 }
