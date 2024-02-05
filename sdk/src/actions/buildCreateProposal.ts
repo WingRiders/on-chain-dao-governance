@@ -1,18 +1,12 @@
 import * as api from '@wingriders/cab/dappConnector'
 import {computeMinUTxOLovelaceAmount} from '@wingriders/cab/ledger/transaction'
-import {
-  BigNumber,
-  Network,
-  ProtocolParameters,
-  TxOutputType,
-  TxPlanArgs,
-  ZeroLovelace,
-} from '@wingriders/cab/types'
+import {BigNumber, TxOutputType, TxPlanArgs, ZeroLovelace} from '@wingriders/cab/types'
 
 import {BuildAction, BuildActionParams} from '../actions'
 import {buildTx} from '../helpers/actions'
 import {encodeProposal} from '../helpers/encodeMetadatum'
 import {GovMetadatumLabel, GovernanceVotingParams, PollMetadatum, ProposalMetadatum} from '../types'
+import {ActionContext} from './types'
 
 type BuildCreateProposalParams = {
   proposal: ProposalMetadatum
@@ -32,10 +26,7 @@ export type CreateProposalMetadata = {
   utxoRef: api.TxInput
 }
 
-type RequiredContext = {
-  protocolParameters: ProtocolParameters
-  network: Network
-}
+type RequiredContext = Pick<ActionContext, 'protocolParameters' | 'network'>
 
 export const buildCreateProposalAction =
   ({protocolParameters, network}: RequiredContext) =>

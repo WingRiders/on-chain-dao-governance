@@ -1,22 +1,15 @@
 import * as api from '@wingriders/cab/dappConnector'
 import {splitMetadatumString} from '@wingriders/cab/ledger/transaction'
-import {
-  Address,
-  BigNumber,
-  HexString,
-  Network,
-  ProtocolParameters,
-  TxMetadatum,
-  TxPlanArgs,
-} from '@wingriders/cab/types'
+import {Address, BigNumber, HexString, TxMetadatum, TxPlanArgs} from '@wingriders/cab/types'
 import {normalizeTxInput, reverseAddress, reverseUtxos} from '@wingriders/cab/wallet/connector'
 
 import {BuildAction, BuildActionParams, BuildActionResult} from '../actions'
 import {LibError, LibErrorCode} from '../errors'
 import {buildTx} from '../helpers/actions'
 import {getWalletOwner} from '../helpers/walletAddress'
-import {GovManagementOp, GovMetadatumLabel, GovernanceVotingParams} from '../types'
+import {GovManagementOp, GovMetadatumLabel} from '../types'
 import {isPotentialProposalUTxO} from './helpers'
+import {ActionContext} from './types'
 
 type BuildCancelProposalParams = {
   /** transaction hash where the proposal was created */
@@ -32,13 +25,9 @@ export type CancelProposalMetadata = {
   txHash: api.TxHash
 }
 
-type RequiredContext = {
-  protocolParameters: ProtocolParameters
-  network: Network
-  governanceVotingParams: GovernanceVotingParams
-}
+type RequiredContext = ActionContext
 
-export const buildCancelProposal =
+export const buildCancelProposalAction =
   ({protocolParameters, network, governanceVotingParams}: RequiredContext) =>
   (jsApi: api.JsAPI): BuildAction<BuildCancelProposalParams, CancelProposalMetadata> =>
   async ({

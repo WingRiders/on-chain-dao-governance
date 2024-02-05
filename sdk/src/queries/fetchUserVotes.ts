@@ -1,10 +1,9 @@
 import {request} from '@wingriders/cab/helpers'
 
 import {UserVotesFilter, UserVotesResponse} from '../types'
+import {QueryContext} from './types'
 
-type RequiredContext = {
-  governanceUrl: string
-}
+type RequiredContext = QueryContext
 
 export const fetchUserVotes =
   (context: RequiredContext) =>

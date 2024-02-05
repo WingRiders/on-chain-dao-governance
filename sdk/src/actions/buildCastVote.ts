@@ -1,6 +1,6 @@
 import * as api from '@wingriders/cab/dappConnector'
 import {stakingHashFromAddress} from '@wingriders/cab/ledger/address'
-import {BigNumber, HexString, Network, ProtocolParameters, TxPlanArgs} from '@wingriders/cab/types'
+import {BigNumber, HexString, TxPlanArgs} from '@wingriders/cab/types'
 import {reverseAddress, reverseUtxo} from '@wingriders/cab/wallet/connector'
 
 import {BuildAction, BuildActionParams, BuildActionResult} from '../actions'
@@ -9,6 +9,7 @@ import {buildTx} from '../helpers/actions'
 import {encodeVote} from '../helpers/encodeMetadatum'
 import {getWalletOwner} from '../helpers/walletAddress'
 import {GovMetadatumLabel, Vote} from '../types'
+import {ActionContext} from './types'
 
 type BuildCastVoteParams = {
   pollTxHash: HexString
@@ -25,12 +26,9 @@ export type CastVoteMetadata = {
   utxoRef: api.TxInput
 }
 
-type RequiredContext = {
-  protocolParameters: ProtocolParameters
-  network: Network
-}
+type RequiredContext = Pick<ActionContext, 'protocolParameters' | 'network'>
 
-export const buildCastVote =
+export const buildCastVoteAction =
   ({protocolParameters, network}: RequiredContext) =>
   (jsApi: api.JsAPI): BuildAction<BuildCastVoteParams, CastVoteMetadata> =>
   async ({
