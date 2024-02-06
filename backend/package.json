@@ -16,7 +16,7 @@
     "prisma:deploy": "prisma migrate deploy"
   },
   "dependencies": {
-    "@cardano-ogmios/client": "^6.0.1",
+    "@cardano-ogmios/client": "^6.0.3",
     "@prisma/client": "5.7.0",
     "@types/lodash": "^4.14.202",
     "@wingriders/cab": "^2.0.26",
@@ -32,10 +32,11 @@
     "pg-listen": "^1.7.0",
     "pino": "^8.16.2",
     "prisma": "^5.7.0",
+    "ts-pattern": "^5.0.6",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@cardano-ogmios/schema": "^6.0.1",
+    "@cardano-ogmios/schema": "^6.0.3",
     "@types/node": "^20.10.3",
     "cross-env": "^7.0.3",
     "pino-pretty": "^10.2.3",

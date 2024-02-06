@@ -37,7 +37,7 @@ services:
     restart: unless-stopped
 
   ogmios:
-    image: cardanosolutions/ogmios:v6.0.1
+    image: cardanosolutions/ogmios:v6.0.3
     depends_on:
       - cardano-node
     command:
@@ -48,6 +48,7 @@ services:
         '/ipc/node.socket',
         '--node-config',
         '/configs/cardano-node/config.json',
+        '--metadata-detailed-schema',
       ]
     volumes:
       - ../cardano-configurations/network/${NETWORK}:/configs

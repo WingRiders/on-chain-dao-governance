@@ -17,7 +17,7 @@ import {config, governanceToken, proposalsAddress} from '../config'
 import {Block, PrismaTxClient, ProposalChoiceType, ProposalStatus} from '../db/prismaClient'
 import {logger} from '../logger'
 import {getTokenQuantity} from '../ogmios/getTokenQuantity'
-import {assertMetadataMap, parseOgmios6Metadatum} from '../ogmios/metadata'
+import {assertMetadatumMap, parseMetadatumLabel} from '../ogmios/metadata'
 import {
   parseAddressBuffer,
   parseBuffer,
@@ -27,7 +27,7 @@ import {
 } from './metadataHelper'
 
 const parseProposal = (proposalMetadatum: TxMetadatum): ProposalMetadatum => {
-  const proposalMetadata = assertMetadataMap(proposalMetadatum)
+  const proposalMetadata = assertMetadatumMap(proposalMetadatum)
   const owner = parseAddressBuffer(proposalMetadata.get(CborProposalField.PROPOSAL_OWNER))
   const name = parseString(proposalMetadata.get(CborProposalField.PROPOSAL_NAME))
   const description = parseString(proposalMetadata.get(CborProposalField.PROPOSAL_DESCRIPTION))
@@ -52,7 +52,7 @@ const parseProposal = (proposalMetadatum: TxMetadatum): ProposalMetadatum => {
 }
 
 const parsePoll = (pollMetadatum: TxMetadatum): PollMetadatum | HexString => {
-  const pollMetadata = assertMetadataMap(pollMetadatum)
+  const pollMetadata = assertMetadatumMap(pollMetadatum)
   const operation = parseString(pollMetadata.get(CborPollField.POLL_OP))
 
   if (operation === GovPollOp.CREATE_NEW) {
@@ -127,20 +127,15 @@ export const processGovernance = async (
   dbBlock: Block,
   txBody: Transaction
 ) => {
-  // check if there is the correct metadata
-  const metadata = txBody.metadata?.labels?.[GovMetadatumLabel.COMMUNITY_VOTING_MANAGE]
-  if (!metadata) {
-    // only parse metadata with management operation
-    return
-  }
-
   try {
-    const decodedMetadata: TxMetadatum | null = parseOgmios6Metadatum(metadata)
-    if (decodedMetadata === null) {
-      logger.error('Metadata with no json nor cbor field')
+    const parsedMetadatum: TxMetadatum | null = parseMetadatumLabel(
+      txBody,
+      GovMetadatumLabel.COMMUNITY_VOTING_MANAGE
+    )
+    if (parsedMetadatum === null) {
       return
     }
-    const data = assertMetadataMap(decodedMetadata)
+    const data = assertMetadatumMap(parsedMetadatum)
     const op = parseString(data.get('op'))
     switch (op) {
       case GovManagementOp.ADD_PROPOSAL:

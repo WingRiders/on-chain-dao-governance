@@ -173,11 +173,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cardano-ogmios/client@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@cardano-ogmios/client@npm:6.0.1"
+"@cardano-ogmios/client@npm:^6.0.3":
+  version: 6.0.3
+  resolution: "@cardano-ogmios/client@npm:6.0.3"
   dependencies:
-    "@cardano-ogmios/schema": 6.0.1
+    "@cardano-ogmios/schema": 6.0.3
     "@cardanosolutions/json-bigint": ^1.0.1
     "@types/json-bigint": ^1.0.1
     bech32: ^2.0.0
@@ -187,14 +187,14 @@ __metadata:
     nanoid: ^3.1.31
     ts-custom-error: ^3.2.0
     ws: ^7.4.6
-  checksum: 62a164d78df2f010a7c254db23085c1cefcf06b70d25c50e68174bb0e20f0ef708755f40544caabdb5e6faaba7b9621c237c121e5c158aba0b08bb0ecf4a154a
+  checksum: 589df99cff86610311987546888af00af13446d0bfd25b4ec2044eefebb81532bd2f3bb0c506eb025b29302f9eccb3b4f8b9da17e6d0aaf4efb9c6ed72d1eba2
   languageName: node
   linkType: hard
 
-"@cardano-ogmios/schema@npm:6.0.1, @cardano-ogmios/schema@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@cardano-ogmios/schema@npm:6.0.1"
-  checksum: 0c8de7732cfeeb704544d9da3b32284998d6883d0cca14ced22f270f1e8bac87fc724f9e26f4a29712e705d84d57cbd9773eb95ef986d2b6b5f5a52aa5a12708
+"@cardano-ogmios/schema@npm:6.0.3, @cardano-ogmios/schema@npm:^6.0.3":
+  version: 6.0.3
+  resolution: "@cardano-ogmios/schema@npm:6.0.3"
+  checksum: 2bae6e35f55da136bd2a0751faddaf9352bb599ffced9b1bb62bdd8b318e4deef30368f63f92a1e8efee31b8328ade42dbabcf0bc52dc62a787e686cbba55da1
   languageName: node
   linkType: hard
 
@@ -908,8 +908,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wingriders/governance-backend@workspace:backend"
   dependencies:
-    "@cardano-ogmios/client": ^6.0.1
-    "@cardano-ogmios/schema": ^6.0.1
+    "@cardano-ogmios/client": ^6.0.3
+    "@cardano-ogmios/schema": ^6.0.3
     "@prisma/client": 5.7.0
     "@types/lodash": ^4.14.202
     "@types/node": ^20.10.3
@@ -930,6 +930,7 @@ __metadata:
     prisma: ^5.7.0
     ts-node: ^10.9.1
     ts-node-dev: ^2.0.0
+    ts-pattern: ^5.0.6
     typescript: ^5.3.2
     zod: ^3.22.4
   languageName: unknown
@@ -4852,6 +4853,13 @@ __metadata:
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
   checksum: fde256c9073969e234526e2cfead42591b9a2aec5222bac154b0de2fa9e4ceb30efcd717ee8bc785a56f3a119bdd5aa27b333d9dbec94ed254bd26f8944c67ac
+  languageName: node
+  linkType: hard
+
+"ts-pattern@npm:^5.0.6":
+  version: 5.0.6
+  resolution: "ts-pattern@npm:5.0.6"
+  checksum: 36564fe78e11e8f91644acf8fe3cff62d0b934e017b169ab1cea6357093a478e11b0073330e53d29fe810aff730870d7ee89d1d8eb359b9e58f86f16793e1c0f
   languageName: node
   linkType: hard
 

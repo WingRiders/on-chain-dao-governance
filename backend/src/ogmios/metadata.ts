@@ -1,53 +1,42 @@
-import {Metadatum} from '@cardano-ogmios/schema'
-import {decode as decodeCbor} from 'cbor'
+import {MetadatumDetailedSchema, Transaction} from '@cardano-ogmios/schema'
 import {isMap} from 'lodash'
+import {P, match} from 'ts-pattern'
 
 import {TxMetadatum} from '@wingriders/cab/types'
 
 import {logger} from '../logger'
 
-/**
- * A safer 1:1 mapping between ogmios metadatum and the TxMetadatum used in CAB
- * and with the cbor api.
- */
-export const parseOgmiosMetadatum = (metadatum: Metadatum): TxMetadatum => {
-  if (typeof metadatum === 'bigint') {
-    return Number(metadatum)
-  } else if (
-    typeof metadatum === 'string' ||
-    // When data from ogmios contains cborized metadata,
-    // decoding cbor yields number and Buffers,
-    // which does not match with ogmios types
-    typeof metadatum === 'number' ||
-    Buffer.isBuffer(metadatum)
-  ) {
-    return metadatum
-  } else if (Array.isArray(metadatum)) {
-    return metadatum.map(parseOgmiosMetadatum)
-  } else {
-    const map = new Map<TxMetadatum, TxMetadatum>()
-    // When data from ogmios contains cborized metadata, there are Maps instead of objects
-    const entries = metadatum instanceof Map ? Array.from(metadatum) : Object.entries(metadatum)
-    for (const [key, value] of entries) {
-      map.set(key, parseOgmiosMetadatum(value))
-    }
-    return map
+const parseOgmiosMetadatumDetailedSchema = (metadatum: MetadatumDetailedSchema): TxMetadatum =>
+  match(metadatum)
+    .with({int: P.select()}, (val) => Number(val))
+    .with({string: P.select()}, (val) => val)
+    .with({bytes: P.select()}, (val) => Buffer.from(val, 'hex'))
+    .with({list: P.select()}, (val) => val.map(parseOgmiosMetadatumDetailedSchema))
+    .with({map: P.select()}, (val) => {
+      const obj: Map<TxMetadatum, TxMetadatum> = new Map()
+      val.forEach(({k, v}) => {
+        obj.set(parseOgmiosMetadatumDetailedSchema(k), parseOgmiosMetadatumDetailedSchema(v))
+      })
+      return obj
+    })
+    .exhaustive()
+
+export const parseMetadatumLabel = (txBody: Transaction, label: number): TxMetadatum | null => {
+  // check if there is the correct metadata
+  const metadata = txBody.metadata?.labels?.[label]
+  if (!metadata) {
+    // only parse metadata with voting operation
+    return null
   }
+  const metadatumDetailedSchema = metadata.json as MetadatumDetailedSchema | undefined
+  if (metadatumDetailedSchema === undefined) {
+    logger.error('Metadata with no json field')
+    return null
+  }
+  return parseOgmiosMetadatumDetailedSchema(metadatumDetailedSchema)
 }
 
-export const parseOgmios6Metadatum = ({cbor, json}: {cbor?: string; json?: Metadatum}) => {
-  if (json) {
-    return parseOgmiosMetadatum(json)
-  }
-  if (cbor) {
-    const decodedCbor = decodeCbor(Buffer.from(cbor, 'hex'))
-    logger.debug(decodedCbor, 'Decoded CBOR')
-    return parseOgmiosMetadatum(decodedCbor)
-  }
-  return null
-}
-
-export const assertMetadataMap = (datum: TxMetadatum | undefined): Map<TxMetadatum, TxMetadatum> => {
+export const assertMetadatumMap = (datum: TxMetadatum | undefined): Map<TxMetadatum, TxMetadatum> => {
   if (!isMap(datum)) {
     throw new Error(`Metadatum is not a map ${datum}`)
   }

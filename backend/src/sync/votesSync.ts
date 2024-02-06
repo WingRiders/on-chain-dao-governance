@@ -9,7 +9,7 @@ import {CborVoteField, GovMetadatumLabel, UtxoId} from '@wingriders/governance-s
 import {Block, PrismaTxClient} from '../db/prismaClient'
 import {getUtxoId} from '../helpers/getUtxoId'
 import {logger} from '../logger'
-import {assertMetadataMap, parseOgmios6Metadatum} from '../ogmios/metadata'
+import {assertMetadatumMap, parseMetadatumLabel} from '../ogmios/metadata'
 import {parseAddressBuffer, parseArray, parseBuffer, parseInteger, parseNumber} from './metadataHelper'
 
 type Choice = [Buffer, number]
@@ -39,7 +39,7 @@ const parseVotingUTxOs = (votingUTxOsMetadatum: TxMetadatum | undefined): UtxoId
 }
 
 function parseProposalsChoices(choicesMetadatum: TxMetadatum | undefined): Choice[] {
-  const choices = assertMetadataMap(choicesMetadatum)
+  const choices = assertMetadatumMap(choicesMetadatum)
 
   return [...choices.entries()].map(([proposalHashMetadatum, choiceIndexMetadatum]) => {
     const choiceIndex = parseInteger(choiceIndexMetadatum)
@@ -49,7 +49,7 @@ function parseProposalsChoices(choicesMetadatum: TxMetadatum | undefined): Choic
 }
 
 function parsePollVotes(pollVotesMetadatum: TxMetadatum): PollVotes {
-  const pollVotes = assertMetadataMap(pollVotesMetadatum)
+  const pollVotes = assertMetadatumMap(pollVotesMetadatum)
   const owner = parseAddressBuffer(pollVotes.get(CborVoteField.VOTER_ADDRESS))
   const votingPower = parseNumber(pollVotes.get(CborVoteField.VOTING_POWER))
   const votingUTxOs = parseVotingUTxOs(pollVotes.get(CborVoteField.VOTING_UTXOS))
@@ -64,7 +64,7 @@ function parsePollVotes(pollVotesMetadatum: TxMetadatum): PollVotes {
 }
 
 function parseVotes(votesMetadatum: TxMetadatum): [Buffer, PollVotes][] {
-  const votes = assertMetadataMap(votesMetadatum)
+  const votes = assertMetadatumMap(votesMetadatum)
   return [...votes.entries()].map(([pollHashMetadatum, pollVoteMetadatum]) => {
     return [parseBuffer(pollHashMetadatum), parsePollVotes(pollVoteMetadatum)]
   })
@@ -171,32 +171,27 @@ export async function insertGovernanceVotes(
   dbBlock: Block,
   txBody: Transaction
 ) {
-  // check if there is the correct metadata
-  const metadata = txBody.metadata?.labels?.[GovMetadatumLabel.COMMUNITY_VOTING_VOTE]
-  if (!metadata) {
-    // only parse metadata with voting operation
-    return Promise.resolve()
-  }
-
   try {
-    logger.info(metadata)
-    const decodedMetadata: TxMetadatum | null = parseOgmios6Metadatum(metadata)
-    if (decodedMetadata === null) {
-      logger.error('Metadata with no json nor cbor field')
-      return Promise.resolve()
+    const parsedMetadatum: TxMetadatum | null = parseMetadatumLabel(
+      txBody,
+      GovMetadatumLabel.COMMUNITY_VOTING_VOTE
+    )
+    if (parsedMetadatum === null) {
+      return
     }
-    logger.info(decodedMetadata, 'Decoded metadata')
-    const votes = parseVotes(decodedMetadata)
+    logger.info(parsedMetadatum, 'Parsed vote metadata')
+    const votes = parseVotes(parsedMetadatum)
 
-    return await Promise.all(
+    await Promise.all(
       votes.map(([pollHash, pollVotes]) =>
         insertPollVotes(prismaTx, dbBlock, txBody, pollHash, pollVotes).catch((e) =>
           logger.error(e, `Error processing governance pollVotes. txHash: ${txBody.id}`)
         )
       )
     )
+    return
   } catch (e) {
     logger.error(e, `Error processing governance votes. txHash: ${txBody.id}`)
-    return Promise.resolve()
+    return
   }
 }
