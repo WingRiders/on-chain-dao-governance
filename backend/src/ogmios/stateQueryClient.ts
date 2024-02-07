@@ -4,7 +4,7 @@ import {
   createLedgerStateQueryClient,
   getServerHealth,
 } from '@cardano-ogmios/client'
-import {Tip} from '@cardano-ogmios/schema'
+import {ProtocolParameters, Tip} from '@cardano-ogmios/schema'
 
 import {logger} from '../logger'
 
@@ -69,4 +69,12 @@ export const getCurrentSlot = async (): Promise<number> => {
 
   const chainTip = await stateQueryClient.ledgerTip()
   return chainTip === 'origin' ? 0 : chainTip.slot
+}
+
+export const getProtocolParameters = (): Promise<ProtocolParameters> => {
+  if (!stateQueryClient) {
+    throw new Error(`Ogmios State Query Client not initialized.`)
+  }
+
+  return stateQueryClient.protocolParameters()
 }

@@ -20,7 +20,7 @@
     "@fastify/cors": "^9.0.1",
     "@prisma/client": "5.7.0",
     "@types/lodash": "^4.14.202",
-    "@wingriders/cab": "^2.0.26",
+    "@wingriders/cab": "^2.0.27",
     "@wingriders/governance-sdk": "workspace:0.1.0",
     "axios": "^1.6.5",
     "cardano-crypto.js": "^6.1.2",

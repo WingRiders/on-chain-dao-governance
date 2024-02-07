@@ -914,6 +914,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@wingriders/cab@npm:^2.0.27":
+  version: 2.0.27
+  resolution: "@wingriders/cab@npm:2.0.27"
+  dependencies:
+    bignumber.js: ^9.1.1
+    bip39-light: ^1.0.7
+    borc: ^3.0.0
+    cardano-crypto.js: ^6.1.1
+    date-fns: ^2.29.3
+    isomorphic-fetch: ^3.0.0
+    json-bigint: ^1.0.0
+    lodash: ^4.17.21
+    randombytes: ^2.1.0
+  checksum: 7cb77aa4f310d677adbd3d47d652ea5ee8baca1c103c096a110af0b7bcad2c62503da567b6b41eb7a2c67dbe399087c2e39b7e629b8f402f19280274e361d68f
+  languageName: node
+  linkType: hard
+
 "@wingriders/governance-backend@workspace:backend":
   version: 0.0.0-use.local
   resolution: "@wingriders/governance-backend@workspace:backend"
@@ -924,7 +941,7 @@ __metadata:
     "@prisma/client": 5.7.0
     "@types/lodash": ^4.14.202
     "@types/node": ^20.10.3
-    "@wingriders/cab": ^2.0.26
+    "@wingriders/cab": ^2.0.27
     "@wingriders/governance-sdk": "workspace:0.1.0"
     axios: ^1.6.5
     cardano-crypto.js: ^6.1.2

@@ -1,6 +1,7 @@
 import {fetchActiveProposalsCount} from './fetchActiveProposalsCount'
 import {fetchProposal} from './fetchProposal'
 import {fetchProposals} from './fetchProposals'
+import {fetchProtocolParameters} from './fetchProtocolParameters'
 import {fetchTheoreticalMaxVotingPower} from './fetchTheoreticalMaxVotingPower'
 import {fetchUserVotableProposalsCount} from './fetchUserVotableProposalsCount'
 import {fetchUserVotes} from './fetchUserVotes'
@@ -28,5 +29,6 @@ export const createQueriesClient = ({governanceUrl}: CreateQueriesClientArgs) =>
     fetchUserVotingDistribution: fetchUserVotingDistribution(queryContext),
     fetchVotes: fetchVotes(queryContext),
     fetchVotingParams: fetchVotingParams(queryContext),
+    fetchProtocolParameters: fetchProtocolParameters(queryContext),
   }
 }

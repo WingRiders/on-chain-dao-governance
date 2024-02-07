@@ -16,6 +16,7 @@ import {getActiveProposalsCount, getUserVotableProposalsCount} from './routes/ac
 import {evaluateTxFromCbor} from './routes/evaluateTxFromCbor'
 import {getProposal} from './routes/getProposal'
 import {getProposals} from './routes/getProposals'
+import {getProtocolParameters} from './routes/getProtocolParameters'
 import {getVotingParams} from './routes/getVotingParams'
 import {getHealthStatus} from './routes/healthcheck'
 import {getUserVotes, getVotes} from './routes/votes'
@@ -34,6 +35,8 @@ export function registerRoutes(server: FastifyInstance) {
 
   if (isServerMode) {
     server.get('/params', getVotingParams)
+
+    server.get('/protocolParameters', getProtocolParameters)
 
     server.get('/proposals', getProposals)
 

@@ -236,6 +236,12 @@ See backend/src/server/routes.ts for the route definitions.
 
 **Returns:** DAO Governance options from configuration. (These are mainly needed when creating a proposal)
 
+##### `GET /protocolParameters`
+
+**Inputs:** None
+
+**Returns:** Protocol parameters of the Cardano network, used when creating transactions.
+
 ##### `GET /proposals`
 
 **Inputs:** None
@@ -456,9 +462,10 @@ Example metadata of a proposal cancellation transaction
 
 ##### Fetchers
 
-Well-typed fetchers for all 5 endpoints exposed by the backend, each as a separate method:
+Well-typed fetchers for all 6 endpoints exposed by the backend, each as a separate method:
 
 - `/params` - `fetchParams`
+- `/protocolParameters` - `fetchProtocolParameters`
 - `/theoreticalMaxVotingPower` - `fetchTheoreticalMaxVotingPower`
 - `/userVotingDistribution` - `fetchUserVotingDistribution`
 - `/proposals` - `fetchProposals`

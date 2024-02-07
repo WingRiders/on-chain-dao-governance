@@ -33,10 +33,21 @@ export type OgmiosInitParams = {
 
 export const ogmiosInitParams: OgmiosInitParams = {
   [Mode.SERVER]: {
-    isReadyFn: isTxSubmissionReady,
-    closeClientsFn: closeTxSubmissionClient,
-    shutdownFn: shutDownTxSubmissionClient,
-    initializeClientsFn: initializeTxSubmissionClient,
+    isReadyFn: () => {
+      return isTxSubmissionReady() && isStateQueryReady()
+    },
+    closeClientsFn: () => {
+      closeTxSubmissionClient()
+      closeStateQueryClient()
+    },
+    shutdownFn: async () => {
+      await shutDownTxSubmissionClient()
+      await shutDownStateQueryClient()
+    },
+    initializeClientsFn: async (context: InteractionContext) => {
+      await initializeTxSubmissionClient(context)
+      await initializeStateQueryClient(context)
+    },
   },
   [Mode.AGGREGATOR]: {
     isReadyFn: () => {
