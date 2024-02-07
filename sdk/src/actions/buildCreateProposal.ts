@@ -2,17 +2,15 @@ import * as api from '@wingriders/cab/dappConnector'
 import {computeMinUTxOLovelaceAmount} from '@wingriders/cab/ledger/transaction'
 import {BigNumber, TxOutputType, TxPlanArgs, ZeroLovelace} from '@wingriders/cab/types'
 
-import {BuildAction, BuildActionParams} from '../actions'
 import {buildTx} from '../helpers/actions'
 import {encodeProposal} from '../helpers/encodeMetadatum'
 import {GovMetadatumLabel, GovernanceVotingParams, PollMetadatum, ProposalMetadatum} from '../types'
-import {ActionContext} from './types'
+import {ActionContext, BuildAction, BuildActionParams} from './types'
 
 type BuildCreateProposalParams = {
   proposal: ProposalMetadatum
   /** Either an existing poll or a new poll */
   poll: PollMetadatum
-  governanceVotingParams: GovernanceVotingParams
 } & BuildActionParams
 
 export type CreateProposalMetadata = {
@@ -26,12 +24,12 @@ export type CreateProposalMetadata = {
   utxoRef: api.TxInput
 }
 
-type RequiredContext = Pick<ActionContext, 'protocolParameters' | 'network'>
+type RequiredContext = ActionContext
 
 export const buildCreateProposalAction =
-  ({protocolParameters, network}: RequiredContext) =>
+  ({protocolParameters, network, governanceVotingParams}: RequiredContext) =>
   (jsApi: api.JsAPI): BuildAction<BuildCreateProposalParams, CreateProposalMetadata> =>
-  async ({proposal, poll, governanceVotingParams}: BuildCreateProposalParams) => {
+  async ({proposal, poll}: BuildCreateProposalParams) => {
     const {collateral, proposalsAddress} = governanceVotingParams
     const collateralBundle = [collateral]
     const coins = computeMinUTxOLovelaceAmount({

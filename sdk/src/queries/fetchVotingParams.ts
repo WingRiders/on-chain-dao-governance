@@ -1,10 +1,20 @@
 import {request} from '@wingriders/cab/helpers'
+import {BigNumber} from '@wingriders/cab/types'
 
-import {GovernanceVotingParamsResponse} from '../types'
+import {GovernanceVotingParams, GovernanceVotingParamsResponse} from '../types'
 import {QueryContext} from './types'
 
 type RequiredContext = QueryContext
 
 export const fetchVotingParams =
-  (context: RequiredContext) => (): Promise<GovernanceVotingParamsResponse> =>
-    request(`${context.governanceUrl}/params`)
+  (context: RequiredContext) => async (): Promise<GovernanceVotingParams> => {
+    const response: GovernanceVotingParamsResponse = await request(`${context.governanceUrl}/params`)
+    return {
+      proposalsAddress: response.proposalsAddress,
+      collateral: {
+        ...response.governanceToken,
+        quantity: new BigNumber(response.proposalCollateralQuantity),
+      },
+      governanceToken: response.governanceToken,
+    }
+  }

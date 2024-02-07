@@ -22,14 +22,18 @@
     "build": "yarn clean && rollup -c"
   },
   "dependencies": {
-    "@wingriders/cab": "^2.0.26"
+    "@wingriders/cab": "^2.0.26",
+    "date-fns": "^3.3.1",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.5",
     "@types/node": "^20.10.3",
-    "date-fns": "^3.2.0",
-    "lodash": "^4.17.21",
     "rollup": "^4.6.1",
+    "rollup-plugin-polyfill-node": "^0.13.0",
     "tslib": "^2.6.2",
     "typescript": "^5.3.2"
   }

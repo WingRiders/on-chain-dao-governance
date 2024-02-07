@@ -1,9 +1,9 @@
 import {NETWORKS} from '@wingriders/cab/constants'
-import {Wallet as WalletApi} from '@wingriders/cab/dappConnector'
+import {JsAPI} from '@wingriders/cab/dappConnector'
 import {NetworkName, ProtocolParameters} from '@wingriders/cab/types'
 
 import {LibError, LibErrorCode} from '../errors'
-import {getNetworkNameFromWallet, withJsAPI} from '../helpers/walletApi'
+import {getNetworkNameFromWallet} from '../helpers/walletApi'
 import {GovernanceVotingParams} from '../types'
 import {buildCancelProposalAction} from './buildCancelProposal'
 import {buildCastVoteAction} from './buildCastVote'
@@ -15,18 +15,18 @@ import {ActionContext} from './types'
 
 type CreateActionsClientArgs = {
   networkName: NetworkName
-  walletApi: WalletApi
+  jsApi: JsAPI
   protocolParameters: ProtocolParameters
   governanceVotingParams: GovernanceVotingParams
 }
 
 export const createActionsClient = async ({
   networkName: configNetworkName,
-  walletApi,
+  jsApi,
   protocolParameters,
   governanceVotingParams,
 }: CreateActionsClientArgs) => {
-  const walletNetworkName = await getNetworkNameFromWallet(walletApi)
+  const walletNetworkName = await getNetworkNameFromWallet(jsApi)
   if (walletNetworkName !== configNetworkName) {
     throw new LibError(
       LibErrorCode.NetworkMismatch,
@@ -43,11 +43,11 @@ export const createActionsClient = async ({
   }
 
   return {
-    cancelProposal: withJsAPI(walletApi, buildCancelProposalAction(actionContext)),
-    castVote: withJsAPI(walletApi, buildCastVoteAction(actionContext)),
-    createProposal: withJsAPI(walletApi, buildCreateProposalAction(actionContext)),
-    finalizeProposal: withJsAPI(walletApi, buildFinalizeProposalAction(actionContext)),
-    signTx: withJsAPI(walletApi, signTxAction()),
-    submitTx: withJsAPI(walletApi, submitTxAction()),
+    cancelProposal: buildCancelProposalAction(actionContext)(jsApi),
+    castVote: buildCastVoteAction(actionContext)(jsApi),
+    createProposal: buildCreateProposalAction(actionContext)(jsApi),
+    finalizeProposal: buildFinalizeProposalAction(actionContext)(jsApi),
+    signTx: signTxAction()(jsApi),
+    submitTx: submitTxAction()(jsApi),
   }
 }

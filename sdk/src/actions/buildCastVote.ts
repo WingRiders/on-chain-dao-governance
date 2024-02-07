@@ -3,13 +3,12 @@ import {stakingHashFromAddress} from '@wingriders/cab/ledger/address'
 import {BigNumber, HexString, TxPlanArgs} from '@wingriders/cab/types'
 import {reverseAddress, reverseUtxo} from '@wingriders/cab/wallet/connector'
 
-import {BuildAction, BuildActionParams, BuildActionResult} from '../actions'
 import {LibError, LibErrorCode} from '../errors'
 import {buildTx} from '../helpers/actions'
 import {encodeVote} from '../helpers/encodeMetadatum'
 import {getWalletOwner} from '../helpers/walletAddress'
 import {GovMetadatumLabel, Vote} from '../types'
-import {ActionContext} from './types'
+import {ActionContext, BuildAction, BuildActionParams, BuildActionResult} from './types'
 
 type BuildCastVoteParams = {
   pollTxHash: HexString

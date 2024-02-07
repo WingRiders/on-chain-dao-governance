@@ -11,10 +11,3 @@ export const getWalletOwner = async (jsApi: JsAPI) => {
 
   return ownerAddress
 }
-
-export const getAllWalletAddresses = async (jsApi: JsAPI) => {
-  const addresses = (await jsApi.getUsedAddresses()) ?? []
-  // Eternl doesn't return any used addresses for empty accounts
-  if (addresses.length === 0) addresses.push(...((await jsApi.getUnusedAddresses()) ?? []))
-  return addresses
-}

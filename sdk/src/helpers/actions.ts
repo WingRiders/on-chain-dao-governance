@@ -8,7 +8,6 @@ import {
 } from '@wingriders/cab/helpers'
 import {hasSpendingScript} from '@wingriders/cab/ledger/address'
 import {
-  ShelleyTxAux,
   TxSigned,
   getTxPlan,
   prepareTxAux,
@@ -24,6 +23,7 @@ import {
   reverseVKeyWitnesses,
 } from '@wingriders/cab/wallet/connector'
 
+import {BuiltTxInfo, SignedTxInfo} from '../actions/types'
 import {LibError, LibErrorCode} from '../errors'
 import {calculateValidityInterval} from './validityInterval'
 import {getWalletOwner} from './walletAddress'
@@ -35,12 +35,6 @@ interface BuildTxProps {
   backendServerUrl?: string
   // UTxOs that will not be used to build the tx
   ignoredUTxOs?: api.TxInput[]
-}
-
-export type BuiltTxInfo = {
-  tx: api.Transaction
-  txAux: ShelleyTxAux
-  txWitnessSet: TxWitnessSet
 }
 
 export const buildTx = async ({
@@ -102,12 +96,6 @@ export const buildTx = async ({
 type SignTxProps = {
   jsApi: api.JsAPI
 } & BuiltTxInfo
-
-export type SignedTxInfo = {
-  signedTx: api.Transaction
-  cborizedTx: TxSigned
-  txHash: api.TxHash
-}
 
 export const signTx = async ({jsApi, tx, txAux, txWitnessSet}: SignTxProps): Promise<SignedTxInfo> => {
   const txHash = txAux.getId() as api.TxHash

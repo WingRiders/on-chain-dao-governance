@@ -1,6 +1,7 @@
 import {JsAPI} from '@wingriders/cab/dappConnector'
 
-import {BuiltTxInfo, SignedTxInfo, signTx} from '../helpers/actions'
+import {signTx} from '../helpers/actions'
+import {BuiltTxInfo, SignedTxInfo} from './types'
 
 type SignTxParams = {
   buildTxInfo: BuiltTxInfo

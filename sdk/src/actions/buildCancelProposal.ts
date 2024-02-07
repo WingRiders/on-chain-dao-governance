@@ -3,13 +3,12 @@ import {splitMetadatumString} from '@wingriders/cab/ledger/transaction'
 import {Address, BigNumber, HexString, TxMetadatum, TxPlanArgs} from '@wingriders/cab/types'
 import {normalizeTxInput, reverseAddress, reverseUtxos} from '@wingriders/cab/wallet/connector'
 
-import {BuildAction, BuildActionParams, BuildActionResult} from '../actions'
 import {LibError, LibErrorCode} from '../errors'
 import {buildTx} from '../helpers/actions'
 import {getWalletOwner} from '../helpers/walletAddress'
 import {GovManagementOp, GovMetadatumLabel} from '../types'
 import {isPotentialProposalUTxO} from './helpers'
-import {ActionContext} from './types'
+import {ActionContext, BuildAction, BuildActionParams, BuildActionResult} from './types'
 
 type BuildCancelProposalParams = {
   /** transaction hash where the proposal was created */
