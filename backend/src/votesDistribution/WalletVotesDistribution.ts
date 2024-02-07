@@ -41,8 +41,12 @@ const getUserVotingDistribution = async ({
   }
   const votingDistribution = calculateVotingDistribution(tokenDistribution)
   const utxoIds = uniq<UtxoId>(Object.values(tokenDistribution).flatMap(({utxoIds}) => utxoIds))
+
   return {
-    ...votingDistribution,
+    walletTokens: {
+      tokenCount: votingDistribution.walletTokens.tokenCount.toString(),
+      votingPower: votingDistribution.walletTokens.votingPower.toString(),
+    },
     utxoIds,
     slot,
   }

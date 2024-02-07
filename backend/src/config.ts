@@ -48,6 +48,18 @@ const envSchema = z.object({
     .length(56),
   PROPOSAL_COLLATERAL_QUANTITY: z.coerce.number().gte(0),
   KUPO_URL: z.string().url(),
+  CORS_ENABLED_FOR: z.string(),
+  NODE_ENV: z.string().optional(),
+  LOG_LEVEL: z
+    .union([
+      z.literal('fatal'),
+      z.literal('error'),
+      z.literal('warn'),
+      z.literal('info'),
+      z.literal('debug'),
+      z.literal('trace'),
+    ])
+    .default('info'),
 })
 
 const result = envSchema.safeParse(process.env)

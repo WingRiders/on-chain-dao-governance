@@ -191,7 +191,10 @@ export type UserVotingDistributionFilter = {
 
 export type UserVotingDistributionResponse = {
   utxoIds: UtxoId[]
-  walletTokens: string
+  walletTokens: {
+    tokenCount: string
+    votingPower: string
+  }
   slot: number
 }
 

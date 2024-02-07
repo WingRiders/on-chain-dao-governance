@@ -1,8 +1,12 @@
+import fastifyCors from '@fastify/cors'
 import Fastify from 'fastify'
 
 import {config, isServerMode} from '../config'
+import {getCorsOptions} from '../helpers/cors'
 import {logger} from '../logger'
 import {registerRoutes} from './routes'
+
+const isProd = config.NODE_ENV === 'production'
 
 export const startServer = async () => {
   try {
@@ -20,6 +24,8 @@ export const startServer = async () => {
     // regression bug: https://github.com/nodejs/node/issues/27363
     // it's been already fixed, jut to be on the safe side
     server.server.headersTimeout = keepAliveTimeout + 1000 // add extra 1 seconds
+
+    server.register(fastifyCors, getCorsOptions(config.CORS_ENABLED_FOR, isProd))
 
     registerRoutes(server) // LB needs to know health also for aggregator
     // Typescript is giving errors when trying to use enum as index in the mapping object (code from dex)

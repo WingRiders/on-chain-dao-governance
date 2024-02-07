@@ -1,7 +1,18 @@
 import {pino} from 'pino'
 
+import {config} from './config'
+
 export const logger = pino({
   name: 'governance-backend',
-  // TODO: Add support for config from env
-  // level: config.LOG_LEVEL || 'debug',
+  level: config.LOG_LEVEL,
+  ...(config.NODE_ENV !== 'production'
+    ? {
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            colorize: true,
+          },
+        },
+      }
+    : {}),
 })
