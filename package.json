@@ -28,7 +28,7 @@
   },
   "workspaces": [
     "backend",
-    "frontend",
+    "frontend/react/sdk",
     "sdk"
   ],
   "private": true,
