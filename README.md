@@ -473,9 +473,11 @@ Well-typed fetchers for all 6 endpoints exposed by the backend, each as a separa
 
 ### Frontend
 
-This module outlines how the frontend currently looks for WingRiders DAO voting. It for example shows the different sources of voting power that are possible to configure and how they show for the user. This is a breakdown of the necessary screens and flows to provide a functioning UI. The resulting frontend will comply with the outlined functionalities but will offer a headless option for all interested projects.
+This module outlines how the frontend currently looks for WingRiders DAO voting. It for example shows the different sources of voting power that are possible to configure and how they show for the user. This is a breakdown of the necessary screens and flows to provide a functioning UI.
 
-Currently, you can build your own UI according to your tech-stack and use the [API](#api-service) and [Library](#library) to communicate with the backend or create actions.
+If you are building your frontend in React, we've prepared `@wingriders/governance-frontend-react-sdk` library that provides a set of helper functions for data fetching and blockchain interactions. Check it's README for more details.
+
+If you are not using React, you build your own UI according to your tech-stack and use the [API](#api-service) and [Library](#library) to communicate with the backend or create actions.
 
 #### UI Flow Documentation: Create Proposal Screen
 

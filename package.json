@@ -29,6 +29,7 @@
   "workspaces": [
     "backend",
     "frontend/react/sdk",
+    "frontend/react/example",
     "sdk"
   ],
   "private": true,
