@@ -67,20 +67,16 @@ COMPOSE_PROJECT_NAME=governance docker-compose up -d cardano-node ogmios kupo go
 
 If you are starting the cardano-node for the first time it will take some time to sync all the blocks, so it's recommended to leave it running overnight, and then you should be good to go. Check the cardano-node sync status and ogmios health at `http://localhost:1338`. Check the kupo sync status at `http://localhost:1442/health`.
 
-### Pre-built Docker containers
-
-TBD
-
 ## Development roadmap
 
-- [ ] Backend
-  - [ ] Data aggregation
-  - [ ] API endpoints
-  - [ ] Configurable tokens and script UTxO sources
-- [ ] Library
+- [x] Backend
+  - [x] Data aggregation
+  - [x] API endpoints
+  - [x] Configurable tokens and script UTxO sources
+- [x] Library
+- [x] Dockerfile for backend and `docker-compose` with all required services for running the backend
+- [x] Documentation
 - [ ] Frontend
-- [ ] Docker containers and sample `docker-compose` deployment
-- [ ] Documentation
 
 ## Solution Design and Architecture
 
