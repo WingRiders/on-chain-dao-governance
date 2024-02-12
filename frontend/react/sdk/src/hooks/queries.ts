@@ -43,3 +43,4 @@ export const useProtocolParametersQuery = buildUseQuery(
   'protocolParameters',
   (client) => client.fetchProtocolParameters
 )
+export const usePaidFeesQuery = buildUseQuery('paidFees', (client) => client.fetchPaidFees)

@@ -19,6 +19,20 @@ model Block {
   proposals      Proposal[]      @relation("ParentBlock")
   proposalStates ProposalState[] @relation("ParentBlock")
   votes          Vote[]
+  transactions   Transaction[]
+}
+
+model Transaction {
+  id     BigInt @id @default(autoincrement()) @db.BigInt
+  txHash Bytes  @unique
+  txFee  BigInt @db.BigInt
+  slot   Int
+
+  block          Block           @relation(fields: [slot], references: [slot], onDelete: Cascade)
+  proposalStates ProposalState[]
+  votes          Vote[]
+
+  @@index([slot])
 }
 
 model Poll {
@@ -72,8 +86,9 @@ model ProposalState {
   cancelReason String?
   status       ProposalStatus @default(AVAILABLE)
 
-  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  block    Block    @relation("ParentBlock", fields: [slot], references: [slot], onDelete: Cascade)
+  proposal    Proposal    @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  block       Block       @relation("ParentBlock", fields: [slot], references: [slot], onDelete: Cascade)
+  transaction Transaction @relation(fields: [txHash], references: [txHash], onDelete: Cascade)
 
   @@index([proposalId])
   @@index([slot])
@@ -133,10 +148,11 @@ model Vote {
   slot   Int
   txHash Bytes
 
-  proposal Proposal        @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  choice   ProposalChoice? @relation(fields: [choiceId], references: [id], onDelete: Cascade)
-  poll     Poll            @relation(fields: [pollId], references: [id], onDelete: Cascade)
-  block    Block           @relation(fields: [slot], references: [slot], onDelete: Cascade)
+  proposal    Proposal        @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  choice      ProposalChoice? @relation(fields: [choiceId], references: [id], onDelete: Cascade)
+  poll        Poll            @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  block       Block           @relation(fields: [slot], references: [slot], onDelete: Cascade)
+  transaction Transaction     @relation(fields: [txHash], references: [txHash], onDelete: Cascade)
 
   // user can vote for multiple proposal in one transaction but only once for the same proposal
   // if he wants to change the vote he creates the new transaction

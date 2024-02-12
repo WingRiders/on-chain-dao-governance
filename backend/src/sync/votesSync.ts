@@ -11,6 +11,7 @@ import {getUtxoId} from '../helpers/getUtxoId'
 import {logger} from '../logger'
 import {assertMetadatumMap, parseMetadatumLabel} from '../ogmios/metadata'
 import {parseAddressBuffer, parseArray, parseBuffer, parseInteger, parseNumber} from './metadataHelper'
+import {upsertTransaction} from './transaction'
 
 type Choice = [Buffer, number]
 
@@ -118,6 +119,8 @@ async function insertPollVotes(
     logger.error(`Votes for poll ${pollHash.toString('hex')} casted outside voting period.`)
     return
   }
+
+  await upsertTransaction({prismaTx, transaction: txBody, slot: dbBlock.slot})
 
   const proposalVotes = compact(
     pollVotes.choices.map((proposalChoice) => {

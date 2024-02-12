@@ -1,4 +1,5 @@
 import {fetchActiveProposalsCount} from './fetchActiveProposalsCount'
+import {fetchPaidFees} from './fetchPaidFees'
 import {fetchProposal} from './fetchProposal'
 import {fetchProposals} from './fetchProposals'
 import {fetchProtocolParameters} from './fetchProtocolParameters'
@@ -30,5 +31,6 @@ export const createQueriesClient = ({governanceUrl}: CreateQueriesClientArgs) =>
     fetchVotes: fetchVotes(queryContext),
     fetchVotingParams: fetchVotingParams(queryContext),
     fetchProtocolParameters: fetchProtocolParameters(queryContext),
+    fetchPaidFees: fetchPaidFees(queryContext),
   }
 }

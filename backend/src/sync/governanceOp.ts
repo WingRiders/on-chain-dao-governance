@@ -25,6 +25,7 @@ import {
   parseString,
   parseStringArray,
 } from './metadataHelper'
+import {upsertTransaction} from './transaction'
 
 const parseProposal = (proposalMetadatum: TxMetadatum): ProposalMetadatum => {
   const proposalMetadata = assertMetadatumMap(proposalMetadatum)
@@ -221,6 +222,7 @@ async function processAddProposal({
   /**
    * Insert everything that's necessary into the DB
    */
+  await upsertTransaction({prismaTx, transaction: txBody, slot})
   const proposal = await prismaTx.proposal.create({
     data: {
       ownerAddress,
@@ -287,9 +289,14 @@ async function processConcludeProposal({
     return
   }
 
+  await upsertTransaction({prismaTx, transaction: txBody, slot: dbBlock.slot})
   await prismaTx.proposalState.create({
     data: {
-      txHash: manageData.proposalTxHash,
+      transaction: {
+        connect: {
+          txHash: manageData.proposalTxHash,
+        },
+      },
       block: {
         connect: {
           slot: dbBlock.slot,
@@ -342,9 +349,14 @@ async function processCancelProposal({
     return
   }
 
+  await upsertTransaction({prismaTx, transaction: txBody, slot: dbBlock.slot})
   await prismaTx.proposalState.create({
     data: {
-      txHash: manageData.proposalTxHash,
+      transaction: {
+        connect: {
+          txHash: manageData.proposalTxHash,
+        },
+      },
       block: {
         connect: {
           slot: dbBlock.slot,

@@ -2,6 +2,8 @@ import {FastifyInstance} from 'fastify'
 
 import {HexString} from '@wingriders/cab/types'
 import {
+  PaidFeesFilter,
+  PaidFeesResponse,
   UserVotesFilter,
   UserVotesResponse,
   UserVotingDistributionFilter,
@@ -19,6 +21,7 @@ import {getProposals} from './routes/getProposals'
 import {getProtocolParameters} from './routes/getProtocolParameters'
 import {getVotingParams} from './routes/getVotingParams'
 import {getHealthStatus} from './routes/healthcheck'
+import {getPaidFees} from './routes/paidFees'
 import {getUserVotes, getVotes} from './routes/votes'
 
 export function registerRoutes(server: FastifyInstance) {
@@ -114,6 +117,23 @@ export function registerRoutes(server: FastifyInstance) {
     )
 
     server.get('/theoreticalMaxVotingPower', votesDistribution.getTheoreticalMaxVotingPower)
+
+    server.post<{Body?: PaidFeesFilter; Reply: PaidFeesResponse}>(
+      '/paidFees',
+      {
+        schema: {
+          body: {
+            type: 'object',
+            nullable: true,
+            properties: {
+              fromSlot: {type: 'number'},
+              toSlot: {type: 'number'},
+            },
+          },
+        },
+      },
+      (request, _reply) => getPaidFees(request.body)
+    )
 
     server.post<{Body: string}>(
       '/evaluateTx',

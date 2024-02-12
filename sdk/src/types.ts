@@ -225,3 +225,15 @@ export type ProposalResponse = ProposalDetails & {
 }
 
 export type ProposalsResponse = ProposalDetails[]
+
+export type PaidFeesFilter = {
+  fromSlot?: number // defaults to the slot of the first transaction
+  toSlot?: number // defaults to the slot of the last transaction
+}
+
+export type PaidFeesResponse = {
+  /** total fees paid for proposals management transactions (create, cancel, conclude) */
+  proposals: string
+  /** total fees paid for voting transactions */
+  votes: string
+}

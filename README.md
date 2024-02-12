@@ -303,6 +303,16 @@ Example results JSON taken from a successful WingRiders DAO proposal:
 }
 ```
 
+##### `POST /paidFees`
+
+**Inputs:**
+
+- Filter (optional)
+  - fromSlot (optional, defaults to the slot of the first transaction)
+  - toSlot (optional, defaults to the slot of the last transaction)
+
+**Returns:** Total paid transaction fees for proposals management (create, cancel, conclude) and for voting.
+
 ### Library
 
 The library is not specific to one deployment of the governance framework. It gets the required configuration options and deployment-specific data from the backend which acts as the configuration store. This enables the library and associated example white-label UI to be easy to deploy without any additional manual build steps needed.
@@ -466,6 +476,7 @@ Well-typed fetchers for all 6 endpoints exposed by the backend, each as a separa
 - `/userVotingDistribution` - `fetchUserVotingDistribution`
 - `/proposals` - `fetchProposals`
 - `/proposal` - `fetchProposal`
+- `/paidFees` - `fetchPaidFees`
 
 ### Frontend
 

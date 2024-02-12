@@ -102,6 +102,7 @@ Here is the list of query hooks that is available in `@wingriders/governance-fro
 |useVotesQuery|/votes|
 |useVotingParamsQuery|/params|
 |useProtocolParametersQuery|/protocolParameters|
+|usePaidFeesQuery|/paidFees|
 
 ### Creating actions
 
