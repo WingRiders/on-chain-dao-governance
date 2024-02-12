@@ -28,5 +28,8 @@ jobs:
       - name: Build SDK
         run: yarn workspace @wingriders/governance-sdk build
 
+      - name: SDK unit tests
+        run: yarn workspace @wingriders/governance-sdk test
+
       - name: ESLint
         run: yarn eslint

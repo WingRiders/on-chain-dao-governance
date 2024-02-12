@@ -3,10 +3,9 @@ import {compact} from 'lodash'
 
 import {spendingHashFromAddress, stakingHashFromAddress} from '@wingriders/cab/ledger/address'
 import {TxMetadatum} from '@wingriders/cab/types'
-import {GovMetadatumLabel, Vote, decodeVotesMetadatum} from '@wingriders/governance-sdk'
+import {GovMetadatumLabel, Vote, decodeVotesMetadatum, getUtxoId} from '@wingriders/governance-sdk'
 
 import {Block, PrismaTxClient} from '../db/prismaClient'
-import {getUtxoId} from '../helpers/getUtxoId'
 import {logger} from '../logger'
 import {assertMetadatumMap, parseMetadatumLabel} from '../ogmios/metadata'
 import {upsertTransaction} from './transaction'

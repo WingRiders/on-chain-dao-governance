@@ -15,7 +15,8 @@ function onwarn(warning) {
       (id) =>
         id.includes('node_modules/readable-stream') ||
         id.includes('node_modules/@wingriders/cab') ||
-        id.includes('polyfill-node._stream')
+        id.includes('polyfill-node._stream') ||
+        id.includes('chai')
     )
   ) {
     return
