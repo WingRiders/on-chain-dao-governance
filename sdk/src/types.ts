@@ -113,6 +113,7 @@ export enum ProposalStatus {
 }
 
 export type TxMetadatum = number | string | Buffer | TxMetadatum[] | Map<TxMetadatum, TxMetadatum>
+export type TxMetadatumMap = Map<TxMetadatum, TxMetadatum>
 
 // (U)TxO identifier string in format: `<txHash>#<outputIndex>`
 export type UtxoId = string
@@ -236,4 +237,15 @@ export type PaidFeesResponse = {
   proposals: string
   /** total fees paid for voting transactions */
   votes: string
+}
+
+export type ProposalResults = {
+  result: 'PASSED' | 'FAILED'
+  /** <choice name, voting power> */
+  choices: Record<string, number>
+  /** total voting power used to vote for this proposal (including abstained) */
+  total: number
+  /** total voting power used to vote for the abstain choice */
+  abstained: number
+  note: string
 }

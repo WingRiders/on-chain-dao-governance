@@ -1,86 +1,25 @@
 import {Transaction} from '@cardano-ogmios/schema'
-import assert from 'assert'
 import {compact} from 'lodash'
 
 import {spendingHashFromAddress, stakingHashFromAddress} from '@wingriders/cab/ledger/address'
-import {Address, TxMetadatum} from '@wingriders/cab/types'
-import {CborVoteField, GovMetadatumLabel, UtxoId} from '@wingriders/governance-sdk'
+import {TxMetadatum} from '@wingriders/cab/types'
+import {GovMetadatumLabel, Vote, decodeVotesMetadatum} from '@wingriders/governance-sdk'
 
 import {Block, PrismaTxClient} from '../db/prismaClient'
 import {getUtxoId} from '../helpers/getUtxoId'
 import {logger} from '../logger'
 import {assertMetadatumMap, parseMetadatumLabel} from '../ogmios/metadata'
-import {parseAddressBuffer, parseArray, parseBuffer, parseInteger, parseNumber} from './metadataHelper'
 import {upsertTransaction} from './transaction'
-
-type Choice = [Buffer, number]
-
-type PollVotes = {
-  owner: Address
-  votingPower: number
-  /* utxos encoded as cddl [txHash, outputIndex] */
-  votingUTxOs: UtxoId[]
-  choices: Choice[]
-}
-
-const parseVotingUTxO = (votingUTxOMetadatum: TxMetadatum): UtxoId => {
-  const votingUTxO = parseArray(votingUTxOMetadatum)
-  if (votingUTxO.length !== 2) {
-    throw new Error(`Incorrect votingUTxO format: ${votingUTxO}`)
-  }
-
-  const txHash = parseBuffer(votingUTxO[0])
-  const outputIndex = parseInteger(votingUTxO[1])
-  return getUtxoId({txHash, outputIndex})
-}
-
-const parseVotingUTxOs = (votingUTxOsMetadatum: TxMetadatum | undefined): UtxoId[] => {
-  const votingUTxOs = parseArray(votingUTxOsMetadatum)
-  return votingUTxOs.map((utxo) => parseVotingUTxO(utxo))
-}
-
-function parseProposalsChoices(choicesMetadatum: TxMetadatum | undefined): Choice[] {
-  const choices = assertMetadatumMap(choicesMetadatum)
-
-  return [...choices.entries()].map(([proposalHashMetadatum, choiceIndexMetadatum]) => {
-    const choiceIndex = parseInteger(choiceIndexMetadatum)
-    assert(choiceIndex >= -1, `Incorrect choiceIndex value: ${choiceIndex}`)
-    return [parseBuffer(proposalHashMetadatum), choiceIndex]
-  })
-}
-
-function parsePollVotes(pollVotesMetadatum: TxMetadatum): PollVotes {
-  const pollVotes = assertMetadatumMap(pollVotesMetadatum)
-  const owner = parseAddressBuffer(pollVotes.get(CborVoteField.VOTER_ADDRESS))
-  const votingPower = parseNumber(pollVotes.get(CborVoteField.VOTING_POWER))
-  const votingUTxOs = parseVotingUTxOs(pollVotes.get(CborVoteField.VOTING_UTXOS))
-  const choices = parseProposalsChoices(pollVotes.get(CborVoteField.CHOICES))
-
-  return {
-    owner,
-    votingPower,
-    votingUTxOs,
-    choices,
-  }
-}
-
-function parseVotes(votesMetadatum: TxMetadatum): [Buffer, PollVotes][] {
-  const votes = assertMetadatumMap(votesMetadatum)
-  return [...votes.entries()].map(([pollHashMetadatum, pollVoteMetadatum]) => {
-    return [parseBuffer(pollHashMetadatum), parsePollVotes(pollVoteMetadatum)]
-  })
-}
 
 // Insert user's votes for voted proposal from the same poll.
 // Ignore votes for not valid proposal or choices
-async function insertPollVotes(
+async function insertPollVote(
   prismaTx: PrismaTxClient,
   dbBlock: Block,
   txBody: Transaction,
-  pollHash: Buffer,
-  pollVotes: PollVotes
+  pollVote: Vote
 ) {
-  const ownerAddress = pollVotes.owner
+  const ownerAddress = pollVote.voterAddress
   const ownerPubKeyHash = Buffer.from(spendingHashFromAddress(ownerAddress), 'hex')
   const ownerStakeKeyHash = Buffer.from(stakingHashFromAddress(ownerAddress), 'hex')
 
@@ -98,7 +37,7 @@ async function insertPollVotes(
     )
   }
   const dbPollWithProposals = await prismaTx.poll.findUnique({
-    where: {txHash: pollHash},
+    where: {txHash: Buffer.from(pollVote.pollTxHash, 'hex')},
     include: {
       proposals: {
         include: {
@@ -110,29 +49,28 @@ async function insertPollVotes(
     },
   })
   if (!dbPollWithProposals) {
-    throw new Error(`Poll does not exist: ${pollHash.toString('hex')}`)
+    throw new Error(`Poll does not exist: ${pollVote.pollTxHash}`)
   }
 
   // Process only votes cast during voting period of poll
   const castVotesDate = dbBlock.time
   if (!(dbPollWithProposals.start <= castVotesDate && castVotesDate <= dbPollWithProposals.end)) {
-    logger.error(`Votes for poll ${pollHash.toString('hex')} casted outside voting period.`)
+    logger.error(`Votes for poll ${pollVote.pollTxHash} casted outside voting period.`)
     return
   }
 
   await upsertTransaction({prismaTx, transaction: txBody, slot: dbBlock.slot})
 
   const proposalVotes = compact(
-    pollVotes.choices.map((proposalChoice) => {
+    Object.entries(pollVote.choices).map((proposalChoice) => {
       // TODO: Suppose there is only a few proposals in one poll. When the number increase optimize.
-      const [proposalHash, choiceIndex] = proposalChoice
+      const [proposalHashString, choiceIndex] = proposalChoice
+      const proposalHash = Buffer.from(proposalHashString, 'hex')
       const dbProposal = dbPollWithProposals.proposals.find(
         (proposal) => Buffer.compare(proposal.txHash, proposalHash) === 0
       )
       if (!dbProposal) {
-        logger.error(
-          `Proposal ${proposalHash.toString('hex')} for poll ${pollHash.toString('hex')} does not exist.`
-        )
+        logger.error(`Proposal ${proposalHashString} for poll ${pollVote.pollTxHash} does not exist.`)
         return null
       }
       // Choice is null when user abstained from vote
@@ -149,8 +87,10 @@ async function insertPollVotes(
         proposalId: dbProposal.id,
         choiceId: dbChoiceId,
         pollId: dbPollWithProposals.id,
-        votingPower: pollVotes.votingPower,
-        votingUTxOs: pollVotes.votingUTxOs,
+        votingPower: pollVote.votingPower,
+        votingUTxOs: pollVote.votingUTxOs.map((utxo) =>
+          getUtxoId({txHash: utxo.txHash, outputIndex: utxo.index.toNumber()})
+        ),
         slot: dbBlock.slot,
         txHash: Buffer.from(txBody.id, 'hex'),
       }
@@ -163,7 +103,7 @@ async function insertPollVotes(
     {
       txHash: txBody.id,
       insertedVotes: proposalVotes.length,
-      poll: pollHash.toString('hex'),
+      poll: pollVote.pollTxHash,
     },
     `Inserted votes`
   )
@@ -183,11 +123,11 @@ export async function insertGovernanceVotes(
       return
     }
     logger.info(parsedMetadatum, 'Parsed vote metadata')
-    const votes = parseVotes(parsedMetadatum)
+    const votes = decodeVotesMetadatum(assertMetadatumMap(parsedMetadatum))
 
     await Promise.all(
-      votes.map(([pollHash, pollVotes]) =>
-        insertPollVotes(prismaTx, dbBlock, txBody, pollHash, pollVotes).catch((e) =>
+      votes.map((vote) =>
+        insertPollVote(prismaTx, dbBlock, txBody, vote).catch((e) =>
           logger.error(e, `Error processing governance pollVotes. txHash: ${txBody.id}`)
         )
       )

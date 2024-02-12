@@ -2,7 +2,7 @@ import {compact} from 'lodash'
 
 import {addressToHex} from '@wingriders/cab/ledger/address'
 import {splitMetadatumString} from '@wingriders/cab/ledger/transaction'
-import {TxMetadatum} from '@wingriders/cab/types'
+import {HexString, TxMetadatum} from '@wingriders/cab/types'
 
 import {
   CborPollField,
@@ -12,11 +12,13 @@ import {
   GovPollOp,
   PollMetadatum,
   ProposalMetadatum,
+  ProposalResults,
+  TxMetadatumMap,
   Vote,
 } from '../types'
 
-function encodeProposalProperties(proposal: ProposalMetadatum): TxMetadatum {
-  const encodedProposalProperties: TxMetadatum = new Map<TxMetadatum, TxMetadatum>([
+export function encodeProposalMetadatum(proposal: ProposalMetadatum): TxMetadatumMap {
+  const encodedProposalProperties: TxMetadatumMap = new Map<TxMetadatum, TxMetadatum>([
     [CborProposalField.PROPOSAL_OWNER, Buffer.from(addressToHex(proposal.owner), 'hex')],
     [CborProposalField.PROPOSAL_NAME, proposal.name],
     [CborProposalField.PROPOSAL_DESCRIPTION, splitMetadatumString(proposal.description)],
@@ -28,19 +30,7 @@ function encodeProposalProperties(proposal: ProposalMetadatum): TxMetadatum {
   return encodedProposalProperties
 }
 
-export function encodeProposal(proposal: ProposalMetadatum, poll: PollMetadatum): TxMetadatum {
-  const encodedProposalProperties = encodeProposalProperties(proposal)
-
-  const newProposal: TxMetadatum = new Map<TxMetadatum, TxMetadatum>([
-    ['op', GovManagementOp.ADD_PROPOSAL],
-    ['proposal', encodedProposalProperties],
-    ['poll', encodePollProperties(poll)],
-  ])
-
-  return newProposal
-}
-
-function encodePollProperties(poll: PollMetadatum): TxMetadatum {
+export function encodePollMetadatum(poll: PollMetadatum): TxMetadatumMap {
   if (poll.txHash) {
     return new Map<TxMetadatum, TxMetadatum>([
       [CborPollField.POLL_OP, GovPollOp.ASSIGN_EXISTING],
@@ -64,9 +54,9 @@ function encodePollProperties(poll: PollMetadatum): TxMetadatum {
  * Consideration: Since casting a vote is most used, we want to minimize the metadata size
  * to reduce the costs for users.
  */
-export function encodeVote(vote: Vote): TxMetadatum {
-  return new Map<TxMetadatum, TxMetadatum>([
-    [
+export function encodeVotesMetadatum(votes: Vote[]): TxMetadatumMap {
+  return new Map<TxMetadatum, TxMetadatum>(
+    votes.map((vote) => [
       Buffer.from(vote.pollTxHash, 'hex'),
       new Map<TxMetadatum, TxMetadatum>([
         [CborVoteField.VOTER_ADDRESS, Buffer.from(addressToHex(vote.voterAddress), 'hex')],
@@ -86,6 +76,41 @@ export function encodeVote(vote: Vote): TxMetadatum {
           ),
         ],
       ]),
-    ],
+    ])
+  )
+}
+
+export function encodeAddProposalOperation(
+  proposal: ProposalMetadatum,
+  poll: PollMetadatum
+): TxMetadatumMap {
+  const encodedProposalProperties = encodeProposalMetadatum(proposal)
+
+  const newProposal: TxMetadatumMap = new Map<TxMetadatum, TxMetadatum>([
+    ['op', GovManagementOp.ADD_PROPOSAL],
+    ['proposal', encodedProposalProperties],
+    ['poll', encodePollMetadatum(poll)],
+  ])
+
+  return newProposal
+}
+
+export function encodeConcludeProposalOperation(proposalTxHash: HexString, results: ProposalResults) {
+  return new Map<TxMetadatum, TxMetadatum>([
+    ['op', GovManagementOp.CONCLUDE_PROPOSAL],
+    ['id', Buffer.from(proposalTxHash, 'hex')],
+    ['result', results.result],
+    ['choices', new Map<TxMetadatum, TxMetadatum>(Object.entries(results.choices))],
+    ['total', results.total],
+    ['abstained', results.abstained],
+    ['note', splitMetadatumString(results.note)],
+  ])
+}
+
+export function encodeCancelProposalOperation(proposalTxHash: HexString, reason: string) {
+  return new Map<TxMetadatum, TxMetadatum>([
+    ['op', GovManagementOp.CANCEL_PROPOSAL],
+    ['id', Buffer.from(proposalTxHash, 'hex')],
+    ['reason', splitMetadatumString(reason)],
   ])
 }

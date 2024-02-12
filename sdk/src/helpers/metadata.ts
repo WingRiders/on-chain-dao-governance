@@ -1,4 +1,4 @@
-import {isArray, isString} from 'lodash'
+import {isArray, isMap, isString} from 'lodash'
 
 import {encodeAddress} from '@wingriders/cab/ledger/address'
 import {Address, TxMetadatum} from '@wingriders/cab/types'
@@ -63,4 +63,11 @@ export function parsePosixTime(datum: TxMetadatum | undefined): Date {
     throw new Error(`Metadatum is not a posix time ${datum}`)
   }
   return date
+}
+
+export const assertMetadatumMap = (datum: TxMetadatum | undefined): Map<TxMetadatum, TxMetadatum> => {
+  if (!isMap(datum)) {
+    throw new Error(`Metadatum is not a map ${datum}`)
+  }
+  return datum
 }

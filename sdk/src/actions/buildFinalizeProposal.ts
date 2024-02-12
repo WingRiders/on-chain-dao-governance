@@ -1,25 +1,14 @@
 import * as api from '@wingriders/cab/dappConnector'
-import {splitMetadatumString} from '@wingriders/cab/ledger/transaction'
-import {Address, BigNumber, HexString, TxMetadatum, TxPlanArgs} from '@wingriders/cab/types'
+import {Address, BigNumber, HexString, TxPlanArgs} from '@wingriders/cab/types'
 import {normalizeTxInput, reverseAddress, reverseUtxos} from '@wingriders/cab/wallet/connector'
 
 import {LibError, LibErrorCode} from '../errors'
+import {encodeConcludeProposalOperation} from '../helpers'
 import {buildTx} from '../helpers/actions'
 import {getWalletOwner} from '../helpers/walletAddress'
-import {GovManagementOp, GovMetadatumLabel} from '../types'
+import {GovMetadatumLabel, ProposalResults} from '../types'
 import {isPotentialProposalUTxO} from './helpers'
 import {ActionContext, BuildAction, BuildActionParams, BuildActionResult} from './types'
-
-type ProposalResults = {
-  result: 'PASSED' | 'FAILED'
-  /** <choice name, voting power> */
-  choices: Record<string, number>
-  /** total voting power used to vote for this proposal (including abstained) */
-  total: number
-  /** total voting power used to vote for the abstain choice */
-  abstained: number
-  note: string
-}
 
 type BuildFinalizeProposalParams = {
   /** transaction hash where the proposal was created */
@@ -70,15 +59,7 @@ export const buildFinalizeProposalAction =
         custom: new Map([
           [
             GovMetadatumLabel.COMMUNITY_VOTING_MANAGE,
-            new Map<TxMetadatum, TxMetadatum>([
-              ['op', GovManagementOp.CONCLUDE_PROPOSAL],
-              ['id', Buffer.from(proposalTxHash, 'hex')],
-              ['result', results.result],
-              ['choices', new Map<TxMetadatum, TxMetadatum>(Object.entries(results.choices))],
-              ['total', results.total],
-              ['abstained', results.abstained],
-              ['note', splitMetadatumString(results.note)],
-            ]),
+            encodeConcludeProposalOperation(proposalTxHash, results),
           ],
         ]),
       },

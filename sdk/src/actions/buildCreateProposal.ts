@@ -3,7 +3,7 @@ import {computeMinUTxOLovelaceAmount} from '@wingriders/cab/ledger/transaction'
 import {BigNumber, TxOutputType, TxPlanArgs, ZeroLovelace} from '@wingriders/cab/types'
 
 import {buildTx} from '../helpers/actions'
-import {encodeProposal} from '../helpers/encodeMetadatum'
+import {encodeAddProposalOperation} from '../helpers/encodeMetadatum'
 import {GovMetadatumLabel, GovernanceVotingParams, PollMetadatum, ProposalMetadatum} from '../types'
 import {ActionContext, BuildAction, BuildActionParams} from './types'
 
@@ -54,7 +54,9 @@ export const buildCreateProposalAction =
       ],
       metadata: {
         // NOTE for now custom metadatum until it gets standardised and moved to cab
-        custom: new Map([[GovMetadatumLabel.COMMUNITY_VOTING_MANAGE, encodeProposal(proposal, poll)]]),
+        custom: new Map([
+          [GovMetadatumLabel.COMMUNITY_VOTING_MANAGE, encodeAddProposalOperation(proposal, poll)],
+        ]),
       },
       protocolParameters,
     }

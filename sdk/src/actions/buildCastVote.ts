@@ -5,7 +5,7 @@ import {reverseAddress, reverseUtxo} from '@wingriders/cab/wallet/connector'
 
 import {LibError, LibErrorCode} from '../errors'
 import {buildTx} from '../helpers/actions'
-import {encodeVote} from '../helpers/encodeMetadatum'
+import {encodeVotesMetadatum} from '../helpers/encodeMetadatum'
 import {getWalletOwner} from '../helpers/walletAddress'
 import {GovMetadatumLabel, Vote} from '../types'
 import {ActionContext, BuildAction, BuildActionParams, BuildActionResult} from './types'
@@ -63,7 +63,7 @@ export const buildCastVoteAction =
       outputs: [],
       metadata: {
         // NOTE for now custom metadatum until it gets standardised and moved to cab
-        custom: new Map([[GovMetadatumLabel.COMMUNITY_VOTING_VOTE, encodeVote(vote)]]),
+        custom: new Map([[GovMetadatumLabel.COMMUNITY_VOTING_VOTE, encodeVotesMetadatum([vote])]]),
       },
       requiredSigners: [stakingHash],
       protocolParameters,

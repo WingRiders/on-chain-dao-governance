@@ -1,12 +1,12 @@
 import * as api from '@wingriders/cab/dappConnector'
-import {splitMetadatumString} from '@wingriders/cab/ledger/transaction'
-import {Address, BigNumber, HexString, TxMetadatum, TxPlanArgs} from '@wingriders/cab/types'
+import {Address, BigNumber, HexString, TxPlanArgs} from '@wingriders/cab/types'
 import {normalizeTxInput, reverseAddress, reverseUtxos} from '@wingriders/cab/wallet/connector'
 
 import {LibError, LibErrorCode} from '../errors'
+import {encodeCancelProposalOperation} from '../helpers'
 import {buildTx} from '../helpers/actions'
 import {getWalletOwner} from '../helpers/walletAddress'
-import {GovManagementOp, GovMetadatumLabel} from '../types'
+import {GovMetadatumLabel} from '../types'
 import {isPotentialProposalUTxO} from './helpers'
 import {ActionContext, BuildAction, BuildActionParams, BuildActionResult} from './types'
 
@@ -59,11 +59,7 @@ export const buildCancelProposalAction =
         custom: new Map([
           [
             GovMetadatumLabel.COMMUNITY_VOTING_MANAGE,
-            new Map<TxMetadatum, TxMetadatum>([
-              ['op', GovManagementOp.CANCEL_PROPOSAL],
-              ['id', Buffer.from(proposalTxHash, 'hex')],
-              ['reason', splitMetadatumString(reason)],
-            ]),
+            encodeCancelProposalOperation(proposalTxHash, reason),
           ],
         ]),
       },

@@ -2,15 +2,14 @@ import {Transaction, TransactionOutput} from '@cardano-ogmios/schema'
 import {isString} from 'lodash'
 
 import {spendingHashFromAddress, stakingHashFromAddress} from '@wingriders/cab/ledger/address'
-import {HexString, TxMetadatum} from '@wingriders/cab/types'
+import {TxMetadatum} from '@wingriders/cab/types'
 import {
-  CborPollField,
-  CborProposalField,
   GovManagementOp,
   GovMetadatumLabel,
-  GovPollOp,
-  PollMetadatum,
-  ProposalMetadatum,
+  decodeAddProposalOperation,
+  decodeCancelProposalOperation,
+  decodeConcludeProposalOperation,
+  parseString,
 } from '@wingriders/governance-sdk'
 
 import {config, governanceToken, proposalsAddress} from '../config'
@@ -18,107 +17,7 @@ import {Block, PrismaTxClient, ProposalChoiceType, ProposalStatus} from '../db/p
 import {logger} from '../logger'
 import {getTokenQuantity} from '../ogmios/getTokenQuantity'
 import {assertMetadatumMap, parseMetadatumLabel} from '../ogmios/metadata'
-import {
-  parseAddressBuffer,
-  parseBuffer,
-  parsePosixTime,
-  parseString,
-  parseStringArray,
-} from './metadataHelper'
 import {upsertTransaction} from './transaction'
-
-const parseProposal = (proposalMetadatum: TxMetadatum): ProposalMetadatum => {
-  const proposalMetadata = assertMetadatumMap(proposalMetadatum)
-  const owner = parseAddressBuffer(proposalMetadata.get(CborProposalField.PROPOSAL_OWNER))
-  const name = parseString(proposalMetadata.get(CborProposalField.PROPOSAL_NAME))
-  const description = parseString(proposalMetadata.get(CborProposalField.PROPOSAL_DESCRIPTION))
-  const uri = parseString(proposalMetadata.get(CborProposalField.PROPOSAL_URI))
-  const communityUri = parseString(proposalMetadata.get(CborProposalField.PROPOSAL_COMMUNITY_URI))
-  const acceptChoices = parseStringArray(proposalMetadata.get(CborProposalField.PROPOSAL_ACCEPT_CHOICES))
-  const rejectChoices = parseStringArray(proposalMetadata.get(CborProposalField.PROPOSAL_REJECT_CHOICES))
-
-  if (acceptChoices.length === 0 && rejectChoices.length === 0) {
-    throw new Error('Proposal needs at least 1 choice')
-  }
-
-  return {
-    owner,
-    name,
-    description,
-    uri,
-    communityUri,
-    acceptChoices,
-    rejectChoices,
-  }
-}
-
-const parsePoll = (pollMetadatum: TxMetadatum): PollMetadatum | HexString => {
-  const pollMetadata = assertMetadatumMap(pollMetadatum)
-  const operation = parseString(pollMetadata.get(CborPollField.POLL_OP))
-
-  if (operation === GovPollOp.CREATE_NEW) {
-    const description = parseString(pollMetadata.get(CborPollField.POLL_DESCRIPTION))
-    const start = parsePosixTime(pollMetadata.get(CborPollField.POLL_START))
-    const end = parsePosixTime(pollMetadata.get(CborPollField.POLL_END))
-    const snapshot = parsePosixTime(pollMetadata.get(CborPollField.POLL_SNAPSHOT))
-
-    if (start > end) {
-      throw new Error(`Poll start must be before end`)
-    }
-
-    return {
-      description,
-      start,
-      end,
-      snapshot,
-    }
-  } else if (operation === GovPollOp.ASSIGN_EXISTING) {
-    const txHash = parseBuffer(pollMetadata.get(CborPollField.POLL_ID))
-    return txHash.toString('hex')
-  } else {
-    throw new Error()
-  }
-}
-
-const parseAddProposalMetadatum = (d: Map<TxMetadatum, TxMetadatum>) => {
-  const proposalMetadata = d.get('proposal')
-  const pollMetadata = d.get('poll')
-
-  if (!proposalMetadata) {
-    throw new Error('Proposal is missing from')
-  }
-  const proposal: ProposalMetadatum = parseProposal(proposalMetadata)
-  if (!pollMetadata) {
-    throw new Error('Poll is missing from the metadatum')
-  }
-  const poll: PollMetadatum | HexString = parsePoll(pollMetadata)
-  return {
-    proposal,
-    poll,
-  }
-}
-
-const parseConcludeProposalMetadatum = (d: Map<TxMetadatum, TxMetadatum>) => {
-  const proposalTxHash = parseBuffer(d.get('id'))
-  const result = parseString(d.get('result'))
-
-  // the other fields are not relevant and are mostly there as proof
-  return {
-    proposalTxHash,
-    result,
-  }
-}
-
-const parseCancelProposal = (d: Map<TxMetadatum, TxMetadatum>) => {
-  const proposalTxHash = parseBuffer(d.get('id'))
-  const reason = parseString(d.get('reason'))
-
-  // the other fields are not relevant and are mostly there as proof
-  return {
-    proposalTxHash,
-    reason,
-  }
-}
 
 const checkCollateral = (txOut: TransactionOutput) =>
   getTokenQuantity(governanceToken, txOut.value) >= config.PROPOSAL_COLLATERAL_QUANTITY
@@ -180,7 +79,7 @@ async function processAddProposal({
     return
   }
 
-  const manageData = parseAddProposalMetadatum(data)
+  const manageData = decodeAddProposalOperation(data)
   const ownerAddress = manageData.proposal.owner
   const ownerPubKeyHash = Buffer.from(spendingHashFromAddress(ownerAddress), 'hex')
   const ownerStakeKeyHash = Buffer.from(stakingHashFromAddress(ownerAddress), 'hex')
@@ -266,7 +165,7 @@ async function processConcludeProposal({
   dbBlock: Block
   txBody: Transaction
 }) {
-  const manageData = parseConcludeProposalMetadatum(data)
+  const manageData = decodeConcludeProposalOperation(data)
 
   const txHash = manageData.proposalTxHash.toString('hex')
   const proposal = await prismaTx.proposal.findUnique({
@@ -326,7 +225,7 @@ async function processCancelProposal({
   dbBlock: Block
   txBody: Transaction
 }) {
-  const manageData = parseCancelProposal(data)
+  const manageData = decodeCancelProposalOperation(data)
 
   const txHash = manageData.proposalTxHash.toString('hex')
   const proposal = await prismaTx.proposal.findUnique({
