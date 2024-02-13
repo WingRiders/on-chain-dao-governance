@@ -135,9 +135,9 @@ interface SubmitTxProps {
   cborizedTx: TxSigned
 }
 
-export const submitTx = async ({jsApi, cborizedTx}: SubmitTxProps): Promise<void> => {
+export const submitTx = async ({jsApi, cborizedTx}: SubmitTxProps): Promise<api.TxHash> => {
   try {
-    await jsApi.submitRawTx(cborizedTx.txBody as api.HexString, cborizedTx.txHash as api.TxHash)
+    return await jsApi.submitRawTx(cborizedTx.txBody as api.HexString, cborizedTx.txHash as api.TxHash)
   } catch (error: any) {
     throw new LibError(LibErrorCode.TxSubmitFailed, error.info, error, cborizedTx.txBody)
   }

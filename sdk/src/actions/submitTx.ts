@@ -7,11 +7,11 @@ type SubmitTxParams = {
   cborizedTx: TxSigned
 }
 
-type SubmitTxAction = (params: SubmitTxParams) => Promise<void>
+type SubmitTxAction = (params: SubmitTxParams) => Promise<api.TxHash>
 
 export const submitTxAction =
   () =>
   (jsApi: api.JsAPI): SubmitTxAction =>
   async ({cborizedTx}: SubmitTxParams) => {
-    await submitTx({jsApi, cborizedTx})
+    return await submitTx({jsApi, cborizedTx})
   }

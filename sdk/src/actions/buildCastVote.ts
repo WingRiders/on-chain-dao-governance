@@ -1,6 +1,8 @@
+import {Except} from 'type-fest'
+
 import * as api from '@wingriders/cab/dappConnector'
 import {stakingHashFromAddress} from '@wingriders/cab/ledger/address'
-import {BigNumber, HexString, TxPlanArgs} from '@wingriders/cab/types'
+import {BigNumber, TxPlanArgs} from '@wingriders/cab/types'
 import {reverseAddress, reverseUtxo} from '@wingriders/cab/wallet/connector'
 
 import {LibError, LibErrorCode} from '../errors'
@@ -11,10 +13,7 @@ import {GovMetadatumLabel, Vote} from '../types'
 import {ActionContext, BuildAction, BuildActionParams, BuildActionResult} from './types'
 
 type BuildCastVoteParams = {
-  pollTxHash: HexString
-  votingPower: BigNumber
-  votingUTxOs: api.TxInput[]
-  choices: Record<HexString, number>
+  vote: Except<Vote, 'voterAddress'>
 } & BuildActionParams
 
 export type CastVoteMetadata = {
@@ -31,10 +30,7 @@ export const buildCastVoteAction =
   ({protocolParameters, network}: RequiredContext) =>
   (jsApi: api.JsAPI): BuildAction<BuildCastVoteParams, CastVoteMetadata> =>
   async ({
-    pollTxHash,
-    choices,
-    votingPower,
-    votingUTxOs,
+    vote: {pollTxHash, choices, votingPower, votingUTxOs},
   }: BuildCastVoteParams): Promise<BuildActionResult<CastVoteMetadata>> => {
     const ownerAddress = reverseAddress(await getWalletOwner(jsApi))
     const stakingHash = stakingHashFromAddress(ownerAddress)
@@ -53,7 +49,7 @@ export const buildCastVoteAction =
       pollTxHash,
       choices,
       voterAddress: ownerAddress,
-      votingPower: votingPower.toNumber(),
+      votingPower,
       votingUTxOs,
     }
 

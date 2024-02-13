@@ -60,6 +60,9 @@ export const getSimpleMockedWallet = async ({
   vi.spyOn(blockchainExplorer, 'fetchUnspentTxOutputs').mockImplementation((_addresses) => {
     return Promise.resolve(utxos.map((u) => ({...u, address: mockedUsedAddresses[0]! as Address})))
   })
+  vi.spyOn(blockchainExplorer, 'submitTxRaw').mockImplementation((txHash, _txBody) => {
+    return Promise.resolve({txHash})
+  })
 
   const wallet = new Wallet({
     blockchainExplorer,
