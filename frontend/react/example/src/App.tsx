@@ -9,6 +9,7 @@ import {WalletContext, WalletContextType} from './ConnectWalletContext'
 import {ConnectWalletButton} from './ConnectWalletButton'
 import {createQueriesClient} from '@wingriders/governance-sdk'
 import {PaidFees} from './PaidFees'
+import {UserVotingDistribution} from './UserVotingDistribution'
 
 const queriesClient = createQueriesClient({
   governanceUrl: 'http://127.0.0.1:3240',
@@ -43,6 +44,7 @@ export const App = () => {
           <Container maxWidth="lg">
             <Stack spacing={2} pt={2}>
               <PaidFees />
+              <UserVotingDistribution />
               <CreateProposal />
               <Proposals />
             </Stack>

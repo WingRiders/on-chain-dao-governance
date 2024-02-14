@@ -1,11 +1,32 @@
-import {Card, CardContent, PaletteColor, Stack, Theme, Tooltip, Typography, alpha} from '@mui/material'
+import {
+  Button,
+  ButtonGroup,
+  Card,
+  CardContent,
+  Grid,
+  PaletteColor,
+  Stack,
+  Theme,
+  Tooltip,
+  Typography,
+  alpha,
+} from '@mui/material'
 
-import {useUserVotesQuery, useVotesQuery} from '@wingriders/governance-frontend-react-sdk'
+import {
+  useTheoreticalMaxVotingPowerQuery,
+  useUserVotesQuery,
+  useUserVotingDistributionQuery,
+  useVotesQuery,
+} from '@wingriders/governance-frontend-react-sdk'
 import {ProposalDetails, UserVotesResponse, VotesByState} from '@wingriders/governance-sdk'
 import {useContext} from 'react'
 import {WalletContext} from './ConnectWalletContext'
 import {formatBigNumber} from './helpers/formatNumber'
 import {VoteVerificationStateIcon} from './components/VoteVerificationStateIcon'
+import {ipfsToHttps} from './helpers/ipfs'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import {BigNumber} from '@wingriders/cab/types'
+import {getExplorerAddressUrl} from './helpers/explorer'
 
 type ProposalProps = {
   proposal: ProposalDetails
@@ -23,6 +44,18 @@ export const Proposal = ({proposal}: ProposalProps) => {
   )
   const proposalUserVotes = userVotesData?.[proposal.txHash]
 
+  const {data: userVotingDistributionData} = useUserVotingDistributionQuery(
+    ownerStakeKeyHash ? [{ownerStakeKeyHash, slot: proposal.poll.snapshot}] : undefined
+  )
+  const userVotingPower = userVotingDistributionData?.walletTokens.votingPower
+
+  const {data: theoreticalMaxVotingPower} = useTheoreticalMaxVotingPowerQuery([])
+
+  const votingParticipation =
+    proposalVotes && theoreticalMaxVotingPower
+      ? new BigNumber(proposalVotes.votingPower.VERIFIED).div(theoreticalMaxVotingPower).decimalPlaces(5)
+      : undefined
+
   return (
     <Card sx={({palette}) => ({bgcolor: palette.grey[100]})}>
       <CardContent>
@@ -34,6 +67,83 @@ export const Proposal = ({proposal}: ProposalProps) => {
           {proposal.name}
         </Typography>
         <Typography variant="body2">{proposal.description}</Typography>
+
+        <ButtonGroup sx={{mt: 2}} size="small">
+          <Button
+            href={ipfsToHttps(proposal.uri)}
+            target="_blank"
+            rel="noreferrer"
+            endIcon={<OpenInNewIcon />}
+          >
+            Proposal documentation
+          </Button>
+          <Button
+            href={proposal.communityUri}
+            target="_blank"
+            rel="noreferrer"
+            endIcon={<OpenInNewIcon />}
+          >
+            Community discussion
+          </Button>
+        </ButtonGroup>
+
+        <Grid
+          container
+          mt={2}
+          width="100%"
+          bgcolor={({palette}) => palette.background.paper}
+          p={1.5}
+          rowGap={1}
+        >
+          <Grid item xs={8}>
+            <Typography variant="subtitle1" fontWeight="bold">
+              Proposal creator:
+            </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <Stack alignItems="flex-end">
+              <Button
+                href={getExplorerAddressUrl(proposal.owner)}
+                target="_blank"
+                rel="noreferrer"
+                variant="text"
+                sx={({palette}) => ({
+                  p: 0,
+                  textTransform: 'none',
+                  textDecoration: 'underline',
+                  textUnderlineOffset: '0.3em',
+                  color: palette.text.primary,
+                })}
+              >
+                <Typography variant="subtitle1" textAlign="end">
+                  {proposal.owner.slice(0, 10)}…{proposal.owner.slice(-10)}
+                </Typography>
+              </Button>
+            </Stack>
+          </Grid>
+
+          <Grid item xs={8}>
+            <Typography variant="subtitle1" fontWeight="bold">
+              Your voting power for this proposal:
+            </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <Typography variant="subtitle1" textAlign="end">
+              {userVotingPower ? formatBigNumber(userVotingPower) : '-'}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={8}>
+            <Typography variant="subtitle1" fontWeight="bold">
+              Voting participation:
+            </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <Typography variant="subtitle1" textAlign="end">
+              {votingParticipation ? `${votingParticipation.toString()}%` : '-'}
+            </Typography>
+          </Grid>
+        </Grid>
 
         <Stack direction="row" alignItems="baseline" mt={2} spacing={4}>
           <Typography variant="body2" flex={3} fontWeight="bold">
