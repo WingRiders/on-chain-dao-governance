@@ -9,6 +9,7 @@ import {
 } from '@wingriders/governance-frontend-react-sdk'
 import {NetworkName} from '@wingriders/cab/types'
 import {createActionsClient, getWalletOwner} from '@wingriders/governance-sdk'
+import {stakingHashFromAddress} from '@wingriders/cab/ledger/address'
 
 declare global {
   interface Window {
@@ -29,8 +30,8 @@ export const ConnectWalletButton = () => {
   const [isWalletAvailable, setWalletAvailable] = useState(false)
   const {setWalletContext} = useContext(WalletContext)
 
-  const {data: votingParams} = useVotingParamsQuery()
-  const {data: protocolParameters} = useProtocolParametersQuery()
+  const {data: votingParams} = useVotingParamsQuery([])
+  const {data: protocolParameters} = useProtocolParametersQuery([])
 
   useEffect(() => {
     setTimeout(() => {
@@ -61,7 +62,8 @@ export const ConnectWalletButton = () => {
           networkName: NetworkName.PREPROD,
         })
         const ownerAddress = reverseAddress(await getWalletOwner(jsApi))
-        setWalletContext({actionsClient, ownerAddress})
+        const ownerStakeKeyHash = stakingHashFromAddress(ownerAddress)
+        setWalletContext({actionsClient, ownerAddress, ownerStakeKeyHash})
         setConnectionState('connected')
       } catch (error) {
         console.error(error)

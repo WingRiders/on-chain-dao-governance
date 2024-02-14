@@ -8,6 +8,6 @@ type RequiredContext = QueryContext
 export const fetchUserVotes =
   (context: RequiredContext) =>
   (userVotesFilter: UserVotesFilter): Promise<UserVotesResponse> =>
-    request(`${context.governanceUrl}/votes`, 'POST', JSON.stringify(userVotesFilter), {
+    request(`${context.governanceUrl}/userVotes`, 'POST', JSON.stringify(userVotesFilter), {
       'Content-Type': 'application/json',
     })

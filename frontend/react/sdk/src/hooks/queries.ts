@@ -8,13 +8,21 @@ const buildUseQuery = <TArgs extends any[], TRes, TQueryKey extends QueryKey>(
   key: TQueryKey,
   getFetcher: (c: QueriesClient) => (...args: TArgs) => Promise<TRes>
 ) => {
-  return (...args: TArgs) => {
+  /**
+   * query will be skipped and will return `undefined` if args is `undefined`
+   */
+  return (args: TArgs | undefined) => {
     const {queriesClient} = useDaoGovernanceContext() ?? {}
     if (!queriesClient)
       throw new Error(
         'QueriesClient not initialized. Wrap your app in <DaoGovernanceProvider /> and pass in queriesClient.'
       )
-    return useQuery<TRes, [TQueryKey, TArgs]>([key, args], () => getFetcher(queriesClient)(...args))
+    return useQuery<TRes | undefined, [TQueryKey, TArgs | undefined]>([key, args], () => {
+      if (!args) {
+        return undefined
+      }
+      return getFetcher(queriesClient)(...args)
+    })
   }
 }
 

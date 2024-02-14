@@ -15,7 +15,8 @@ export type FormatNumberOptions = {
     }
 )
 
-export const formatBigNumber = (number: BigNumber, options: FormatNumberOptions = {}) => {
+export const formatBigNumber = (_number: BigNumber.Value, options: FormatNumberOptions = {}) => {
+  const number = new BigNumber(_number)
   let formattedNumber: string
   if (!number.isFinite()) {
     // this should be probably translated

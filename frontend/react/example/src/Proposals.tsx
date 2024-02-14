@@ -5,7 +5,7 @@ import {useProposalsQuery} from '@wingriders/governance-frontend-react-sdk'
 import {Proposal} from './Proposal'
 
 export const Proposals = () => {
-  const {data: proposals, isLoading, isError} = useProposalsQuery()
+  const {data: proposals, isLoading, isError} = useProposalsQuery([])
 
   return (
     <Stack spacing={2}>

@@ -4,7 +4,7 @@ import {BigNumber} from '@wingriders/cab/types'
 import {AdaQuantityDisplay} from './components/AdaQuantityDisplay'
 
 export const PaidFees = () => {
-  const {data, isLoading, isError} = usePaidFeesQuery()
+  const {data, isLoading, isError} = usePaidFeesQuery([])
 
   return (
     <Stack>

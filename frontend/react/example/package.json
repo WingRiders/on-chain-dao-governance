@@ -20,7 +20,8 @@
     "@wingriders/governance-frontend-react-sdk": "workspace:^0.1.0",
     "@wingriders/governance-sdk": "workspace:0.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "ts-pattern": "^5.0.6"
   },
   "devDependencies": {
     "@rollup/plugin-inject": "^5.0.5",

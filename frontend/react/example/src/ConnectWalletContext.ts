@@ -5,6 +5,7 @@ import {createContext} from 'react'
 export type WalletContextType = {
   actionsClient?: ActionsClient
   ownerAddress?: Address
+  ownerStakeKeyHash?: string
 }
 
 export const WalletContext = createContext<
@@ -14,5 +15,6 @@ export const WalletContext = createContext<
 >({
   actionsClient: undefined,
   ownerAddress: undefined,
+  ownerStakeKeyHash: undefined,
   setWalletContext: () => {},
 })
