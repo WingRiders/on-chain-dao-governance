@@ -4,7 +4,7 @@ import createSubscriber from 'pg-listen'
 import {config} from '../config'
 import {logger} from '../logger'
 import {setLatestBlock} from '../ogmios'
-import {getLastDbBlock} from './getLastDbBlock'
+import {setLatestBlockFromDb} from './setLatestBlockFromDb'
 
 const channelName = 'block_update'
 
@@ -15,12 +15,6 @@ type Payload = {
   op: TG_OP
   hash: string
   slot: number
-}
-
-const setLatestBlockFromDb = async (): Promise<void> => {
-  logger.info('Setting latest block from DB')
-  const lastSyncedBlock = await getLastDbBlock()
-  setLatestBlock(lastSyncedBlock !== 'origin' ? lastSyncedBlock : undefined)
 }
 
 // To prevent calling setLatestBlockFromDb many times in case many blocks are deleted,

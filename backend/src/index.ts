@@ -1,5 +1,6 @@
 import {config, isAggregatorMode, isServerMode} from './config'
 import {initPgListen} from './db/initPgListen'
+import {setLatestBlockFromDb} from './db/setLatestBlockFromDb'
 import {logger} from './logger'
 import {registerCleanUp} from './ogmios'
 import {ogmiosClientInitializerLoop} from './ogmios/ogmios'
@@ -14,6 +15,7 @@ const start = async () => {
   )
 
   if (isServerMode) {
+    await setLatestBlockFromDb()
     await initPgListen()
   }
   ogmiosClientInitializerLoop()
