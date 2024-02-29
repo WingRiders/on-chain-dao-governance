@@ -5,21 +5,24 @@ import {
   CardContent,
   Chip,
   Grid,
-  IconButton,
   Palette,
   Stack,
   Tooltip,
   Typography,
   alpha,
 } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close'
 import {
   useTheoreticalMaxVotingPowerQuery,
   useUserVotesQuery,
   useUserVotingDistributionQuery,
   useVotesQuery,
 } from '@wingriders/governance-frontend-react-sdk'
-import {ProposalDetails, UserVotesResponse, VotesByState} from '@wingriders/governance-sdk'
+import {
+  ProposalDetails,
+  ProposalStatus,
+  UserVotesResponse,
+  VotesByState,
+} from '@wingriders/governance-sdk'
 import {useContext, useState} from 'react'
 import {WalletContext} from './ConnectWalletContext'
 import {formatBigNumber} from './helpers/formatNumber'
@@ -30,7 +33,11 @@ import {BigNumber} from '@wingriders/cab/types'
 import {getExplorerAddressUrl} from './helpers/explorer'
 import {useTime} from './helpers/time'
 import {utxoIdToApiTxInput} from './helpers/utxo'
-import {useCastVote} from './helpers/actions'
+import {useCancelProposal, useCastVote, useConcludeProposal} from './helpers/actions'
+import {useIsAdmin} from './helpers/isAdmin'
+import {CancelProposalModal} from './CancelProposalModal'
+import {ActionResultDisplay} from './components/ActionResultDisplay'
+import {ConcludeProposalModal} from './ConcludeProposalModal'
 
 type ProposalProps = {
   proposal: ProposalDetails
@@ -39,8 +46,11 @@ type ProposalProps = {
 export const Proposal = ({proposal}: ProposalProps) => {
   const time = useTime(10_000)
   const {ownerStakeKeyHash} = useContext(WalletContext)
+  const isAdmin = useIsAdmin()
 
   const [selectedChoiceIndex, setSelectedChoiceIndex] = useState<number | null>(null)
+  const [cancellingProposalTxHash, setCancellingProposalTxHash] = useState<string | null>(null)
+  const [concludingProposalTxHash, setConcludingProposalTxHash] = useState<string | null>(null)
 
   const {data: votesData} = useVotesQuery([{proposalTxHashes: [proposal.txHash]}])
   const proposalVotes = votesData?.[proposal.txHash]
@@ -64,6 +74,8 @@ export const Proposal = ({proposal}: ProposalProps) => {
       : undefined
 
   const isActive = time >= proposal.poll.start && time <= proposal.poll.end
+  const isFinished = time > proposal.poll.end
+  const canBeConcluded = isFinished && proposal.status === ProposalStatus.AVAILABLE
   const hasUserVoted = proposalUserVotes != null
 
   const {
@@ -72,6 +84,20 @@ export const Proposal = ({proposal}: ProposalProps) => {
     result: castVoteResult,
     setResult: setCastVoteResult,
   } = useCastVote()
+
+  const {
+    cancelProposal,
+    isLoading: isLoadingCancelProposal,
+    result: cancelProposalResult,
+    setResult: setCancelProposalResult,
+  } = useCancelProposal()
+
+  const {
+    concludeProposal,
+    isLoading: isLoadingConcludeProposal,
+    result: concludeProposalResult,
+    setResult: setConcludeProposalResult,
+  } = useConcludeProposal()
 
   const handleCastVote = () => {
     if (selectedChoiceIndex == null || !userVotingPower) return
@@ -217,7 +243,25 @@ export const Proposal = ({proposal}: ProposalProps) => {
 
         {isActive && (
           <Stack>
-            <Stack direction="row" mt={3} justifyContent="flex-end">
+            <Stack direction="row" mt={3} justifyContent="flex-end" spacing={2}>
+              {isAdmin && canBeConcluded && (
+                <Button
+                  variant="contained"
+                  sx={{minWidth: '200px'}}
+                  onClick={() => setConcludingProposalTxHash(proposal.txHash)}
+                >
+                  {'Conclude proposal'}
+                </Button>
+              )}
+              {isAdmin && (
+                <Button
+                  variant="contained"
+                  sx={{minWidth: '200px'}}
+                  onClick={() => setCancellingProposalTxHash(proposal.txHash)}
+                >
+                  {'Cancel proposal'}
+                </Button>
+              )}
               <Button
                 variant="contained"
                 sx={{minWidth: '200px'}}
@@ -242,33 +286,56 @@ export const Proposal = ({proposal}: ProposalProps) => {
             </Stack>
 
             {castVoteResult && (
-              <Stack
-                bgcolor={({palette}) =>
-                  castVoteResult.isSuccess ? palette.success.dark : palette.error.dark
-                }
-                mt={1}
-                p={1}
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Typography
-                  color={({palette}) =>
-                    castVoteResult.isSuccess ? palette.success.contrastText : palette.error.contrastText
-                  }
-                >
-                  {castVoteResult.isSuccess
-                    ? `Cast vote successful, transaction: ${castVoteResult.txHash}`
-                    : 'Error while casting vote: ' + castVoteResult.error}
-                </Typography>
-                <IconButton onClick={() => setCastVoteResult(null)}>
-                  <CloseIcon />
-                </IconButton>
-              </Stack>
+              <ActionResultDisplay
+                result={castVoteResult}
+                onClose={() => setCastVoteResult(null)}
+                successMessage="Cast vote successful"
+                errorMessage="Error while casting vote"
+              />
+            )}
+
+            {cancelProposalResult && (
+              <ActionResultDisplay
+                result={cancelProposalResult}
+                onClose={() => setCancelProposalResult(null)}
+                successMessage="Cancel proposal successful"
+                errorMessage="Error while cancelling proposal"
+              />
+            )}
+
+            {concludeProposalResult && (
+              <ActionResultDisplay
+                result={concludeProposalResult}
+                onClose={() => setConcludeProposalResult(null)}
+                successMessage="Conclude proposal successful"
+                errorMessage="Error while concluding proposal"
+              />
             )}
           </Stack>
         )}
       </CardContent>
+
+      {cancellingProposalTxHash && (
+        <CancelProposalModal
+          open={cancellingProposalTxHash != null}
+          onClose={() => setCancellingProposalTxHash(null)}
+          proposalTxHash={cancellingProposalTxHash}
+          onCancel={cancelProposal}
+          isLoading={isLoadingCancelProposal}
+        />
+      )}
+
+      {concludingProposalTxHash && proposalVotes && (
+        <ConcludeProposalModal
+          open={concludingProposalTxHash != null}
+          onClose={() => setConcludingProposalTxHash(null)}
+          proposalTxHash={concludingProposalTxHash}
+          proposalVotes={proposalVotes.byChoice}
+          proposalChoices={choices}
+          onConclude={concludeProposal}
+          isLoading={isLoadingConcludeProposal}
+        />
+      )}
     </Card>
   )
 }

@@ -10,7 +10,7 @@ import {GovMetadatumLabel} from '../types'
 import {isPotentialProposalUTxO} from './helpers'
 import {ActionContext, BuildAction, BuildActionParams, BuildActionResult} from './types'
 
-type BuildCancelProposalParams = {
+export type BuildCancelProposalParams = {
   /** transaction hash where the proposal was created */
   proposalTxHash: HexString
   /** The reason for the cancellation */

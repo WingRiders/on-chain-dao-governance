@@ -7,7 +7,7 @@ import {encodeAddProposalOperation} from '../helpers/encodeMetadatum'
 import {GovMetadatumLabel, GovernanceVotingParams, PollMetadatum, ProposalMetadatum} from '../types'
 import {ActionContext, BuildAction, BuildActionParams} from './types'
 
-type BuildCreateProposalParams = {
+export type BuildCreateProposalParams = {
   proposal: ProposalMetadatum
   /** Either an existing poll or a new poll */
   poll: PollMetadatum

@@ -10,7 +10,7 @@ import {GovMetadatumLabel, ProposalResults} from '../types'
 import {isPotentialProposalUTxO} from './helpers'
 import {ActionContext, BuildAction, BuildActionParams, BuildActionResult} from './types'
 
-type BuildFinalizeProposalParams = {
+export type BuildFinalizeProposalParams = {
   /** transaction hash where the proposal was created */
   proposalTxHash: HexString
   results: ProposalResults
