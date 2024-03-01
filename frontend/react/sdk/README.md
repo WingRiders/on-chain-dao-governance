@@ -8,7 +8,7 @@ The main functionality of this package includes:
 - Set of hooks for data fetching
 - Set of hooks for creating blockchain transactions
 
-Look at the `/frontend/react/example` application which is an example implementation of frontend for On-Chain DAO Governance that uses this package.
+Look at our [example application](../example/README.md) which is an example implementation of frontend for On-Chain DAO Governance that uses this package.
 
 ## Installation
 
