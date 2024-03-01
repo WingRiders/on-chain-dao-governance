@@ -1,6 +1,6 @@
 import {AppBar, Badge, Stack, Tab, Tabs, Toolbar, Typography} from '@mui/material'
-import {ConnectWalletButton} from './ConnectWalletButton'
-import {useIsAdmin} from './helpers/isAdmin'
+import {ConnectWalletButton} from '../wallet/ConnectWalletButton'
+import {useIsAdmin} from '../../helpers/isAdmin'
 import {useLocation, Link as RouterLink} from 'react-router-dom'
 
 export const Header = () => {

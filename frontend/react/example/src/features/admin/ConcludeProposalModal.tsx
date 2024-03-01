@@ -10,9 +10,9 @@ import {
   Typography,
 } from '@mui/material'
 import {useContext} from 'react'
-import {WalletContext} from './ConnectWalletContext'
+import {WalletContext} from '../wallet/ConnectWalletContext'
 import {useForm} from 'react-hook-form'
-import {InputField} from './components/InputField'
+import {InputField} from '../../components/InputField'
 import {
   BuildFinalizeProposalParams,
   ChoiceVoteAggregation,
@@ -20,7 +20,7 @@ import {
 } from '@wingriders/governance-sdk'
 import {Address, BigNumber} from '@wingriders/cab/types'
 import {useVotingParamsQuery} from '@wingriders/governance-frontend-react-sdk'
-import {AssetQuantityDisplay} from './components/AssetQuantityDisplay'
+import {AssetQuantityDisplay} from '../../components/AssetQuantityDisplay'
 
 type ConcludeProposalForm = {
   beneficiary: string

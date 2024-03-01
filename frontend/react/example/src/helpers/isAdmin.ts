@@ -1,6 +1,6 @@
 import {useVotingParamsQuery} from '@wingriders/governance-frontend-react-sdk'
 import {useContext} from 'react'
-import {WalletContext} from '../ConnectWalletContext'
+import {WalletContext} from '../features/wallet/ConnectWalletContext'
 
 export const useIsAdmin = () => {
   const {data: votingParams} = useVotingParamsQuery([])

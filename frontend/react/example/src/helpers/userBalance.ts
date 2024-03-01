@@ -1,5 +1,5 @@
 import {useContext} from 'react'
-import {WalletContext} from '../ConnectWalletContext'
+import {WalletContext} from '../features/wallet/ConnectWalletContext'
 import {usePromise} from './promise'
 import {reverseValue} from '@wingriders/cab/wallet/connector'
 

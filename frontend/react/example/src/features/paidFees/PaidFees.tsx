@@ -1,7 +1,7 @@
 import {Stack, Typography} from '@mui/material'
 import {usePaidFeesQuery} from '@wingriders/governance-frontend-react-sdk'
 import {BigNumber} from '@wingriders/cab/types'
-import {AdaQuantityDisplay} from './components/AdaQuantityDisplay'
+import {AdaQuantityDisplay} from '../../components/AdaQuantityDisplay'
 
 export const PaidFees = () => {
   const {data, isLoading, isError} = usePaidFeesQuery([])

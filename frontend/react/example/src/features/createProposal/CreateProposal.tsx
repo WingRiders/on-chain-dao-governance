@@ -1,7 +1,7 @@
 import {Box, Button, Stack, TextField, Typography} from '@mui/material'
 import {useContext} from 'react'
 
-import {WalletContext} from '../../ConnectWalletContext'
+import {WalletContext} from '../wallet/ConnectWalletContext'
 import {useCreateProposal} from '../../helpers/actions'
 import {ActionResultDisplay} from '../../components/ActionResultDisplay'
 import {DateTimePicker} from '@mui/x-date-pickers'

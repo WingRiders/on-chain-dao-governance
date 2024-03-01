@@ -7,8 +7,8 @@ import {
   useVotingParamsQuery,
 } from '@wingriders/governance-frontend-react-sdk'
 import {useContext} from 'react'
-import {WalletContext} from './ConnectWalletContext'
-import {AssetQuantityDisplay} from './components/AssetQuantityDisplay'
+import {WalletContext} from '../wallet/ConnectWalletContext'
+import {AssetQuantityDisplay} from '../../components/AssetQuantityDisplay'
 import {BigNumber} from '@wingriders/cab/types'
 
 export const CurrentData = () => {

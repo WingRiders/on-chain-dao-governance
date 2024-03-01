@@ -1,8 +1,8 @@
 import {Button, Dialog, DialogActions, DialogContent, Stack, TextField, Typography} from '@mui/material'
 import {useContext} from 'react'
-import {WalletContext} from './ConnectWalletContext'
+import {WalletContext} from '../wallet/ConnectWalletContext'
 import {useForm} from 'react-hook-form'
-import {InputField} from './components/InputField'
+import {InputField} from '../../components/InputField'
 import {BuildCancelProposalParams} from '@wingriders/governance-sdk'
 import {Address} from '@wingriders/cab/types'
 
