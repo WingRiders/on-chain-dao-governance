@@ -1,8 +1,11 @@
-import {AppBar, Badge, Box, Toolbar, Typography} from '@mui/material'
+import {AppBar, Badge, Stack, Tab, Tabs, Toolbar, Typography} from '@mui/material'
 import {ConnectWalletButton} from './ConnectWalletButton'
 import {useIsAdmin} from './helpers/isAdmin'
+import {useLocation, Link as RouterLink} from 'react-router-dom'
 
 export const Header = () => {
+  const location = useLocation()
+
   const isAdmin = useIsAdmin()
 
   const titleElement = (
@@ -14,7 +17,7 @@ export const Header = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Box flexGrow={1}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%">
           {isAdmin ? (
             <Badge
               badgeContent={'admin'}
@@ -30,9 +33,28 @@ export const Header = () => {
           ) : (
             titleElement
           )}
-        </Box>
-        <ConnectWalletButton />
+
+          <Tabs value={location.pathname} textColor="inherit">
+            <MenuItem value="/proposals" label="Proposals" />
+            <MenuItem value="/proposals/new" label="Create proposal" />
+            <MenuItem value="/paid-fees" label="Paid fees" />
+            <MenuItem value="/voting-distribution" label="Voting distribution" />
+          </Tabs>
+
+          <ConnectWalletButton />
+        </Stack>
       </Toolbar>
     </AppBar>
+  )
+}
+
+type MenuItemProps = {
+  value: string
+  label: string
+}
+
+const MenuItem = ({value, label, ...otherProps}: MenuItemProps) => {
+  return (
+    <Tab color="inherit" value={value} label={label} component={RouterLink} to={value} {...otherProps} />
   )
 }

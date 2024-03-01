@@ -1,4 +1,4 @@
-import {Box, Container, CssBaseline, Stack} from '@mui/material'
+import {Container, CssBaseline} from '@mui/material'
 import {useCallback, useMemo, useState} from 'react'
 
 import {DaoGovernanceProvider} from '@wingriders/governance-frontend-react-sdk'
@@ -8,8 +8,9 @@ import {Proposals} from './Proposals'
 import {WalletContext, WalletContextType} from './ConnectWalletContext'
 import {createQueriesClient} from '@wingriders/governance-sdk'
 import {PaidFees} from './PaidFees'
-import {UserVotingDistribution} from './UserVotingDistribution'
+import {UserVotingDistribution} from './CurrentVotingDistribution'
 import {Header} from './Header'
+import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
 
 const queriesClient = createQueriesClient({
   governanceUrl: 'http://127.0.0.1:3240',
@@ -31,18 +32,19 @@ export const App = () => {
   return (
     <WalletContext.Provider value={memoizedWalletContext}>
       <DaoGovernanceProvider queriesClient={queriesClient} actionsClient={walletContext?.actionsClient}>
-        <Box>
+        <BrowserRouter>
           <CssBaseline />
           <Header />
-          <Container maxWidth="lg">
-            <Stack spacing={2} pt={2}>
-              <PaidFees />
-              <UserVotingDistribution />
-              <CreateProposal />
-              <Proposals />
-            </Stack>
+          <Container maxWidth="lg" sx={{pt: 4}}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/proposals" />} />
+              <Route path="/proposals" element={<Proposals />} />
+              <Route path="/proposals/new" element={<CreateProposal />} />
+              <Route path="/paid-fees" element={<PaidFees />} />
+              <Route path="/voting-distribution" element={<UserVotingDistribution />} />
+            </Routes>
           </Container>
-        </Box>
+        </BrowserRouter>
       </DaoGovernanceProvider>
     </WalletContext.Provider>
   )
