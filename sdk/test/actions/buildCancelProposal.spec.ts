@@ -50,7 +50,10 @@ describe('build cancel proposal', () => {
     const {txAux} = await cancelProposal({
       beneficiary:
         'addr_test1qz68clqv5g66rzqq8l0ru6jcx9q63yf97dr9w2ac06q6supfvmwlrkk0q3k4yjpn3yt5wy7zz23m2jfhp7vkqejkjfgsg0pq9r' as Address,
-      proposalTxHash,
+      proposalTxRef: {
+        txHash: proposalTxHash,
+        outputIndex: 0,
+      },
       reason: 'invalid data',
     })
 
@@ -79,7 +82,10 @@ describe('build cancel proposal', () => {
       cancelProposal({
         beneficiary:
           'addr_test1qz68clqv5g66rzqq8l0ru6jcx9q63yf97dr9w2ac06q6supfvmwlrkk0q3k4yjpn3yt5wy7zz23m2jfhp7vkqejkjfgsg0pq9r' as Address,
-        proposalTxHash,
+        proposalTxRef: {
+          txHash: proposalTxHash,
+          outputIndex: 0,
+        },
         reason: 'invalid data',
       })
     ).rejects.toThrowError(/Proposal not found\/already spent/)

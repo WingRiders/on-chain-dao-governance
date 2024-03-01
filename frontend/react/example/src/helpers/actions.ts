@@ -90,7 +90,7 @@ export const useCancelProposal = () => {
   const {mutateAsync: submitTx, isLoading: isLoadingSubmit} = useSubmitTxAction()
 
   const cancelProposal = useCallback(
-    async (params: Pick<BuildCancelProposalParams, 'proposalTxHash' | 'beneficiary' | 'reason'>) => {
+    async (params: Pick<BuildCancelProposalParams, 'proposalTxRef' | 'beneficiary' | 'reason'>) => {
       try {
         const buildTxInfo = await buildCancelProposal(params)
         const {cborizedTx, txHash} = await signTx({buildTxInfo})
@@ -123,7 +123,7 @@ export const useConcludeProposal = () => {
   const {mutateAsync: submitTx, isLoading: isLoadingSubmit} = useSubmitTxAction()
 
   const concludeProposal = useCallback(
-    async (params: Pick<BuildFinalizeProposalParams, 'proposalTxHash' | 'results' | 'beneficiary'>) => {
+    async (params: Pick<BuildFinalizeProposalParams, 'proposalTxRef' | 'results' | 'beneficiary'>) => {
       try {
         const buildTxInfo = await buildConcludeProposal(params)
         const {cborizedTx, txHash} = await signTx({buildTxInfo})

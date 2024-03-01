@@ -1,6 +1,7 @@
 export const proposalDetailsPrismaSelect = (withVotes: boolean) =>
   ({
     txHash: true,
+    outputIndex: true,
     ownerAddress: true,
     name: true,
     description: true,

@@ -18,7 +18,7 @@ import {
   ChoiceVoteAggregation,
   GovernanceVotingParams,
 } from '@wingriders/governance-sdk'
-import {Address, BigNumber} from '@wingriders/cab/types'
+import {Address, BigNumber, TxInputRef} from '@wingriders/cab/types'
 import {useVotingParamsQuery} from '@wingriders/governance-frontend-react-sdk'
 import {AssetQuantityDisplay} from '../../components/AssetQuantityDisplay'
 
@@ -31,7 +31,7 @@ type ConcludeProposalForm = {
 type ConcludeProposalModalProps = {
   open: boolean
   onClose: () => void
-  proposalTxHash: string
+  proposalTxRef: TxInputRef
   proposalVotes: ChoiceVoteAggregation[]
   proposalChoices: string[]
   onConclude: (params: BuildFinalizeProposalParams) => Promise<void>
@@ -41,7 +41,7 @@ type ConcludeProposalModalProps = {
 export const ConcludeProposalModal = ({
   open,
   onClose,
-  proposalTxHash,
+  proposalTxRef,
   proposalVotes,
   proposalChoices,
   onConclude,
@@ -73,7 +73,7 @@ export const ConcludeProposalModal = ({
     if (!ownerAddress) return
 
     await onConclude({
-      proposalTxHash,
+      proposalTxRef,
       beneficiary: data.beneficiary as Address,
       results: {
         result: data.result,

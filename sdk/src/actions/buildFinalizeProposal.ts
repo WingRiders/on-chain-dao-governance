@@ -1,5 +1,5 @@
 import * as api from '@wingriders/cab/dappConnector'
-import {Address, BigNumber, HexString, TxPlanArgs} from '@wingriders/cab/types'
+import {Address, BigNumber, TxInputRef, TxPlanArgs} from '@wingriders/cab/types'
 import {normalizeTxInput, reverseAddress, reverseUtxos} from '@wingriders/cab/wallet/connector'
 
 import {LibError, LibErrorCode} from '../errors'
@@ -11,8 +11,8 @@ import {isPotentialProposalUTxO} from './helpers'
 import {ActionContext, BuildAction, BuildActionParams, BuildActionResult} from './types'
 
 export type BuildFinalizeProposalParams = {
-  /** transaction hash where the proposal was created */
-  proposalTxHash: HexString
+  /** UTxO ref where the proposal was created */
+  proposalTxRef: TxInputRef
   results: ProposalResults
   /** address where the collateral should be sent */
   beneficiary: Address
@@ -29,7 +29,7 @@ export const buildFinalizeProposalAction =
   ({protocolParameters, network, governanceVotingParams}: RequiredContext) =>
   (jsApi: api.JsAPI): BuildAction<BuildFinalizeProposalParams, FinalizeProposalMetadata> =>
   async ({
-    proposalTxHash,
+    proposalTxRef,
     results,
     beneficiary,
   }: BuildFinalizeProposalParams): Promise<BuildActionResult<FinalizeProposalMetadata>> => {
@@ -39,7 +39,9 @@ export const buildFinalizeProposalAction =
     }
 
     const utxos = reverseUtxos(await jsApi.getUtxos()) ?? []
-    const proposalUtxo = utxos.find((utxo) => utxo.txHash === proposalTxHash)
+    const proposalUtxo = utxos.find(
+      (utxo) => utxo.txHash === proposalTxRef.txHash && utxo.outputIndex === proposalTxRef.outputIndex
+    )
     if (!proposalUtxo) {
       throw new LibError(LibErrorCode.BadRequest, 'Proposal not found/already spent.')
     }
@@ -59,7 +61,7 @@ export const buildFinalizeProposalAction =
         custom: new Map([
           [
             GovMetadatumLabel.COMMUNITY_VOTING_MANAGE,
-            encodeConcludeProposalOperation(proposalTxHash, results),
+            encodeConcludeProposalOperation(proposalTxRef.txHash, results),
           ],
         ]),
       },

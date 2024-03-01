@@ -200,6 +200,7 @@ export type UserVotingDistributionResponse = {
 
 export type ProposalDetails = {
   txHash: HexString
+  outputIndex: number
   owner: Address
   name: string
   description: string

@@ -4,7 +4,7 @@ import {WalletContext} from '../wallet/ConnectWalletContext'
 import {useForm} from 'react-hook-form'
 import {InputField} from '../../components/InputField'
 import {BuildCancelProposalParams} from '@wingriders/governance-sdk'
-import {Address} from '@wingriders/cab/types'
+import {Address, TxInputRef} from '@wingriders/cab/types'
 
 type CancelProposalForm = {
   beneficiary: string
@@ -14,7 +14,7 @@ type CancelProposalForm = {
 type CancelProposalModalProps = {
   open: boolean
   onClose: () => void
-  proposalTxHash: string
+  proposalTxRef: TxInputRef
   onCancel: (params: BuildCancelProposalParams) => Promise<void>
   isLoading?: boolean
 }
@@ -22,7 +22,7 @@ type CancelProposalModalProps = {
 export const CancelProposalModal = ({
   open,
   onClose,
-  proposalTxHash,
+  proposalTxRef,
   onCancel,
   isLoading,
 }: CancelProposalModalProps) => {
@@ -42,7 +42,7 @@ export const CancelProposalModal = ({
     if (!ownerAddress) return
 
     await onCancel({
-      proposalTxHash,
+      proposalTxRef,
       beneficiary: data.beneficiary as Address,
       reason: data.reason,
     })

@@ -1,5 +1,5 @@
 import * as api from '@wingriders/cab/dappConnector'
-import {Address, BigNumber, HexString, TxPlanArgs} from '@wingriders/cab/types'
+import {Address, BigNumber, TxInputRef, TxPlanArgs} from '@wingriders/cab/types'
 import {normalizeTxInput, reverseAddress, reverseUtxos} from '@wingriders/cab/wallet/connector'
 
 import {LibError, LibErrorCode} from '../errors'
@@ -11,8 +11,8 @@ import {isPotentialProposalUTxO} from './helpers'
 import {ActionContext, BuildAction, BuildActionParams, BuildActionResult} from './types'
 
 export type BuildCancelProposalParams = {
-  /** transaction hash where the proposal was created */
-  proposalTxHash: HexString
+  /** UTxO ref where the proposal was created */
+  proposalTxRef: TxInputRef
   /** The reason for the cancellation */
   reason: string
   /** The address where the collateral should be sent */
@@ -30,7 +30,7 @@ export const buildCancelProposalAction =
   ({protocolParameters, network, governanceVotingParams}: RequiredContext) =>
   (jsApi: api.JsAPI): BuildAction<BuildCancelProposalParams, CancelProposalMetadata> =>
   async ({
-    proposalTxHash,
+    proposalTxRef,
     reason,
     beneficiary,
   }: BuildCancelProposalParams): Promise<BuildActionResult<CancelProposalMetadata>> => {
@@ -40,7 +40,9 @@ export const buildCancelProposalAction =
     }
 
     const utxos = reverseUtxos(await jsApi.getUtxos()) ?? []
-    const proposalUtxo = utxos.find((utxo) => utxo.txHash === proposalTxHash)
+    const proposalUtxo = utxos.find(
+      (utxo) => utxo.txHash === proposalTxRef.txHash && utxo.outputIndex === proposalTxRef.outputIndex
+    )
     if (!proposalUtxo) {
       throw new LibError(LibErrorCode.BadRequest, 'Proposal not found/already spent.')
     }
@@ -59,7 +61,7 @@ export const buildCancelProposalAction =
         custom: new Map([
           [
             GovMetadatumLabel.COMMUNITY_VOTING_MANAGE,
-            encodeCancelProposalOperation(proposalTxHash, reason),
+            encodeCancelProposalOperation(proposalTxRef.txHash, reason),
           ],
         ]),
       },

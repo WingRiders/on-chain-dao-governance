@@ -52,7 +52,10 @@ describe('build finalize proposal', () => {
     const {txAux} = await finalizeProposal({
       beneficiary:
         'addr_test1qz68clqv5g66rzqq8l0ru6jcx9q63yf97dr9w2ac06q6supfvmwlrkk0q3k4yjpn3yt5wy7zz23m2jfhp7vkqejkjfgsg0pq9r' as Address,
-      proposalTxHash,
+      proposalTxRef: {
+        txHash: proposalTxHash,
+        outputIndex: 0,
+      },
       results,
     })
 
@@ -82,7 +85,10 @@ describe('build finalize proposal', () => {
       finalizeProposal({
         beneficiary:
           'addr_test1qz68clqv5g66rzqq8l0ru6jcx9q63yf97dr9w2ac06q6supfvmwlrkk0q3k4yjpn3yt5wy7zz23m2jfhp7vkqejkjfgsg0pq9r' as Address,
-        proposalTxHash,
+        proposalTxRef: {
+          txHash: proposalTxHash,
+          outputIndex: 0,
+        },
         results,
       })
     ).rejects.toThrowError(/Proposal not found\/already spent/)

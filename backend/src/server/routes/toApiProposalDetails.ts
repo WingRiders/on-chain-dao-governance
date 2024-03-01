@@ -23,7 +23,7 @@ const dbProposalStatusToApiProposalStatus = (dbProposalStatus: DbProposalStatus)
 
 type DbProposalWithDetails = Pick<
   Proposal,
-  'txHash' | 'ownerAddress' | 'name' | 'description' | 'uri' | 'communityUri' | 'slot'
+  'txHash' | 'outputIndex' | 'ownerAddress' | 'name' | 'description' | 'uri' | 'communityUri' | 'slot'
 > & {
   poll: Pick<Poll, 'txHash' | 'start' | 'end' | 'snapshot' | 'description'>
   proposalStates: Pick<ProposalState, 'status'>[]
@@ -32,6 +32,7 @@ type DbProposalWithDetails = Pick<
 
 export const toApiProposalDetails = (proposal: DbProposalWithDetails): ApiProposalDetails => ({
   txHash: proposal.txHash.toString('hex'),
+  outputIndex: proposal.outputIndex,
   owner: proposal.ownerAddress as Address,
   name: proposal.name,
   description: proposal.description,
