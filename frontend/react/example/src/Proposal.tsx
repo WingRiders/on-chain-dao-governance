@@ -16,8 +16,10 @@ import {
   useUserVotesQuery,
   useUserVotingDistributionQuery,
   useVotesQuery,
+  useVotingParamsQuery,
 } from '@wingriders/governance-frontend-react-sdk'
 import {
+  GovernanceVotingParams,
   ProposalDetails,
   ProposalStatus,
   UserVotesResponse,
@@ -25,7 +27,6 @@ import {
 } from '@wingriders/governance-sdk'
 import {useContext, useState} from 'react'
 import {WalletContext} from './ConnectWalletContext'
-import {formatBigNumber} from './helpers/formatNumber'
 import {VoteVerificationStateIcon} from './components/VoteVerificationStateIcon'
 import {ipfsToHttps} from './helpers/ipfs'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
@@ -38,6 +39,7 @@ import {useIsAdmin} from './helpers/isAdmin'
 import {CancelProposalModal} from './CancelProposalModal'
 import {ActionResultDisplay} from './components/ActionResultDisplay'
 import {ConcludeProposalModal} from './ConcludeProposalModal'
+import {AssetQuantityDisplay} from './components/AssetQuantityDisplay'
 
 type ProposalProps = {
   proposal: ProposalDetails
@@ -52,6 +54,7 @@ export const Proposal = ({proposal}: ProposalProps) => {
   const [cancellingProposalTxHash, setCancellingProposalTxHash] = useState<string | null>(null)
   const [concludingProposalTxHash, setConcludingProposalTxHash] = useState<string | null>(null)
 
+  const {data: votingParams} = useVotingParamsQuery([])
   const {data: votesData} = useVotesQuery([{proposalTxHashes: [proposal.txHash]}])
   const proposalVotes = votesData?.[proposal.txHash]
   const choices = [...proposal.acceptChoices, ...proposal.rejectChoices]
@@ -111,6 +114,8 @@ export const Proposal = ({proposal}: ProposalProps) => {
   }
 
   const getChoiceLabel = (index: number) => (index === -1 ? 'Abstain' : choices[index]!)
+
+  if (!votingParams) return null
 
   return (
     <Card sx={({palette}) => ({bgcolor: palette.grey[100]})}>
@@ -188,7 +193,17 @@ export const Proposal = ({proposal}: ProposalProps) => {
           </Grid>
           <Grid item xs={4}>
             <Typography variant="subtitle1" textAlign="end">
-              {userVotingPower ? formatBigNumber(userVotingPower) : '-'}
+              {userVotingPower ? (
+                <AssetQuantityDisplay
+                  token={{
+                    ...votingParams.governanceToken.asset,
+                    quantity: new BigNumber(userVotingPower),
+                  }}
+                  assetMetadata={votingParams.governanceToken.metadata}
+                />
+              ) : (
+                '-'
+              )}
             </Typography>
           </Grid>
 
@@ -227,6 +242,7 @@ export const Proposal = ({proposal}: ProposalProps) => {
               enableClick={isActive && ownerStakeKeyHash != null}
               isSelected={selectedChoiceIndex === index}
               onClick={() => setSelectedChoiceIndex((prevIndex) => (prevIndex == index ? null : index))}
+              governanceToken={votingParams.governanceToken}
             />
           ))}
           <ProposalChoice
@@ -238,6 +254,7 @@ export const Proposal = ({proposal}: ProposalProps) => {
             enableClick={isActive && ownerStakeKeyHash != null}
             isSelected={selectedChoiceIndex === -1}
             onClick={() => setSelectedChoiceIndex((prevIndex) => (prevIndex == -1 ? null : -1))}
+            governanceToken={votingParams.governanceToken}
           />
         </Stack>
 
@@ -349,6 +366,7 @@ type ProposalChoiceProps = {
   enableClick?: boolean
   isSelected?: boolean
   onClick?: () => void
+  governanceToken: GovernanceVotingParams['governanceToken']
 }
 
 const ProposalChoice = ({
@@ -360,6 +378,7 @@ const ProposalChoice = ({
   enableClick,
   isSelected,
   onClick,
+  governanceToken,
 }: ProposalChoiceProps) => {
   const getBgColor = (palette: Palette) => {
     return {
@@ -406,16 +425,35 @@ const ProposalChoice = ({
           title={
             totalVotingPower ? (
               <Stack>
-                <VoteByStateDisplay state="Verified" value={totalVotingPower.VERIFIED} />
-                <VoteByStateDisplay state="Unverified" value={totalVotingPower.UNVERIFIED} />
-                <VoteByStateDisplay state="Invalid" value={totalVotingPower.INVALID} />
+                <VoteByStateDisplay
+                  state="Verified"
+                  value={totalVotingPower.VERIFIED}
+                  governanceToken={governanceToken}
+                />
+                <VoteByStateDisplay
+                  state="Unverified"
+                  value={totalVotingPower.UNVERIFIED}
+                  governanceToken={governanceToken}
+                />
+                <VoteByStateDisplay
+                  state="Invalid"
+                  value={totalVotingPower.INVALID}
+                  governanceToken={governanceToken}
+                />
               </Stack>
             ) : undefined
           }
           sx={{width: 'fit-content'}}
         >
           <Typography variant="body1" px={1} py={0.5}>
-            {totalVotingPower ? formatBigNumber(totalVotingPower.VERIFIED) : '-'}
+            {totalVotingPower ? (
+              <AssetQuantityDisplay
+                token={{...governanceToken.asset, quantity: new BigNumber(totalVotingPower.VERIFIED)}}
+                assetMetadata={governanceToken.metadata}
+              />
+            ) : (
+              '-'
+            )}
           </Typography>
         </Tooltip>
       </Stack>
@@ -430,7 +468,10 @@ const ProposalChoice = ({
             width="100%"
             justifyContent="flex-end"
           >
-            <span>{formatBigNumber(userVote.votingPower)}</span>
+            <AssetQuantityDisplay
+              token={{...governanceToken.asset, quantity: new BigNumber(userVote.votingPower)}}
+              assetMetadata={governanceToken.metadata}
+            />
             <VoteVerificationStateIcon state={userVote.verificationState} />
           </Stack>
         ) : (
@@ -444,13 +485,21 @@ const ProposalChoice = ({
 type VoteByStateDisplayProps = {
   state: string
   value: string
+  governanceToken: GovernanceVotingParams['governanceToken']
 }
 
-const VoteByStateDisplay = ({state, value}: VoteByStateDisplayProps) => {
+const VoteByStateDisplay = ({state, value, governanceToken}: VoteByStateDisplayProps) => {
   return (
     <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
       <Typography>{state}</Typography>
-      <Typography>{formatBigNumber(value)}</Typography>
+      <Typography>
+        {
+          <AssetQuantityDisplay
+            token={{...governanceToken.asset, quantity: new BigNumber(value)}}
+            assetMetadata={governanceToken.metadata}
+          />
+        }
+      </Typography>
     </Stack>
   )
 }

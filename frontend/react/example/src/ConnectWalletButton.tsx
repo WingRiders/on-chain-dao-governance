@@ -63,7 +63,7 @@ export const ConnectWalletButton = () => {
         })
         const ownerAddress = reverseAddress(await getWalletOwner(jsApi))
         const ownerStakeKeyHash = stakingHashFromAddress(ownerAddress)
-        setWalletContext({actionsClient, ownerAddress, ownerStakeKeyHash})
+        setWalletContext({actionsClient, ownerAddress, ownerStakeKeyHash, jsApi})
         setConnectionState('connected')
       } catch (error) {
         console.error(error)

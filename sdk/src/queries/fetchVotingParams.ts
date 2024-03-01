@@ -11,10 +11,7 @@ export const fetchVotingParams =
     const response: GovernanceVotingParamsResponse = await request(`${context.governanceUrl}/params`)
     return {
       proposalsAddress: response.proposalsAddress,
-      collateral: {
-        ...response.governanceToken,
-        quantity: new BigNumber(response.proposalCollateralQuantity),
-      },
+      proposalCollateralQuantity: new BigNumber(response.proposalCollateralQuantity),
       governanceToken: response.governanceToken,
     }
   }

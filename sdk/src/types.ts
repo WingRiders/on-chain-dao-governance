@@ -1,14 +1,7 @@
 import {SetRequired} from 'type-fest'
 
 import type * as api from '@wingriders/cab/dappConnector'
-import {
-  Address,
-  Asset,
-  BigNumber,
-  HexString,
-  RegisteredTokenMetadata,
-  Token,
-} from '@wingriders/cab/types'
+import {Address, Asset, BigNumber, HexString, RegisteredTokenMetadata} from '@wingriders/cab/types'
 
 export enum GovMetadatumLabel {
   COMMUNITY_VOTING_MANAGE = 5752,
@@ -55,8 +48,11 @@ export enum CborPollField {
 
 export type GovernanceVotingParams = {
   proposalsAddress: Address
-  collateral: Token
-  governanceToken: Asset
+  proposalCollateralQuantity: BigNumber
+  governanceToken: {
+    asset: Asset
+    metadata?: RegisteredTokenMetadata
+  }
 }
 
 /**
@@ -140,7 +136,10 @@ export type TokenDistribution<T extends string | BigNumber> = {
 }
 
 export type GovernanceVotingParamsResponse = {
-  governanceToken: Asset & RegisteredTokenMetadata
+  governanceToken: {
+    asset: Asset
+    metadata?: RegisteredTokenMetadata
+  }
   totalMintedGovernanceTokens: number
   proposalCollateralQuantity: number
   proposalsAddress: Address

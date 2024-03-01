@@ -8,5 +8,5 @@ type AdaQuantityDisplayProps = {
 }
 
 export const AdaQuantityDisplay = ({quantity}: AdaQuantityDisplayProps) => {
-  return <AssetQuantityDisplay token={{...AdaAsset, quantity}} assetMetadata={ADA_METADATA} />
+  return <AssetQuantityDisplay token={{...AdaAsset, quantity}} assetMetadata={ADA_METADATA} showTicker />
 }

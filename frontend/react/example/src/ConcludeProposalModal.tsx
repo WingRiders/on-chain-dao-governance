@@ -13,9 +13,14 @@ import {useContext} from 'react'
 import {WalletContext} from './ConnectWalletContext'
 import {useForm} from 'react-hook-form'
 import {InputField} from './components/InputField'
-import {BuildFinalizeProposalParams, ChoiceVoteAggregation} from '@wingriders/governance-sdk'
-import {Address} from '@wingriders/cab/types'
-import {formatBigNumber} from './helpers/formatNumber'
+import {
+  BuildFinalizeProposalParams,
+  ChoiceVoteAggregation,
+  GovernanceVotingParams,
+} from '@wingriders/governance-sdk'
+import {Address, BigNumber} from '@wingriders/cab/types'
+import {useVotingParamsQuery} from '@wingriders/governance-frontend-react-sdk'
+import {AssetQuantityDisplay} from './components/AssetQuantityDisplay'
 
 type ConcludeProposalForm = {
   beneficiary: string
@@ -43,6 +48,8 @@ export const ConcludeProposalModal = ({
   isLoading,
 }: ConcludeProposalModalProps) => {
   const {ownerAddress} = useContext(WalletContext)
+
+  const {data: votingParams} = useVotingParamsQuery([])
 
   const {
     handleSubmit,
@@ -82,6 +89,8 @@ export const ConcludeProposalModal = ({
     })
     onClose()
   }
+
+  if (!votingParams) return null
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -137,10 +146,19 @@ export const ConcludeProposalModal = ({
                     key={vote.index}
                     label={proposalChoices[vote.index]}
                     votes={Number(vote.votingPower.VERIFIED)}
+                    governanceToken={votingParams.governanceToken}
                   />
                 ))}
-              <VotingResultsItem label="Abstained" votes={abstainedVotes} />
-              <VotingResultsItem label="Total" votes={totalVotes} />
+              <VotingResultsItem
+                label="Abstained"
+                votes={abstainedVotes}
+                governanceToken={votingParams.governanceToken}
+              />
+              <VotingResultsItem
+                label="Total"
+                votes={totalVotes}
+                governanceToken={votingParams.governanceToken}
+              />
             </Stack>
           </Stack>
         </Stack>
@@ -158,13 +176,19 @@ export const ConcludeProposalModal = ({
 type VotingResultsItemProps = {
   label: string
   votes: number
+  governanceToken: GovernanceVotingParams['governanceToken']
 }
 
-const VotingResultsItem = ({label, votes}: VotingResultsItemProps) => {
+const VotingResultsItem = ({label, votes, governanceToken}: VotingResultsItemProps) => {
   return (
     <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
       <Typography>{label}</Typography>
-      <Typography>{formatBigNumber(votes)}</Typography>
+      <Typography>
+        <AssetQuantityDisplay
+          token={{...governanceToken.asset, quantity: new BigNumber(votes)}}
+          assetMetadata={governanceToken.metadata}
+        />
+      </Typography>
     </Stack>
   )
 }

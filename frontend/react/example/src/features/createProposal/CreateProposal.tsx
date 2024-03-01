@@ -12,6 +12,10 @@ import {nanoid} from 'nanoid'
 import {startOfDay, endOfDay, addDays} from 'date-fns'
 import {InputField} from '../../components/InputField'
 import {ChoicesFormField} from './ChoicesFormField'
+import {useVotingParamsQuery} from '@wingriders/governance-frontend-react-sdk'
+import {useUserBalance} from '../../helpers/userBalance'
+import {assetQuantity} from '@wingriders/cab/ledger/assets'
+import {AssetQuantityDisplay} from '../../components/AssetQuantityDisplay'
 
 const DEFAULT_VALUES: CreateProposalForm = {
   name: '',
@@ -26,6 +30,19 @@ const DEFAULT_VALUES: CreateProposalForm = {
 
 export const CreateProposal = () => {
   const {ownerAddress} = useContext(WalletContext)
+
+  const {data: votingParams, isLoading: isLoadingVotingParams} = useVotingParamsQuery([])
+  const governanceToken = votingParams?.governanceToken
+  const requiredCollateralQuantity = votingParams?.proposalCollateralQuantity
+
+  const {userBalance, isLoading: isLoadingUserBalance} = useUserBalance()
+  const userAvailableBalanceForCollateral =
+    userBalance && governanceToken ? assetQuantity(userBalance, governanceToken.asset) : undefined
+
+  const hasUserSufficientBalanceForCollateral =
+    userAvailableBalanceForCollateral && requiredCollateralQuantity
+      ? userAvailableBalanceForCollateral.gte(requiredCollateralQuantity)
+      : undefined
 
   const {createProposal, isLoading, result, setResult} = useCreateProposal()
 
@@ -76,6 +93,10 @@ export const CreateProposal = () => {
       {!ownerAddress ? (
         <Typography color="error" textAlign="center" mt={5}>
           Connect wallet
+        </Typography>
+      ) : isLoadingVotingParams || isLoadingUserBalance ? (
+        <Typography textAlign="center" mt={5}>
+          Loading...
         </Typography>
       ) : (
         <>
@@ -178,10 +199,32 @@ export const CreateProposal = () => {
             </Typography>
           )}
 
+          {!hasUserSufficientBalanceForCollateral && (
+            <Typography color={({palette}) => palette.error.main} mt={3}>
+              You don't have enough collateral to create a proposal.
+              {requiredCollateralQuantity && userAvailableBalanceForCollateral && governanceToken && (
+                <>
+                  You need at least{' '}
+                  <AssetQuantityDisplay
+                    token={{...governanceToken.asset, quantity: requiredCollateralQuantity}}
+                    assetMetadata={governanceToken.metadata}
+                    showTicker
+                  />{' '}
+                  but you have{' '}
+                  <AssetQuantityDisplay
+                    token={{...governanceToken.asset, quantity: userAvailableBalanceForCollateral}}
+                    assetMetadata={governanceToken.metadata}
+                    showTicker
+                  />
+                  .
+                </>
+              )}
+            </Typography>
+          )}
           <Button
             variant="contained"
             onClick={handleSubmit(handleCreateProposal)}
-            disabled={isLoading}
+            disabled={isLoading || isLoadingVotingParams || !hasUserSufficientBalanceForCollateral}
             sx={{width: '100%', mt: 4}}
           >
             {isLoading ? 'Creating...' : 'Create proposal'}

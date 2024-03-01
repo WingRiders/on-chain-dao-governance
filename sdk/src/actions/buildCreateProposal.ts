@@ -30,8 +30,8 @@ export const buildCreateProposalAction =
   ({protocolParameters, network, governanceVotingParams}: RequiredContext) =>
   (jsApi: api.JsAPI): BuildAction<BuildCreateProposalParams, CreateProposalMetadata> =>
   async ({proposal, poll}: BuildCreateProposalParams) => {
-    const {collateral, proposalsAddress} = governanceVotingParams
-    const collateralBundle = [collateral]
+    const {governanceToken, proposalCollateralQuantity, proposalsAddress} = governanceVotingParams
+    const collateralBundle = [{...governanceToken.asset, quantity: proposalCollateralQuantity}]
     const coins = computeMinUTxOLovelaceAmount({
       protocolParameters,
       output: {

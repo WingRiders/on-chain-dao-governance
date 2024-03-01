@@ -72,7 +72,7 @@ export const buildCancelProposalAction =
       network,
       // skip potential proposal UTxOs - those are proposals and should be spent only when rejecting/evaluating
       ignoredUTxOs: utxos
-        .filter(isPotentialProposalUTxO(governanceVotingParams.governanceToken))
+        .filter(isPotentialProposalUTxO(governanceVotingParams.governanceToken.asset))
         .map(normalizeTxInput),
     })
 

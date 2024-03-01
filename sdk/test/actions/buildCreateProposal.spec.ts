@@ -27,7 +27,12 @@ describe('build create proposal', () => {
           coins: adaToLovelace(new Ada(100) as Ada),
           outputIndex: 0,
           txHash: 'b8a6e89adc8801e5739b53eee38cdee6ca8d0c3716a5ee83c1f8609c7269a6d5',
-          tokenBundle: [GOVERNANCE_VOTING_PARAMS.collateral],
+          tokenBundle: [
+            {
+              ...GOVERNANCE_VOTING_PARAMS.governanceToken.asset,
+              quantity: GOVERNANCE_VOTING_PARAMS.proposalCollateralQuantity,
+            },
+          ],
         },
       ],
     })
@@ -50,8 +55,8 @@ describe('build create proposal', () => {
           txHash: 'b8a6e89adc8801e5739b53eee38cdee6ca8d0c3716a5ee83c1f8609c7269a6d5',
           tokenBundle: [
             {
-              ...GOVERNANCE_VOTING_PARAMS.collateral,
-              quantity: GOVERNANCE_VOTING_PARAMS.collateral.quantity.minus(100),
+              ...GOVERNANCE_VOTING_PARAMS.governanceToken.asset,
+              quantity: GOVERNANCE_VOTING_PARAMS.proposalCollateralQuantity.minus(100),
             },
           ],
         },

@@ -37,7 +37,12 @@ describe('build finalize proposal', () => {
           coins: adaToLovelace(new Ada(100) as Ada),
           outputIndex: 0,
           txHash: proposalTxHash,
-          tokenBundle: [GOVERNANCE_VOTING_PARAMS.collateral],
+          tokenBundle: [
+            {
+              ...GOVERNANCE_VOTING_PARAMS.governanceToken.asset,
+              quantity: GOVERNANCE_VOTING_PARAMS.proposalCollateralQuantity,
+            },
+          ],
         },
       ],
     })

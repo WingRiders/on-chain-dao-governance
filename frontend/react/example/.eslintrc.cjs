@@ -21,5 +21,11 @@ module.exports = {
     // keep `no-console` warnings but allow console.error calls
     'no-console': ['warn', {allow: ['error']}],
     'react-refresh/only-export-components': ['warn', {allowConstantExport: true}],
+    'react-hooks/exhaustive-deps': [
+      'warn',
+      {
+        additionalHooks: 'usePromise',
+      },
+    ],
   },
 }
