@@ -5,7 +5,7 @@ type InputFieldProps<TFieldValues extends FieldValues, TFieldName extends Path<T
   control: Control<TFieldValues>
   name: TFieldName
   render: ControllerProps<TFieldValues, TFieldName>['render']
-  rules: ControllerProps<TFieldValues, TFieldName>['rules']
+  rules?: ControllerProps<TFieldValues, TFieldName>['rules']
   errors: FieldErrors<TFieldValues>
 }
 
