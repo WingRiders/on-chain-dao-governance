@@ -1,4 +1,4 @@
-FROM node:16.19-alpine as build
+FROM node:18-alpine as build
 
 # copy the root package.json an all frontend build deps
 # not using a global yarn install, but relying on the
@@ -19,7 +19,7 @@ RUN yarn workspace @wingriders/governance-sdk build
 RUN yarn workspace @wingriders/governance-backend prisma:generate
 RUN yarn workspace @wingriders/governance-backend build
 
-FROM node:16.19-alpine as deps
+FROM node:18-alpine as deps
 
 WORKDIR /usr/app
 COPY package.json yarn.lock .yarnrc.yml ./
@@ -30,7 +30,7 @@ COPY backend/package.json backend/
 ENV NODE_ENV production
 RUN yarn workspaces focus --all --production
 
-FROM node:16.19-alpine as server
+FROM node:18-alpine as server
 
 EXPOSE 3240
 EXPOSE 3241

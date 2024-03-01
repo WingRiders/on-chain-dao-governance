@@ -18,7 +18,7 @@ runs:
 
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'
 
     - name: Install YARN packages
       run: yarn workspaces focus --all
