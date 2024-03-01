@@ -8,7 +8,7 @@ import {Proposals} from './Proposals'
 import {WalletContext, WalletContextType} from './ConnectWalletContext'
 import {createQueriesClient} from '@wingriders/governance-sdk'
 import {PaidFees} from './PaidFees'
-import {UserVotingDistribution} from './CurrentVotingDistribution'
+import {CurrentData} from './CurrentData'
 import {Header} from './Header'
 import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
 import {LocalizationProvider} from '@mui/x-date-pickers'
@@ -47,7 +47,7 @@ export const App = () => {
                 <Route path="/proposals" element={<Proposals />} />
                 <Route path="/proposals/new" element={<CreateProposal />} />
                 <Route path="/paid-fees" element={<PaidFees />} />
-                <Route path="/voting-distribution" element={<UserVotingDistribution />} />
+                <Route path="/current-data" element={<CurrentData />} />
               </Routes>
             </Container>
           </BrowserRouter>

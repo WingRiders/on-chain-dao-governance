@@ -38,7 +38,7 @@ export const Header = () => {
             <MenuItem value="/proposals" label="Proposals" />
             <MenuItem value="/proposals/new" label="Create proposal" />
             <MenuItem value="/paid-fees" label="Paid fees" />
-            <MenuItem value="/voting-distribution" label="Voting distribution" />
+            <MenuItem value="/current-data" label="Current data" />
           </Tabs>
 
           <ConnectWalletButton />
