@@ -14,7 +14,7 @@ import {WalletContext} from '../wallet/ConnectWalletContext'
 import {useForm} from 'react-hook-form'
 import {InputField} from '../../components/InputField'
 import {
-  BuildFinalizeProposalParams,
+  BuildConcludeProposalParams,
   ChoiceVoteAggregation,
   GovernanceVotingParams,
 } from '@wingriders/governance-sdk'
@@ -34,7 +34,7 @@ type ConcludeProposalModalProps = {
   proposalTxRef: TxInputRef
   proposalVotes: ChoiceVoteAggregation[]
   proposalChoices: string[]
-  onConclude: (params: BuildFinalizeProposalParams) => Promise<void>
+  onConclude: (params: BuildConcludeProposalParams) => Promise<void>
   isLoading?: boolean
 }
 

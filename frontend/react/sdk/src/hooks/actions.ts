@@ -21,6 +21,6 @@ const buildUseAction = <TArgs, TRes>(
 export const useCancelProposalAction = buildUseAction((client) => client.cancelProposal)
 export const useCastVoteAction = buildUseAction((client) => client.castVote)
 export const useCreateProposalAction = buildUseAction((client) => client.createProposal)
-export const useFinalizeProposalAction = buildUseAction((client) => client.finalizeProposal)
+export const useConcludeProposalAction = buildUseAction((client) => client.concludeProposal)
 export const useSignTxAction = buildUseAction((client) => client.signTx)
 export const useSubmitTxAction = buildUseAction((client) => client.submitTx)

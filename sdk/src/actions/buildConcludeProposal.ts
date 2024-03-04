@@ -10,7 +10,7 @@ import {GovMetadatumLabel, ProposalResults} from '../types'
 import {isPotentialProposalUTxO} from './helpers'
 import {ActionContext, BuildAction, BuildActionParams, BuildActionResult} from './types'
 
-export type BuildFinalizeProposalParams = {
+export type BuildConcludeProposalParams = {
   /** UTxO ref where the proposal was created */
   proposalTxRef: TxInputRef
   results: ProposalResults
@@ -18,21 +18,21 @@ export type BuildFinalizeProposalParams = {
   beneficiary: Address
 } & BuildActionParams
 
-export type FinalizeProposalMetadata = {
+export type ConcludeProposalMetadata = {
   transactionFee: api.Coin
   txHash: api.TxHash
 }
 
 type RequiredContext = ActionContext
 
-export const buildFinalizeProposalAction =
+export const buildConcludeProposalAction =
   ({protocolParameters, network, governanceVotingParams}: RequiredContext) =>
-  (jsApi: api.JsAPI): BuildAction<BuildFinalizeProposalParams, FinalizeProposalMetadata> =>
+  (jsApi: api.JsAPI): BuildAction<BuildConcludeProposalParams, ConcludeProposalMetadata> =>
   async ({
     proposalTxRef,
     results,
     beneficiary,
-  }: BuildFinalizeProposalParams): Promise<BuildActionResult<FinalizeProposalMetadata>> => {
+  }: BuildConcludeProposalParams): Promise<BuildActionResult<ConcludeProposalMetadata>> => {
     const ownerAddress = reverseAddress(await getWalletOwner(jsApi))
     if (ownerAddress !== governanceVotingParams.proposalsAddress) {
       throw new LibError(LibErrorCode.BadRequest, 'Only the governance wallet can cancel proposals')
@@ -47,7 +47,7 @@ export const buildFinalizeProposalAction =
     }
 
     const planArgs: TxPlanArgs = {
-      planId: 'finalize-proposal',
+      planId: 'conclude-proposal',
       inputs: [{isScript: false, utxo: proposalUtxo}],
       outputs: [
         {
@@ -72,7 +72,7 @@ export const buildFinalizeProposalAction =
       jsApi,
       planArgs,
       network,
-      // skip potential other proposal UTxOs - those should be spent only when cancelling/finalizing them
+      // skip potential other proposal UTxOs - those should be spent only when cancelling/concluding them
       ignoredUTxOs: utxos
         .filter(isPotentialProposalUTxO(governanceVotingParams.governanceToken.asset))
         .map(normalizeTxInput),
@@ -81,7 +81,7 @@ export const buildFinalizeProposalAction =
     const transactionFee = new BigNumber(txAux.fee) as api.Coin
     const txHash = txAux.getId() as api.TxHash
 
-    const metadata: FinalizeProposalMetadata = {
+    const metadata: ConcludeProposalMetadata = {
       transactionFee,
       txHash,
     }

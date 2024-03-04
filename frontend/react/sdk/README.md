@@ -141,6 +141,6 @@ Here is the list of actions hooks that is available in `@wingriders/governance-f
 |useCancelProposalAction|buildCancelProposalAction|
 |useCastVoteAction|buildCastVoteAction|
 |useCreateProposalAction|buildCreateProposalAction|
-|useFinalizeProposalAction|buildFinalizeProposalAction|
+|useConcludeProposalAction|buildConcludeProposalAction|
 |useSignTxAction|signTxAction|
 |useSubmitTxAction|submitTxAction|

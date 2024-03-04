@@ -1,6 +1,6 @@
 import {
   useCancelProposalAction,
-  useFinalizeProposalAction,
+  useConcludeProposalAction,
   useCastVoteAction,
   useSignTxAction,
   useSubmitTxAction,
@@ -10,7 +10,7 @@ import {useCallback, useState} from 'react'
 import {
   BuildCancelProposalParams,
   BuildCreateProposalParams,
-  BuildFinalizeProposalParams,
+  BuildConcludeProposalParams,
   Vote,
 } from '@wingriders/governance-sdk'
 
@@ -118,12 +118,12 @@ export const useConcludeProposal = () => {
   const [result, setResult] = useState<ActionResult | null>(null)
 
   const {mutateAsync: buildConcludeProposal, isLoading: isLoadingBuildConcludeProposal} =
-    useFinalizeProposalAction()
+    useConcludeProposalAction()
   const {mutateAsync: signTx, isLoading: isLoadingSign} = useSignTxAction()
   const {mutateAsync: submitTx, isLoading: isLoadingSubmit} = useSubmitTxAction()
 
   const concludeProposal = useCallback(
-    async (params: Pick<BuildFinalizeProposalParams, 'proposalTxRef' | 'results' | 'beneficiary'>) => {
+    async (params: Pick<BuildConcludeProposalParams, 'proposalTxRef' | 'results' | 'beneficiary'>) => {
       try {
         const buildTxInfo = await buildConcludeProposal(params)
         const {cborizedTx, txHash} = await signTx({buildTxInfo})

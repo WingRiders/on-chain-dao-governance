@@ -7,8 +7,8 @@ import {getNetworkNameFromWallet} from '../helpers/walletApi'
 import {GovernanceVotingParams} from '../types'
 import {buildCancelProposalAction} from './buildCancelProposal'
 import {buildCastVoteAction} from './buildCastVote'
+import {buildConcludeProposalAction} from './buildConcludeProposal'
 import {buildCreateProposalAction} from './buildCreateProposal'
-import {buildFinalizeProposalAction} from './buildFinalizeProposal'
 import {signTxAction} from './signTx'
 import {submitTxAction} from './submitTx'
 import {ActionContext} from './types'
@@ -46,7 +46,7 @@ export const createActionsClient = async ({
     cancelProposal: buildCancelProposalAction(actionContext)(jsApi),
     castVote: buildCastVoteAction(actionContext)(jsApi),
     createProposal: buildCreateProposalAction(actionContext)(jsApi),
-    finalizeProposal: buildFinalizeProposalAction(actionContext)(jsApi),
+    concludeProposal: buildConcludeProposalAction(actionContext)(jsApi),
     signTx: signTxAction()(jsApi),
     submitTx: submitTxAction()(jsApi),
   }

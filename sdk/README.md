@@ -125,9 +125,9 @@ Example metadata of a voting transaction
 
 The first key defines the poll id that the user is casting his vote for. Then globally for the poll user’s voting power and its source UTxOs are defined and then follow the user’s voting choices.
 
-### Action - Finalize proposal
+### Action - Conclude proposal
 
-Action to finalize a proposal in an on-chain transaction. Finalizing a proposal means spending the proposal UTxO that belongs to the DAO wallet.
+Action to conclude a proposal in an on-chain transaction. Concluding a proposal means spending the proposal UTxO that belongs to the DAO wallet.
 
 **Inputs:**
 
@@ -137,7 +137,7 @@ Action to finalize a proposal in an on-chain transaction. Finalizing a proposal 
 
 This creates a transaction spending the proposal UTxO with metadata specifying the “Conclude Proposal” operation and other fields based on the proposal results. The overall result can be either that the proposal passed or failed depending on if the proposal met the participation criteria. The metadata further includes a final tally of the validated votes. The governance tokens collateral is sent to the beneficiary.
 
-Example metadata of a proposal finalization transaction
+Example metadata of a transaction for concluding a proposal
 
 ```json
 {
