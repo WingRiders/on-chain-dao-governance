@@ -5,6 +5,7 @@ import {useForm} from 'react-hook-form'
 import {InputField} from '../../components/InputField'
 import {BuildCancelProposalParams} from '@wingriders/governance-sdk'
 import {Address, TxInputRef} from '@wingriders/cab/types'
+import {ActionResult} from '../../helpers/actions'
 
 type CancelProposalForm = {
   beneficiary: string
@@ -15,7 +16,7 @@ type CancelProposalModalProps = {
   open: boolean
   onClose: () => void
   proposalTxRef: TxInputRef
-  onCancel: (params: BuildCancelProposalParams) => Promise<void>
+  onCancel: (params: BuildCancelProposalParams) => Promise<ActionResult>
   isLoading?: boolean
 }
 

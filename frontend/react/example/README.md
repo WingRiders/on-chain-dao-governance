@@ -53,6 +53,8 @@ Fields description:
 7. **Start date**: start date of the poll (date & time, by default the same date will be used for voting power snapshot)
 8. **End date**: end date of the poll (date & time)
 
+> **_NOTE:_** The form has only limited validation and will allow you to submit potentially incorrect data.
+
 To create a proposal, a collateral of X governance tokens is required.
 
 When you fill all the fields, you can click on the `CREATE PROPOSAL` button and sign the transaction. Once the transaction is confirmed on the blockchain, your proposal will appear in the list of all proposals.
@@ -74,6 +76,8 @@ You wil be asked to fill these field:
 1. **Beneficiary**: address where the proposal collateral will be sent. This field will be pre-filled with your address as a DAO admin
 2. **Reason**: message that indicates why the proposal was cancelled
 
+> **_NOTE:_** The form has only limited validation and will allow you to submit potentially incorrect data.
+
 ### Concluding proposals
 
 When you connect with the DAO admin wallet, you are able to conclude proposals, which means marking them as _PASSED_ or _FAILED_ when the voting period ends. You can conclude a proposal by clicking on the _CONCLUDE PROPOSAL_ button at any proposal that is not concluded yet and the voting period finished:
@@ -84,6 +88,8 @@ You wil be asked to fill these field:
 1. **Results**: select either _PASSED_ on _FAILED_ based on the voting participation and the required participation that you as a DAO chose for this proposal
 1. **Beneficiary**: address where the proposal collateral will be sent. This field will be pre-filled with your address as a DAO admin (when the proposal passes, you usually send the collateral to the proposal creator, but that's on you as a DAO to decide)
 1. **Note**: any message that describes the conclusion
+
+> **_NOTE:_** The form has only limited validation and will allow you to submit potentially incorrect data.
 
 ### Paid transaction fees
 

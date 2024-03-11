@@ -63,11 +63,9 @@ export const CreateProposal = () => {
   const hasEnoughChoices = compact(acceptChoices).length + compact(rejectChoices).length >= 2
 
   const handleCreateProposal = async (data: CreateProposalForm) => {
-    reset(DEFAULT_VALUES)
-
     if (!ownerAddress) return
 
-    await createProposal({
+    const {isSuccess} = await createProposal({
       poll: {
         description: '',
         start: data.start,
@@ -84,6 +82,8 @@ export const CreateProposal = () => {
         rejectChoices: data.rejectChoices.map((choice) => choice.label),
       },
     })
+
+    if (isSuccess) reset(DEFAULT_VALUES)
   }
 
   return (

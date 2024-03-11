@@ -21,6 +21,7 @@ import {
 import {Address, BigNumber, TxInputRef} from '@wingriders/cab/types'
 import {useVotingParamsQuery} from '@wingriders/governance-frontend-react-sdk'
 import {AssetQuantityDisplay} from '../../components/AssetQuantityDisplay'
+import {ActionResult} from '../../helpers/actions'
 
 type ConcludeProposalForm = {
   beneficiary: string
@@ -34,7 +35,7 @@ type ConcludeProposalModalProps = {
   proposalTxRef: TxInputRef
   proposalVotes: ChoiceVoteAggregation[]
   proposalChoices: string[]
-  onConclude: (params: BuildConcludeProposalParams) => Promise<void>
+  onConclude: (params: BuildConcludeProposalParams) => Promise<ActionResult>
   isLoading?: boolean
 }
 

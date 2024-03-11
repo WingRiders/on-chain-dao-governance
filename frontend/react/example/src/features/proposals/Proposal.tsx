@@ -67,7 +67,10 @@ export const Proposal = ({proposal}: ProposalProps) => {
   const {data: userVotingDistributionData} = useUserVotingDistributionQuery(
     ownerStakeKeyHash ? [{ownerStakeKeyHash, slot: proposal.poll.snapshot}] : undefined
   )
-  const userVotingPower = userVotingDistributionData?.walletTokens.votingPower
+  const userVotingPower = userVotingDistributionData
+    ? new BigNumber(userVotingDistributionData.walletTokens.votingPower)
+    : undefined
+  const hasUserVotingPower = userVotingPower?.gt(0)
 
   const {data: theoreticalMaxVotingPower} = useTheoreticalMaxVotingPowerQuery([])
 
@@ -104,12 +107,12 @@ export const Proposal = ({proposal}: ProposalProps) => {
   } = useConcludeProposal()
 
   const handleCastVote = () => {
-    if (selectedChoiceIndex == null || !userVotingPower) return
+    if (selectedChoiceIndex == null || !userVotingPower || !userVotingDistributionData) return
 
     castVote({
       choices: {[proposal.txHash]: selectedChoiceIndex},
       pollTxHash: proposal.poll.txHash,
-      votingPower: Number(userVotingPower),
+      votingPower: userVotingPower.toNumber(),
       votingUTxOs: userVotingDistributionData.utxoIds.map(utxoIdToApiTxInput),
     })
   }
@@ -198,7 +201,7 @@ export const Proposal = ({proposal}: ProposalProps) => {
                 <AssetQuantityDisplay
                   token={{
                     ...votingParams.governanceToken.asset,
-                    quantity: new BigNumber(userVotingPower),
+                    quantity: userVotingPower,
                   }}
                   assetMetadata={votingParams.governanceToken.metadata}
                 />
@@ -287,19 +290,24 @@ export const Proposal = ({proposal}: ProposalProps) => {
                   !ownerStakeKeyHash ||
                   selectedChoiceIndex == null ||
                   isLoadingCastVote ||
-                  selectedChoiceIndex === proposalUserVotes?.index
+                  selectedChoiceIndex === proposalUserVotes?.index ||
+                  !hasUserVotingPower
                 }
                 onClick={handleCastVote}
               >
-                {isLoadingCastVote
-                  ? 'loading'
-                  : hasUserVoted
-                    ? selectedChoiceIndex != null && selectedChoiceIndex !== proposalUserVotes?.index
-                      ? `Change vote to '${getChoiceLabel(selectedChoiceIndex)}'`
-                      : 'Change vote'
-                    : selectedChoiceIndex != null
-                      ? `Vote for '${getChoiceLabel(selectedChoiceIndex)}'`
-                      : 'Vote'}
+                {!ownerStakeKeyHash
+                  ? 'Connect wallet'
+                  : !hasUserVotingPower
+                    ? 'No voting power'
+                    : isLoadingCastVote
+                      ? 'loading'
+                      : hasUserVoted
+                        ? selectedChoiceIndex != null && selectedChoiceIndex !== proposalUserVotes?.index
+                          ? `Change vote to '${getChoiceLabel(selectedChoiceIndex)}'`
+                          : 'Change vote'
+                        : selectedChoiceIndex != null
+                          ? `Vote for '${getChoiceLabel(selectedChoiceIndex)}'`
+                          : 'Vote'}
               </Button>
             )}
           </Stack>

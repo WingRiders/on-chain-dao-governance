@@ -2,6 +2,7 @@ import {ReactNode, createContext, useContext} from 'react'
 import {
   QueryClient as ReactQueryClient,
   QueryClientProvider as ReactQueryClientProvider,
+  useQueryClient as useReactQueryClient,
 } from 'react-query'
 
 import {ActionsClient, QueriesClient} from '@wingriders/governance-sdk'
@@ -10,6 +11,8 @@ import {DaoGovernanceContextType} from './types'
 const DaoGovernanceContext = createContext<DaoGovernanceContextType | null>(null)
 
 export const useDaoGovernanceContext = () => useContext(DaoGovernanceContext)
+
+export {useReactQueryClient}
 
 const reactQueryClient = new ReactQueryClient({
   defaultOptions: {

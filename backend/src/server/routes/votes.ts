@@ -129,14 +129,13 @@ export const getVotes = async ({
         .mapValues((choiceVotes) => mergeChoiceVotes(choiceVotes))
         .values()
         .value()
+      if (!proposalChoices.some((choice) => choice.index === -1))
+        proposalChoices.push({index: -1, votingPower: EMPTY_CHOICE_VOTE, votingCount: EMPTY_CHOICE_VOTE})
 
       return {
         votingPower: mergeVotesByState(proposalChoices.map(({votingPower}) => votingPower)),
         votingCount: mergeVotesByState(proposalChoices.map(({votingCount}) => votingCount)),
-        byChoice: [
-          {index: -1, votingPower: EMPTY_CHOICE_VOTE, votingCount: EMPTY_CHOICE_VOTE},
-          ...proposalChoices,
-        ],
+        byChoice: proposalChoices,
       }
     })
     .value()

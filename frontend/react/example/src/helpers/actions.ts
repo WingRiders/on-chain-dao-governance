@@ -26,15 +26,19 @@ export const useCreateProposal = () => {
 
   const createProposal = useCallback(
     async (params: Pick<BuildCreateProposalParams, 'proposal' | 'poll'>) => {
+      let result: ActionResult
       try {
         const buildTxInfo = await buildCreateProposalVote(params)
         const {cborizedTx, txHash} = await signTx({buildTxInfo})
         await submitTx({cborizedTx})
-        setResult({isSuccess: true, txHash})
+        result = {isSuccess: true, txHash}
       } catch (e) {
         console.error(e)
-        setResult({isSuccess: false, error: JSON.stringify(e)})
+        result = {isSuccess: false, error: JSON.stringify(e)}
       }
+
+      setResult(result)
+      return result
     },
     [buildCreateProposalVote, signTx, submitTx]
   )
@@ -58,15 +62,19 @@ export const useCastVote = () => {
 
   const castVote = useCallback(
     async (vote: Omit<Vote, 'voterAddress'>) => {
+      let result: ActionResult
       try {
         const buildTxInfo = await buildCastVote({vote})
         const {cborizedTx, txHash} = await signTx({buildTxInfo})
         await submitTx({cborizedTx})
-        setResult({isSuccess: true, txHash})
+        result = {isSuccess: true, txHash}
       } catch (e) {
         console.error(e)
-        setResult({isSuccess: false, error: JSON.stringify(e)})
+        result = {isSuccess: false, error: JSON.stringify(e)}
       }
+
+      setResult(result)
+      return result
     },
     [buildCastVote, signTx, submitTx]
   )
@@ -91,15 +99,19 @@ export const useCancelProposal = () => {
 
   const cancelProposal = useCallback(
     async (params: Pick<BuildCancelProposalParams, 'proposalTxRef' | 'beneficiary' | 'reason'>) => {
+      let result: ActionResult
       try {
         const buildTxInfo = await buildCancelProposal(params)
         const {cborizedTx, txHash} = await signTx({buildTxInfo})
         await submitTx({cborizedTx})
-        setResult({isSuccess: true, txHash})
+        result = {isSuccess: true, txHash}
       } catch (e) {
         console.error(e)
-        setResult({isSuccess: false, error: JSON.stringify(e)})
+        result = {isSuccess: false, error: JSON.stringify(e)}
       }
+
+      setResult(result)
+      return result
     },
     [buildCancelProposal, signTx, submitTx]
   )
@@ -124,15 +136,19 @@ export const useConcludeProposal = () => {
 
   const concludeProposal = useCallback(
     async (params: Pick<BuildConcludeProposalParams, 'proposalTxRef' | 'results' | 'beneficiary'>) => {
+      let result: ActionResult
       try {
         const buildTxInfo = await buildConcludeProposal(params)
         const {cborizedTx, txHash} = await signTx({buildTxInfo})
         await submitTx({cborizedTx})
-        setResult({isSuccess: true, txHash})
+        result = {isSuccess: true, txHash}
       } catch (e) {
         console.error(e)
-        setResult({isSuccess: false, error: JSON.stringify(e)})
+        result = {isSuccess: false, error: JSON.stringify(e)}
       }
+
+      setResult(result)
+      return result
     },
     [buildConcludeProposal, signTx, submitTx]
   )
