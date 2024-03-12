@@ -1,6 +1,6 @@
 {
   "name": "@wingriders/governance-sdk",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "./dist/umd/index.js",
   "module": "./dist/es/index.js",
   "types": "./dist/types/index.d.ts",
