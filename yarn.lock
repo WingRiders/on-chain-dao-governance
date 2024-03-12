@@ -2561,7 +2561,7 @@ __metadata:
     "@typescript-eslint/parser": ^6.21.0
     "@vitejs/plugin-react": ^4.2.1
     "@wingriders/cab": ^2.0.26
-    "@wingriders/governance-frontend-react-sdk": "workspace:^1.0.0"
+    "@wingriders/governance-frontend-react-sdk": ^1.0.0
     "@wingriders/governance-sdk": ^1.0.0
     date-fns: ^3.3.1
     eslint: ^8.55.0
@@ -2580,7 +2580,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@wingriders/governance-frontend-react-sdk@workspace:^1.0.0, @wingriders/governance-frontend-react-sdk@workspace:frontend/react/sdk":
+"@wingriders/governance-frontend-react-sdk@^1.0.0, @wingriders/governance-frontend-react-sdk@workspace:frontend/react/sdk":
   version: 0.0.0-use.local
   resolution: "@wingriders/governance-frontend-react-sdk@workspace:frontend/react/sdk"
   dependencies:

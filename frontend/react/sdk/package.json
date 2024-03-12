@@ -1,6 +1,6 @@
 {
   "name": "@wingriders/governance-frontend-react-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React SDK for WingRiders On-Chain DAO Governance",
   "repository": {
     "type": "git",

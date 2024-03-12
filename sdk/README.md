@@ -5,7 +5,7 @@
 - a set of helper functions for transaction building, encoding/decoding metadata and others that are used in the backend for On-Chain DAO Governance
 - functions for fetching data and creating blockchain transactions that can be used in a frontend application for On-Chain DAO Governance.
 
-If you are building a frontend application in React, check [@wingriders/frontend-react-sdk](../frontend/react/sdk/) which is a wrapper around `@wingriders/governance-sdk` to simplify its usage with React.
+If you are building a frontend application in React, check [@wingriders/governance-frontend-react-sdk](https://www.npmjs.com/package/@wingriders/governance-frontend-react-sdk) which is a wrapper around `@wingriders/governance-sdk` to simplify its usage with React.
 
 If you are not using React to build your frontend application, you can use this library directly and it will still provide benefits for you - see the documentation below.
 
