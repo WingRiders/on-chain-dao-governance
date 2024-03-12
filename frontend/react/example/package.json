@@ -19,7 +19,7 @@
     "@mui/x-date-pickers": "^6.19.5",
     "@wingriders/cab": "^2.0.26",
     "@wingriders/governance-frontend-react-sdk": "workspace:^1.0.0",
-    "@wingriders/governance-sdk": "workspace:1.0.0",
+    "@wingriders/governance-sdk": "^1.0.0",
     "date-fns": "^3.3.1",
     "lodash": "^4.17.21",
     "nanoid": "^5.0.6",

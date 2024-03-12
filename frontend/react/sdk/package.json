@@ -1,6 +1,12 @@
 {
   "name": "@wingriders/governance-frontend-react-sdk",
   "version": "1.0.0",
+  "description": "React SDK for WingRiders On-Chain DAO Governance",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WingRiders/on-chain-dao-governance.git",
+    "directory": "frontend/react/sdk"
+  },
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
   "types": "dist/types/index.d.ts",
@@ -16,7 +22,7 @@
   },
   "dependencies": {
     "@wingriders/cab": "^2.0.26",
-    "@wingriders/governance-sdk": "workspace:1.0.0",
+    "@wingriders/governance-sdk": "^1.0.0",
     "react-query": "^3.39.3"
   },
   "peerDependencies": {
