@@ -389,11 +389,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cardano-ogmios/client@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "@cardano-ogmios/client@npm:6.1.0"
+"@cardano-ogmios/client@npm:^6.8.0":
+  version: 6.8.0
+  resolution: "@cardano-ogmios/client@npm:6.8.0"
   dependencies:
-    "@cardano-ogmios/schema": 6.1.0
+    "@cardano-ogmios/schema": 6.8.0
     "@cardanosolutions/json-bigint": ^1.0.1
     "@types/json-bigint": ^1.0.1
     bech32: ^2.0.0
@@ -402,15 +402,15 @@ __metadata:
     isomorphic-ws: ^4.0.1
     nanoid: ^3.1.31
     ts-custom-error: ^3.2.0
-    ws: ^7.4.6
-  checksum: 16e5c2f54d598c2d8eb3a1b8e8660fd704cc5a8fa2228d89278aaa5d47895122610bfd2b0f45ec25dc3f179089ed7843599a7cedc0df4cc6d17e7377dcd39fd2
+    ws: ^7.5.10
+  checksum: 6f564abba9467dc66fe7297cae6937976193140ec2e8da1f3107cd9329de411cb9045d1de44d7f66d3ec428070ac9e163291e532d67e2804f263726e14dc9f81
   languageName: node
   linkType: hard
 
-"@cardano-ogmios/schema@npm:6.1.0, @cardano-ogmios/schema@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "@cardano-ogmios/schema@npm:6.1.0"
-  checksum: a8512615a5fa672205a6d348f0a93e9c859a661a1d422131cdbe2344203eee0f1cdc4d1703561876a7d78a34bd8cb7e4d5a64b6d03f76f60da92f95e5b6a7683
+"@cardano-ogmios/schema@npm:6.8.0, @cardano-ogmios/schema@npm:^6.8.0":
+  version: 6.8.0
+  resolution: "@cardano-ogmios/schema@npm:6.8.0"
+  checksum: ba048d4977c09cd7863a47a8a3c8f4755d65abf2841419797fa87d1839fedb3d0b8e27f005e03af33090e27b3d1ef9b5e27370a21c16aee102cf2e0d37a47602
   languageName: node
   linkType: hard
 
@@ -2515,8 +2515,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wingriders/governance-backend@workspace:backend"
   dependencies:
-    "@cardano-ogmios/client": ^6.1.0
-    "@cardano-ogmios/schema": ^6.1.0
+    "@cardano-ogmios/client": ^6.8.0
+    "@cardano-ogmios/schema": ^6.8.0
     "@fastify/cors": ^9.0.1
     "@prisma/client": 5.7.0
     "@types/lodash": ^4.14.202
@@ -8364,9 +8364,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^7.4.6":
-  version: 7.5.9
-  resolution: "ws@npm:7.5.9"
+"ws@npm:^7.5.10":
+  version: 7.5.10
+  resolution: "ws@npm:7.5.10"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ^5.0.2
@@ -8375,7 +8375,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: c3c100a181b731f40b7f2fddf004aa023f79d64f489706a28bc23ff88e87f6a64b3c6651fbec3a84a53960b75159574d7a7385709847a62ddb7ad6af76f49138
+  checksum: f9bb062abf54cc8f02d94ca86dcd349c3945d63851f5d07a3a61c2fcb755b15a88e943a63cf580cbdb5b74436d67ef6b67f745b8f7c0814e411379138e1863cb
   languageName: node
   linkType: hard
 
