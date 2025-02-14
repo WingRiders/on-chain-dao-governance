@@ -1,5 +1,5 @@
 import {ADA_DECIMALS} from '@wingriders/cab/constants'
-import {RegisteredTokenMetadata, TokenRegistrySubject} from '@wingriders/cab/types'
+import {RegisteredTokenMetadata, TokenRegistrySubject} from '@wingriders/cab/tokenMetadata'
 
 export const ADA_METADATA: RegisteredTokenMetadata = {
   description: 'Cardano ADA',

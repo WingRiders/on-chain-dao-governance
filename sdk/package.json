@@ -30,7 +30,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@wingriders/cab": "^2.0.26",
+    "@wingriders/cab": "^2.1.7",
     "date-fns": "^3.3.1",
     "lodash": "^4.17.21"
   },

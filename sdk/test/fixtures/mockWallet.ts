@@ -1,9 +1,9 @@
 import {SetOptional} from 'type-fest'
 import {vi} from 'vitest'
 
-import {BlockchainExplorer} from '@wingriders/cab/blockchainExplorer'
 import {NETWORKS} from '@wingriders/cab/constants'
 import {JsCryptoProvider, mnemonicToWalletSecretDef} from '@wingriders/cab/crypto'
+import {CabBackend} from '@wingriders/cab/dataProvider'
 import {shelleyBaseAddressProvider} from '@wingriders/cab/ledger/address'
 import {Address, AddressProvider, NetworkName, UTxO} from '@wingriders/cab/types'
 import {Wallet} from '@wingriders/cab/wallet'
@@ -34,9 +34,7 @@ export const getSimpleMockedWallet = async ({
   usedAddresses,
   unusedAddresses,
 }: GetSimpleMockedWalletArgs = {}) => {
-  const blockchainExplorer = new BlockchainExplorer({
-    baseUrl: 'mockedUrl',
-  })
+  const dataProvider = new CabBackend('mockedUrl', network)
 
   const cryptoProvider = new JsCryptoProvider({
     walletSecretDef: await mnemonicToWalletSecretDef(mnemonic),
@@ -49,30 +47,24 @@ export const getSimpleMockedWallet = async ({
   const firstAddress = (await baseAddressProvider(0)).address
   const mockedUsedAddresses = (await getAddresses(usedAddresses, baseAddressProvider)) ?? [firstAddress]
   const mockedUnusedAddresses = (await getAddresses(unusedAddresses, baseAddressProvider)) ?? []
-  vi.spyOn(blockchainExplorer, 'isSomeAddressUsed').mockImplementation((addresses) => {
-    return Promise.resolve(addresses.some((address) => mockedUsedAddresses.includes(address)))
-  })
-  vi.spyOn(blockchainExplorer, 'filterUsedAddresses').mockImplementation((addresses) => {
+  vi.spyOn(dataProvider, 'filterUsedAddresses').mockImplementation((addresses) => {
     return Promise.resolve(
-      new Set<string>(addresses.filter((address) => mockedUsedAddresses.includes(address)))
+      new Set<Address>(addresses.filter((address) => mockedUsedAddresses.includes(address)))
     )
   })
-  vi.spyOn(blockchainExplorer, 'fetchUnspentTxOutputs').mockImplementation((_addresses) => {
+  vi.spyOn(dataProvider, 'getUTxOs').mockImplementation((_addresses) => {
     return Promise.resolve(utxos.map((u) => ({...u, address: mockedUsedAddresses[0]! as Address})))
   })
-  vi.spyOn(blockchainExplorer, 'submitTxRaw').mockImplementation((txHash, _txBody) => {
-    return Promise.resolve({txHash})
+  vi.spyOn(dataProvider, 'submitTx').mockImplementation((txCbor) => {
+    return Promise.resolve()
   })
 
   const wallet = new Wallet({
-    blockchainExplorer,
+    dataProvider,
     cryptoProvider,
-    config: {
-      shouldExportPubKeyBulk: true,
-      gapLimit: 1,
-    },
+    gapLimit: 1,
   })
-  await wallet.getAccountManager().addAccounts([0])
+  await wallet.getOrLoadAccount(0)
 
   const walletConnector = new WalletConnector(wallet, 'mocked wallet', 'mocked icon')
   const jsApi = await walletConnector.enableJs()

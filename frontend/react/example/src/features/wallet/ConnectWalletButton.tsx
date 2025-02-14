@@ -1,7 +1,11 @@
 import {Button, Stack} from '@mui/material'
 import {useContext, useEffect, useState} from 'react'
 import type {StandardWallet as StandardWalletApi} from '@wingriders/cab/dappConnector'
-import {CborToJsApiWalletConnector, reverseAddress} from '@wingriders/cab/wallet/connector'
+import {
+  CborToJsApiWalletConnector,
+  WalletApiVendor,
+  reverseAddress,
+} from '@wingriders/cab/wallet/connector'
 import {WalletContext} from './ConnectWalletContext'
 import {
   useProtocolParametersQuery,
@@ -50,7 +54,7 @@ export const ConnectWalletButton = () => {
     if (walletApi && votingParams && protocolParameters) {
       try {
         const walletConnector = new CborToJsApiWalletConnector(walletApi, {
-          vendor: 'eternl',
+          vendor: WalletApiVendor.ETERNL,
           cacheTtl: 60_000,
         })
         const jsApi = await walletConnector.enableJs()

@@ -17,6 +17,7 @@ const proposals: ProposalsResponse = [
     rejectChoices: ['No'],
     slot: 1,
     txHash: 'tx_hash',
+    outputIndex: 0,
     status: ProposalStatus.AVAILABLE,
     poll: {
       description: 'description',

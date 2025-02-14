@@ -1,6 +1,7 @@
 import {decodeAssetName} from '@wingriders/cab/helpers'
-import {RegisteredTokenMetadata, Token} from '@wingriders/cab/types'
+import {Token} from '@wingriders/cab/types'
 import {formatBigNumber} from '../helpers/formatNumber'
+import {RegisteredTokenMetadata} from '@wingriders/cab/tokenMetadata'
 
 type AssetQuantityDisplayProps = {
   token: Token

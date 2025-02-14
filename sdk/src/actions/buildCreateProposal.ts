@@ -33,7 +33,7 @@ export const buildCreateProposalAction =
     const {governanceToken, proposalCollateralQuantity, proposalsAddress} = governanceVotingParams
     const collateralBundle = [{...governanceToken.asset, quantity: proposalCollateralQuantity}]
     const coins = computeMinUTxOLovelaceAmount({
-      protocolParameters,
+      minUtxoDepositCoefficient: protocolParameters.minUtxoDepositCoefficient,
       output: {
         type: TxOutputType.LEGACY,
         isChange: false,

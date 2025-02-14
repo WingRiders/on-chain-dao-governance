@@ -22,6 +22,7 @@ const proposal: ProposalResponse = {
   total: 1,
   slot: 1,
   txHash: 'tx_hash',
+  outputIndex: 0,
   status: ProposalStatus.AVAILABLE,
   poll: {
     description: 'description',

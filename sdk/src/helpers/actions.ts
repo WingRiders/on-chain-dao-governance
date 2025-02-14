@@ -18,7 +18,6 @@ import {Network, TxPlanArgs, TxWitnessSet, UTxO} from '@wingriders/cab/types'
 import {
   normalizeTx,
   reverseAddress,
-  reverseBootstrapWitness,
   reverseUtxos,
   reverseVKeyWitnesses,
 } from '@wingriders/cab/wallet/connector'
@@ -117,7 +116,6 @@ export const signTx = async ({jsApi, tx, txAux, txWitnessSet}: SignTxProps): Pro
   const txWitnessSetWithSignatures: TxWitnessSet = {
     ...txWitnessSet,
     vKeyWitnesses: reverseVKeyWitnesses(signatures.vKeyWitnesses || []),
-    bootstrapWitnesses: reverseBootstrapWitness(signatures.bootstrapWitness || []),
   }
 
   const signedTx = normalizeTx(txAux, txWitnessSetWithSignatures)

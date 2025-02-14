@@ -21,7 +21,7 @@
     "prettier:fix": "prettier --write \"{**/*.{ts,tsx,js,jsx,json,css},package.json}\""
   },
   "dependencies": {
-    "@wingriders/cab": "^2.0.26",
+    "@wingriders/cab": "^2.1.7",
     "@wingriders/governance-sdk": "^1.0.0",
     "react-query": "^3.39.3"
   },

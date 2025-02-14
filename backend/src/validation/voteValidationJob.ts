@@ -84,7 +84,7 @@ const validationJob = async (dbBestBlock: number) => {
     logger.info({job: 'voteValidation'}, 'No polls with unverified votes')
   }
 
-  // Do the verification poll by poll to not accidentally overload explorer or DB
+  // Do the verification poll by poll to not accidentally overload Kupo or DB
   for (const pollWithUnverifiedVotes of pollsWithUnverifiedVotes) {
     await verifyVotesInPoll(pollWithUnverifiedVotes)
   }
@@ -106,7 +106,7 @@ export const voteValidationLoop = async () => {
       try {
         await validationJob(dbBestBlock)
       } catch (error) {
-        // explorer can be unavailable
+        // Kupo or DB can be unavailable
         logger.error(error, `Error in vote validation job.`)
       }
     }

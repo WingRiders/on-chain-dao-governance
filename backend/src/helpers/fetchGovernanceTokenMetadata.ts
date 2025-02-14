@@ -1,7 +1,11 @@
 import axios from 'axios'
 
-import {TokenRegistry, createTokenRegistrySubject} from '@wingriders/cab/blockchainExplorer'
-import {NetworkName, RegisteredTokenMetadata} from '@wingriders/cab/types'
+import {
+  RegisteredTokenMetadata,
+  TokenRegistry,
+  createTokenRegistrySubject,
+} from '@wingriders/cab/tokenMetadata'
+import {NetworkName} from '@wingriders/cab/types'
 
 import {config, governanceToken} from '../config'
 
