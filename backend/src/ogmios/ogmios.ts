@@ -18,7 +18,7 @@ const initInteractionContext = (closeClientsFn: () => void): Promise<Interaction
     {
       connection: {
         host: config.OGMIOS_HOST,
-        port: config.REMOTE_OGMIOS_PORT || 1337,
+        port: config.OGMIOS_PORT || 1337,
       },
     }
   )

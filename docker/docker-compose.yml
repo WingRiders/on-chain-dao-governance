@@ -1,19 +1,17 @@
-version: '3.5'
-
 services:
-  governance-db:
-    container_name: ${COMPOSE_PROJECT_NAME}-governance-db
+  db:
+    container_name: ${COMPOSE_PROJECT_NAME}-db
     image: postgres:14.10-alpine
     shm_size: 256m
     ports:
-      - ${GOVERNANCE_DB_PORT}:5432
+      - ${DB_PORT}:5432
     environment:
       - POSTGRES_LOGGING=true
-      - POSTGRES_DB=${GOVERNANCE_DB}
-      - POSTGRES_USER=${GOVERNANCE_DB_USER}
-      - POSTGRES_PASSWORD=${GOVERNANCE_DB_PASSWORD}
+      - POSTGRES_DB=${DB}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
-      - ${DATA_PATH}/governance-db:/var/lib/postgresql/data
+      - ${DATA_PATH}/db:/var/lib/postgresql/data
     restart: unless-stopped
     command:
       [
@@ -32,7 +30,7 @@ services:
     volumes:
       - ${DATA_PATH}/node-db:/data/db
       - ${DATA_PATH}/node-ipc:/ipc
-      - ../cardano-configurations/network/${NETWORK}:/configs
+      - ../cardano-configurations/network/${NETWORK_NAME}:/configs
     command: 'run --port 3001 --config /configs/cardano-node/config.json --database-path /data/db --topology /configs/cardano-node/topology.json --socket-path /ipc/node.socket --host-addr 0.0.0.0'
     restart: unless-stopped
 
@@ -51,7 +49,7 @@ services:
         '--metadata-detailed-schema',
       ]
     volumes:
-      - ../cardano-configurations/network/${NETWORK}:/configs
+      - ../cardano-configurations/network/${NETWORK_NAME}:/configs
       - ${DATA_PATH}/node-ipc:/ipc
     ports:
       - ${OGMIOS_PORT:-1337}:1337 # CONTAINER PORT MUST BE 1337
@@ -80,7 +78,7 @@ services:
         '0.0.0.0',
       ]
     volumes:
-      - ../cardano-configurations/network/${NETWORK}:/configs
+      - ../cardano-configurations/network/${NETWORK_NAME}:/configs
       - ${DATA_PATH}/node-ipc:/ipc
       - ${DATA_PATH}/kupo-db:/kupo-db
   governance-server:
@@ -88,7 +86,7 @@ services:
     depends_on:
       - cardano-node
       - ogmios
-      - governance-db
+      - db
     build:
       context: ../
       dockerfile: backend/Dockerfile
@@ -96,35 +94,38 @@ services:
       - ${GOVERNANCE_SERVER_PORT}:3240
     environment:
       name: ${COMPOSE_PROJECT_NAME}-governance-server
-      AGGREGATOR_PORT: ${GOVERNANCE_AGGREGATOR_PORT}
-      SERVER_PORT: ${GOVERNANCE_SERVER_PORT}
       NODE_ENV: production
-      OGMIOS_HOST: ${OGMIOS_HOST:-ogmios}
-      NETWORK_NAME: ${NETWORK}
+      NETWORK_NAME: ${NETWORK_NAME}
+      MODE: server
+      SERVER_PORT: ${GOVERNANCE_SERVER_PORT}
+      AGGREGATOR_PORT: ${GOVERNANCE_AGGREGATOR_PORT}
+      LOG_LEVEL: ${GOVERNANCE_LOG_LEVEL}
+      HTTP_SERVER_KEEP_ALIVE_SECONDS: ${HTTP_SERVER_KEEP_ALIVE_SECONDS}
+      CORS_ENABLED_FOR: ${CORS_ENABLED_FOR}
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB: ${DB}
+      DB_SCHEMA: ${GOVERNANCE_DB_SCHEMA}
+      KUPO_URL: http://localhost:${KUPO_PORT}
+      OGMIOS_HOST: ogmios
+      OGMIOS_PORT: ${OGMIOS_PORT}
       SYNC_EARLIEST_SLOT: ${GOVERNANCE_SYNC_EARLIEST_SLOT}
       SYNC_EARLIEST_HASH: ${GOVERNANCE_SYNC_EARLIEST_HASH}
-      GOVERNANCE_DB: ${GOVERNANCE_DB}
-      GOVERNANCE_DB_HOST: governance-db
-      GOVERNANCE_DB_USER: ${GOVERNANCE_DB_USER}
-      GOVERNANCE_DB_PASSWORD: ${GOVERNANCE_DB_PASSWORD}
-      GOVERNANCE_DB_PORT: ${GOVERNANCE_DB_PORT}
-      GOVERNANCE_DB_SCHEMA: ${GOVERNANCE_DB_SCHEMA}
-      HTTP_SERVER_KEEP_ALIVE_SECONDS: ${HTTP_SERVER_KEEP_ALIVE_SECONDS}
       GOVERNANCE_TOKEN_POLICY_ID: ${GOVERNANCE_TOKEN_POLICY_ID}
       GOVERNANCE_TOKEN_ASSET_NAME: ${GOVERNANCE_TOKEN_ASSET_NAME}
       TOTAL_MINTED_GOVERNANCE_TOKENS: ${TOTAL_MINTED_GOVERNANCE_TOKENS}
       PROPOSALS_WALLET_PUBKEYHASH: ${PROPOSALS_WALLET_PUBKEYHASH}
       PROPOSALS_WALLET_STAKEKEYHASH: ${PROPOSALS_WALLET_STAKEKEYHASH}
       PROPOSAL_COLLATERAL_QUANTITY: ${PROPOSAL_COLLATERAL_QUANTITY}
-      KUPO_URL: http://localhost:${KUPO_PORT}
-      MODE: server
     restart: unless-stopped
   governance-aggregator:
     container_name: ${COMPOSE_PROJECT_NAME}-governance-aggregator
     depends_on:
       - cardano-node
       - ogmios
-      - governance-db
+      - db
     build:
       context: ../
       dockerfile: backend/Dockerfile
@@ -132,32 +133,35 @@ services:
       - ${GOVERNANCE_AGGREGATOR_PORT}:3241
     environment:
       name: ${COMPOSE_PROJECT_NAME}-governance-aggregator
-      AGGREGATOR_PORT: ${GOVERNANCE_AGGREGATOR_PORT}
-      SERVER_PORT: ${GOVERNANCE_SERVER_PORT}
       NODE_ENV: production
-      OGMIOS_HOST: ${OGMIOS_HOST:-ogmios}
-      NETWORK_NAME: ${NETWORK}
+      NETWORK_NAME: ${NETWORK_NAME}
+      MODE: aggregator
+      SERVER_PORT: ${GOVERNANCE_SERVER_PORT}
+      AGGREGATOR_PORT: ${GOVERNANCE_AGGREGATOR_PORT}
+      LOG_LEVEL: ${GOVERNANCE_LOG_LEVEL}
+      HTTP_SERVER_KEEP_ALIVE_SECONDS: ${HTTP_SERVER_KEEP_ALIVE_SECONDS}
+      CORS_ENABLED_FOR: ${CORS_ENABLED_FOR}
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB: ${DB}
+      DB_SCHEMA: ${GOVERNANCE_DB_SCHEMA}
+      KUPO_URL: http://localhost:${KUPO_PORT}
+      OGMIOS_HOST: ogmios
+      OGMIOS_PORT: ${OGMIOS_PORT}
       SYNC_EARLIEST_SLOT: ${GOVERNANCE_SYNC_EARLIEST_SLOT}
       SYNC_EARLIEST_HASH: ${GOVERNANCE_SYNC_EARLIEST_HASH}
-      GOVERNANCE_DB: ${GOVERNANCE_DB}
-      GOVERNANCE_DB_HOST: governance-db
-      GOVERNANCE_DB_USER: ${GOVERNANCE_DB_USER}
-      GOVERNANCE_DB_PASSWORD: ${GOVERNANCE_DB_PASSWORD}
-      GOVERNANCE_DB_PORT: ${GOVERNANCE_DB_PORT}
-      GOVERNANCE_DB_SCHEMA: ${GOVERNANCE_DB_SCHEMA}
-      HTTP_SERVER_KEEP_ALIVE_SECONDS: ${HTTP_SERVER_KEEP_ALIVE_SECONDS}
       GOVERNANCE_TOKEN_POLICY_ID: ${GOVERNANCE_TOKEN_POLICY_ID}
       GOVERNANCE_TOKEN_ASSET_NAME: ${GOVERNANCE_TOKEN_ASSET_NAME}
       TOTAL_MINTED_GOVERNANCE_TOKENS: ${TOTAL_MINTED_GOVERNANCE_TOKENS}
       PROPOSALS_WALLET_PUBKEYHASH: ${PROPOSALS_WALLET_PUBKEYHASH}
       PROPOSALS_WALLET_STAKEKEYHASH: ${PROPOSALS_WALLET_STAKEKEYHASH}
       PROPOSAL_COLLATERAL_QUANTITY: ${PROPOSAL_COLLATERAL_QUANTITY}
-      KUPO_URL: http://localhost:${KUPO_PORT}
-      MODE: aggregator
     restart: unless-stopped
 
 volumes:
-  governance-db:
+  db:
   node-db:
   node-ipc:
   kupo-db:

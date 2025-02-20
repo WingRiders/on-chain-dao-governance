@@ -19,14 +19,27 @@ export enum Mode {
 }
 
 const envSchema = z.object({
+  NODE_ENV: z.string().optional(),
   NETWORK_NAME: z.nativeEnum(NetworkName),
   MODE: z.nativeEnum(Mode),
-  HTTP_SERVER_KEEP_ALIVE_SECONDS: z.coerce.number().gte(0).default(182),
   SERVER_PORT: z.coerce.number(),
   AGGREGATOR_PORT: z.coerce.number(),
+  LOG_LEVEL: z
+    .union([
+      z.literal('fatal'),
+      z.literal('error'),
+      z.literal('warn'),
+      z.literal('info'),
+      z.literal('debug'),
+      z.literal('trace'),
+    ])
+    .default('info'),
+  HTTP_SERVER_KEEP_ALIVE_SECONDS: z.coerce.number().gte(0).default(182),
+  CORS_ENABLED_FOR: z.string(),
   DATABASE_URL: z.string().url(),
+  KUPO_URL: z.string().url(),
   OGMIOS_HOST: z.string().optional(),
-  REMOTE_OGMIOS_PORT: z.coerce.number().gte(0).optional(),
+  OGMIOS_PORT: z.coerce.number().gte(0).optional(),
   SYNC_EARLIEST_SLOT: z.coerce.number().gte(0),
   SYNC_EARLIEST_HASH: z
     .string()
@@ -47,19 +60,6 @@ const envSchema = z.object({
     .regex(/^[a-fA-F0-9]+$/)
     .length(56),
   PROPOSAL_COLLATERAL_QUANTITY: z.coerce.number().gte(0),
-  KUPO_URL: z.string().url(),
-  CORS_ENABLED_FOR: z.string(),
-  NODE_ENV: z.string().optional(),
-  LOG_LEVEL: z
-    .union([
-      z.literal('fatal'),
-      z.literal('error'),
-      z.literal('warn'),
-      z.literal('info'),
-      z.literal('debug'),
-      z.literal('trace'),
-    ])
-    .default('info'),
 })
 
 const result = envSchema.safeParse(process.env)
