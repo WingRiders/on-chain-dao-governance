@@ -6,7 +6,7 @@
   "author": "TechRiderWR <techrider@wingriders.com>",
   "license": "MIT",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "scripts": {
     "eslint": "eslint . --max-warnings=0 --ext .ts,.js",

@@ -1,7 +1,7 @@
 services:
   db:
     container_name: ${COMPOSE_PROJECT_NAME}-db
-    image: postgres:14.10-alpine
+    image: postgres:17.2-alpine
     shm_size: 256m
     ports:
       - ${DB_PORT}:5432
@@ -24,7 +24,7 @@ services:
 
   cardano-node:
     container_name: ${COMPOSE_PROJECT_NAME}-cardano-node
-    image: ghcr.io/intersectmbo/cardano-node:9.2.1
+    image: ghcr.io/intersectmbo/cardano-node:10.1.4
     ports:
       - ${CARDANO_NODE_PORT}:3001
     volumes:
@@ -35,7 +35,7 @@ services:
     restart: unless-stopped
 
   ogmios:
-    image: cardanosolutions/ogmios:v6.8.0
+    image: cardanosolutions/ogmios:v6.10.0
     depends_on:
       - cardano-node
     command:
@@ -81,6 +81,7 @@ services:
       - ../cardano-configurations/network/${NETWORK_NAME}:/configs
       - ${DATA_PATH}/node-ipc:/ipc
       - ${DATA_PATH}/kupo-db:/kupo-db
+
   governance-server:
     container_name: ${COMPOSE_PROJECT_NAME}-governance-server
     depends_on:
@@ -120,6 +121,7 @@ services:
       PROPOSALS_WALLET_STAKEKEYHASH: ${PROPOSALS_WALLET_STAKEKEYHASH}
       PROPOSAL_COLLATERAL_QUANTITY: ${PROPOSAL_COLLATERAL_QUANTITY}
     restart: unless-stopped
+
   governance-aggregator:
     container_name: ${COMPOSE_PROJECT_NAME}-governance-aggregator
     depends_on:

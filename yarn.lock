@@ -333,7 +333,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cardano-ogmios/client@npm:^6.8.0":
+"@cardano-ogmios/client@npm:^6.10.0":
   version: 6.11.2
   resolution: "@cardano-ogmios/client@npm:6.11.2"
   dependencies:
@@ -351,7 +351,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cardano-ogmios/schema@npm:6.11.2, @cardano-ogmios/schema@npm:^6.8.0":
+"@cardano-ogmios/schema@npm:6.11.2, @cardano-ogmios/schema@npm:^6.10.0":
   version: 6.11.2
   resolution: "@cardano-ogmios/schema@npm:6.11.2"
   checksum: 79a77d9497b65e7e4dd23a93c58c32273cd75a1268f5c7ae04c99094be14a8be66bd08dc53c1ddbd13206385f4537c3020196ad9467a81bd9a17c4897c802069
@@ -2183,8 +2183,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wingriders/governance-backend@workspace:backend"
   dependencies:
-    "@cardano-ogmios/client": ^6.8.0
-    "@cardano-ogmios/schema": ^6.8.0
+    "@cardano-ogmios/client": ^6.10.0
+    "@cardano-ogmios/schema": ^6.10.0
     "@fastify/cors": ^9.0.1
     "@prisma/client": 5.7.0
     "@types/lodash": ^4.14.202
