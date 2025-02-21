@@ -1,5 +1,6 @@
 import {config, isAggregatorMode, isServerMode} from './config'
 import {initPgListen} from './db/initPgListen'
+import {ensureDBMigrated} from './db/migrateDb'
 import {setLatestBlockFromDb} from './db/setLatestBlockFromDb'
 import {logger} from './logger'
 import {registerCleanUp} from './ogmios'
@@ -18,11 +19,14 @@ const start = async () => {
     await setLatestBlockFromDb()
     await initPgListen()
   }
-  ogmiosClientInitializerLoop()
 
   if (isAggregatorMode) {
+    await ensureDBMigrated()
     voteValidationLoop()
   }
+
+  ogmiosClientInitializerLoop()
+
   startServer()
 }
 

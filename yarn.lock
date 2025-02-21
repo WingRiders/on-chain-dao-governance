@@ -2195,6 +2195,7 @@ __metadata:
     cardano-crypto.js: ^6.1.2
     cbor: ^9.0.1
     cross-env: ^7.0.3
+    delay: ^4.1.0
     dotenv: ^16.3.1
     dotenv-expand: ^10.0.0
     fastify: ^4.24.3
@@ -3321,6 +3322,13 @@ __metadata:
     has-property-descriptors: ^1.0.0
     object-keys: ^1.1.1
   checksum: b4ccd00597dd46cb2d4a379398f5b19fca84a16f3374e2249201992f36b30f6835949a9429669ee6b41b6e837205a163eadd745e472069e70dfc10f03e5fcc12
+  languageName: node
+  linkType: hard
+
+"delay@npm:^4.1.0":
+  version: 4.4.1
+  resolution: "delay@npm:4.4.1"
+  checksum: 97b001126a3979a398b6c5f33e437d78acda3b19731d9e6f991a05e2e09e7a410d655b8fdcaedc05743928bb533c0ac9401826cccb2af71c81d2cab50e199351
   languageName: node
   linkType: hard
 
