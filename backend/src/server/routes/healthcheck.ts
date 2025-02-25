@@ -1,14 +1,26 @@
+import {isAggregatorMode} from '../../config'
 import {isDbMigrated} from '../../db/migrateDb'
 import {checkPrismaConnection} from '../../db/prismaClient'
 
 export const getHealthStatus = async () => {
   const dbConnected = await checkPrismaConnection()
-  const dbMigrated = isDbMigrated()
+
+  const commonFields = {
+    dbConnected,
+    uptime: process.uptime(),
+  }
+
+  if (isAggregatorMode) {
+    const dbMigrated = isDbMigrated()
+    return {
+      healthy: dbConnected && dbMigrated,
+      dbMigrated,
+      ...commonFields,
+    }
+  }
 
   return {
-    healthy: dbConnected && dbMigrated,
-    dbConnected,
-    dbMigrated,
-    uptime: process.uptime(),
+    healthy: dbConnected,
+    ...commonFields,
   }
 }
