@@ -2,6 +2,7 @@ import fastifyCors from '@fastify/cors'
 import Fastify from 'fastify'
 
 import {config, isServerMode} from '../config'
+import {bigintStringify} from '../helpers/bigint'
 import {getCorsOptions} from '../helpers/cors'
 import {logger} from '../logger'
 import {registerRoutes} from './routes'
@@ -28,6 +29,9 @@ export const startServer = async () => {
     server.register(fastifyCors, getCorsOptions(config.CORS_ENABLED_FOR, isProd))
 
     registerRoutes(server) // LB needs to know health also for aggregator
+
+    server.addHook('preSerialization', (_, __, payload) => Promise.resolve(bigintStringify(payload)))
+
     // Typescript is giving errors when trying to use enum as index in the mapping object (code from dex)
     const port = isServerMode ? config.SERVER_PORT : config.AGGREGATOR_PORT
     const address = await server.listen({
