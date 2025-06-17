@@ -19,7 +19,13 @@ export default {
       sourcemap: true,
     },
   ],
-  external: ['react', 'react-dom'], // Exclude React from the bundle, it's a peer dependency
+  external: [
+    // Exclude React from the bundle, it's a peer dependency
+    'react',
+    'react-dom',
+    'react/jsx-runtime',
+    'react/jsx-dev-runtime',
+  ],
   plugins: [
     resolve({browser: true, preferBuiltins: false}), // Resolves node modules
     commonjs(),
