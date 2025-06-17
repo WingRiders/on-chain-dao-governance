@@ -54,11 +54,11 @@ model Poll {
 }
 
 model Proposal {
-  id                Int    @id @default(autoincrement())
+  id                Int     @id @default(autoincrement())
   ownerAddress      String
   ownerPubKeyHash   Bytes
   ownerStakeKeyHash Bytes?
-  txHash            Bytes  @unique
+  txHash            Bytes   @unique
   outputIndex       Int
   slot              Int
   pollId            Int
@@ -66,6 +66,7 @@ model Proposal {
   name              String
   description       String
   communityUri      String
+  requestedAmount   BigInt?
 
   block           Block            @relation("ParentBlock", fields: [slot], references: [slot], onDelete: Cascade)
   poll            Poll             @relation(fields: [pollId], references: [id], onDelete: Cascade)

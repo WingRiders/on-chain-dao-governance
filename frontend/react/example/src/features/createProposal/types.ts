@@ -12,4 +12,5 @@ export type CreateProposalForm = {
   rejectChoices: CreateProposalChoice[]
   start: Date
   end: Date
+  requestedAmount?: string
 }

@@ -190,6 +190,29 @@ export const Proposal = ({proposal}: ProposalProps) => {
             </Stack>
           </Grid>
 
+          <>
+            <Grid item xs={8}>
+              <Typography variant="subtitle1" fontWeight="bold">
+                Requested amount:
+              </Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography variant="subtitle1" textAlign="end">
+                {proposal.requestedAmount ? (
+                  <AssetQuantityDisplay
+                    token={{
+                      ...votingParams.governanceToken.asset,
+                      quantity: new BigNumber(proposal.requestedAmount),
+                    }}
+                    assetMetadata={votingParams.governanceToken.metadata}
+                  />
+                ) : (
+                  '-'
+                )}
+              </Typography>
+            </Grid>
+          </>
+
           <Grid item xs={8}>
             <Typography variant="subtitle1" fontWeight="bold">
               Your voting power for this proposal:

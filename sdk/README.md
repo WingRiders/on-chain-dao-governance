@@ -61,6 +61,7 @@ Sample transaction metadata for creating a proposal with a new poll:
     "owner": "014670db61e18fda86bc547a9ada3824d5358bc3cd5878f6dd5d113047d097ab2804f2bfae3c585d58f1cb1b8797e8297fecb0412a1b73adc0",
     "description": ["Proposal to change the platform for the community portal to Disc", "ourse."],
     "communityUri": "https://community.wingriders.com/feedback/88272",
+    "requestedAmount": "1000",
     "acceptChoices": ["Accept"],
     "rejectChoices": ["Reject"]
   }

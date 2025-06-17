@@ -1,7 +1,7 @@
 import {isArray, isMap, isString} from 'lodash'
 
 import {encodeAddress} from '@wingriders/cab/ledger/address'
-import {Address, TxMetadatum} from '@wingriders/cab/types'
+import {Address, BigNumber, TxMetadatum} from '@wingriders/cab/types'
 
 export function parseBuffer(datum: TxMetadatum | undefined): Buffer {
   if (!Buffer.isBuffer(datum)) {
@@ -35,6 +35,14 @@ export function parseInteger(datum: TxMetadatum | undefined): number {
   } else {
     throw new Error(`Metadatum is not a integer ${datum}`)
   }
+}
+
+export function parseBigNumber(datum: TxMetadatum | undefined): BigNumber {
+  if (typeof datum === 'string' || typeof datum === 'number') {
+    const num = new BigNumber(datum)
+    if (!num.isNaN()) return num
+  }
+  throw new Error(`Metadatum is not a number ${datum}`)
 }
 
 export function parseString(datum: TxMetadatum | undefined): string {

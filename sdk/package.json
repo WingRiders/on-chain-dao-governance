@@ -1,6 +1,6 @@
 {
   "name": "@wingriders/governance-sdk",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A library to interact with the WingRiders On-Chain DAO governance",
   "repository": {
     "type": "git",

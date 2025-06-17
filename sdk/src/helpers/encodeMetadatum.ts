@@ -18,15 +18,21 @@ import {
 } from '../types'
 
 export function encodeProposalMetadatum(proposal: ProposalMetadatum): TxMetadatumMap {
-  const encodedProposalProperties: TxMetadatumMap = new Map<TxMetadatum, TxMetadatum>([
-    [CborProposalField.PROPOSAL_OWNER, Buffer.from(addressToHex(proposal.owner), 'hex')],
-    [CborProposalField.PROPOSAL_NAME, proposal.name],
-    [CborProposalField.PROPOSAL_DESCRIPTION, splitMetadatumString(proposal.description)],
-    [CborProposalField.PROPOSAL_URI, proposal.uri],
-    [CborProposalField.PROPOSAL_COMMUNITY_URI, proposal.communityUri],
-    [CborProposalField.PROPOSAL_ACCEPT_CHOICES, proposal.acceptChoices],
-    [CborProposalField.PROPOSAL_REJECT_CHOICES, proposal.rejectChoices],
-  ])
+  const encodedProposalProperties: TxMetadatumMap = new Map<TxMetadatum, TxMetadatum>(
+    compact([
+      [CborProposalField.PROPOSAL_OWNER, Buffer.from(addressToHex(proposal.owner), 'hex')],
+      [CborProposalField.PROPOSAL_NAME, proposal.name],
+      [CborProposalField.PROPOSAL_DESCRIPTION, splitMetadatumString(proposal.description)],
+      [CborProposalField.PROPOSAL_URI, proposal.uri],
+      [CborProposalField.PROPOSAL_COMMUNITY_URI, proposal.communityUri],
+      [CborProposalField.PROPOSAL_ACCEPT_CHOICES, proposal.acceptChoices],
+      [CborProposalField.PROPOSAL_REJECT_CHOICES, proposal.rejectChoices],
+      proposal.requestedAmount && [
+        CborProposalField.PROPOSAL_REQUESTED_AMOUNT,
+        proposal.requestedAmount.toString(),
+      ],
+    ])
+  )
   return encodedProposalProperties
 }
 

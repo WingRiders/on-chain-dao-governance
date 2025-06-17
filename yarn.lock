@@ -2190,7 +2190,7 @@ __metadata:
     "@types/lodash": ^4.14.202
     "@types/node": ^20.10.3
     "@wingriders/cab": ^2.1.7
-    "@wingriders/governance-sdk": ^1.0.0
+    "@wingriders/governance-sdk": ^1.0.2
     axios: ^1.6.5
     cardano-crypto.js: ^6.1.2
     cbor: ^9.0.1
@@ -2230,8 +2230,8 @@ __metadata:
     "@typescript-eslint/parser": ^6.21.0
     "@vitejs/plugin-react": ^4.2.1
     "@wingriders/cab": ^2.1.7
-    "@wingriders/governance-frontend-react-sdk": ^1.0.0
-    "@wingriders/governance-sdk": ^1.0.0
+    "@wingriders/governance-frontend-react-sdk": ^1.0.3
+    "@wingriders/governance-sdk": ^1.0.2
     date-fns: ^3.3.1
     eslint: ^8.55.0
     eslint-plugin-react-hooks: ^4.6.0
@@ -2249,7 +2249,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@wingriders/governance-frontend-react-sdk@^1.0.0, @wingriders/governance-frontend-react-sdk@workspace:frontend/react/sdk":
+"@wingriders/governance-frontend-react-sdk@^1.0.3, @wingriders/governance-frontend-react-sdk@workspace:frontend/react/sdk":
   version: 0.0.0-use.local
   resolution: "@wingriders/governance-frontend-react-sdk@workspace:frontend/react/sdk"
   dependencies:
@@ -2263,7 +2263,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^6.14.0
     "@typescript-eslint/parser": ^6.14.0
     "@wingriders/cab": ^2.1.7
-    "@wingriders/governance-sdk": ^1.0.0
+    "@wingriders/governance-sdk": ^1.0.2
     eslint: ^8.55.0
     eslint-config-prettier: ^9.1.0
     eslint-plugin-react-hooks: ^4.6.0
@@ -2279,7 +2279,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@wingriders/governance-sdk@^1.0.0, @wingriders/governance-sdk@workspace:sdk":
+"@wingriders/governance-sdk@^1.0.2, @wingriders/governance-sdk@workspace:sdk":
   version: 0.0.0-use.local
   resolution: "@wingriders/governance-sdk@workspace:sdk"
   dependencies:

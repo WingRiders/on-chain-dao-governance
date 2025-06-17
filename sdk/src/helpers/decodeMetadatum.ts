@@ -18,6 +18,7 @@ import {
   assertMetadatumMap,
   parseAddressBuffer,
   parseArray,
+  parseBigNumber,
   parseBuffer,
   parseInteger,
   parseNumber,
@@ -39,6 +40,9 @@ export const decodeProposalMetadatum = (proposalMetadatum: TxMetadatumMap): Prop
     proposalMetadatum.get(CborProposalField.PROPOSAL_REJECT_CHOICES)
   )
 
+  const requestedAmountField = proposalMetadatum.get(CborProposalField.PROPOSAL_REQUESTED_AMOUNT)
+  const requestedAmount = requestedAmountField ? parseBigNumber(requestedAmountField) : undefined
+
   if (acceptChoices.length === 0 && rejectChoices.length === 0) {
     throw new Error('Proposal needs at least 1 choice')
   }
@@ -51,6 +55,7 @@ export const decodeProposalMetadatum = (proposalMetadatum: TxMetadatumMap): Prop
     communityUri,
     acceptChoices,
     rejectChoices,
+    requestedAmount,
   }
 }
 

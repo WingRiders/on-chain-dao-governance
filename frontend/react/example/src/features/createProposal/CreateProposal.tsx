@@ -16,6 +16,7 @@ import {useVotingParamsQuery} from '@wingriders/governance-frontend-react-sdk'
 import {useUserBalance} from '../../helpers/userBalance'
 import {assetQuantity} from '@wingriders/cab/ledger/assets'
 import {AssetQuantityDisplay} from '../../components/AssetQuantityDisplay'
+import {BigNumber} from '@wingriders/cab/types'
 
 const DEFAULT_VALUES: CreateProposalForm = {
   name: '',
@@ -26,6 +27,7 @@ const DEFAULT_VALUES: CreateProposalForm = {
   rejectChoices: [{id: nanoid(), label: 'No'}],
   start: startOfDay(addDays(new Date(), 1)),
   end: endOfDay(addDays(new Date(), 6)),
+  requestedAmount: undefined,
 }
 
 export const CreateProposal = () => {
@@ -63,7 +65,7 @@ export const CreateProposal = () => {
   const hasEnoughChoices = compact(acceptChoices).length + compact(rejectChoices).length >= 2
 
   const handleCreateProposal = async (data: CreateProposalForm) => {
-    if (!ownerAddress) return
+    if (!ownerAddress || !governanceToken) return
 
     const {isSuccess} = await createProposal({
       poll: {
@@ -80,6 +82,9 @@ export const CreateProposal = () => {
         communityUri: data.communityUri,
         acceptChoices: data.acceptChoices.map((choice) => choice.label),
         rejectChoices: data.rejectChoices.map((choice) => choice.label),
+        requestedAmount: data.requestedAmount
+          ? new BigNumber(data.requestedAmount).shiftedBy(governanceToken.metadata?.decimals ?? 0)
+          : undefined,
       },
     })
 
@@ -154,6 +159,31 @@ export const CreateProposal = () => {
                   {...field}
                   placeholder="https://community.yourapp.com/"
                   label="Community URI"
+                  size="medium"
+                />
+              )}
+              errors={errors}
+            />
+            <InputField
+              name="requestedAmount"
+              control={control}
+              rules={{
+                required: false,
+                validate: (value) => {
+                  if (!value) return true
+
+                  const parsedValue = new BigNumber(value)
+                  if (parsedValue.isNaN()) return 'Invalid amount'
+                  if (parsedValue.lte(0)) return 'Amount must be greater than 0'
+
+                  return true
+                },
+              }}
+              render={({field}) => (
+                <TextField
+                  {...field}
+                  placeholder="1000"
+                  label="Requested amount (optional)"
                   size="medium"
                 />
               )}

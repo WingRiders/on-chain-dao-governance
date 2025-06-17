@@ -23,7 +23,15 @@ const dbProposalStatusToApiProposalStatus = (dbProposalStatus: DbProposalStatus)
 
 type DbProposalWithDetails = Pick<
   Proposal,
-  'txHash' | 'outputIndex' | 'ownerAddress' | 'name' | 'description' | 'uri' | 'communityUri' | 'slot'
+  | 'txHash'
+  | 'outputIndex'
+  | 'ownerAddress'
+  | 'name'
+  | 'description'
+  | 'uri'
+  | 'communityUri'
+  | 'slot'
+  | 'requestedAmount'
 > & {
   poll: Pick<Poll, 'txHash' | 'start' | 'end' | 'snapshot' | 'description'>
   proposalStates: Pick<ProposalState, 'status'>[]
@@ -55,4 +63,5 @@ export const toApiProposalDetails = (proposal: DbProposalWithDetails): ApiPropos
   rejectChoices: proposal.proposalChoices
     .filter((choice) => choice.type === ProposalChoiceType.REJECT)
     .map((choice) => choice.value),
+  requestedAmount: proposal.requestedAmount?.toString(),
 })

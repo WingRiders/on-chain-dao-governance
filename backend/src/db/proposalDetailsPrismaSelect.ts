@@ -35,5 +35,6 @@ export const proposalDetailsPrismaSelect = (withVotes: boolean) =>
         index: 'asc',
       },
     },
+    requestedAmount: true,
     ...(withVotes ? {votes: true} : {}),
   }) as const

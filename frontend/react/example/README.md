@@ -30,12 +30,13 @@ Each proposal will display these attributes:
 3. Link to the IPFS document
 4. Link to the community discussion
 5. Address of the proposal creator
-6. Your voting power for this proposal (if your wallet is connected)
-7. Current voting participation
-8. Proposal choices
-9. Option to vote for the proposal (if your wallet is connected)
-10. Option to cancel the proposal (if you connect with the DAO admin wallet)
-11. Option to conclude the proposal (if you connect with the DAO admin wallet and the proposal is past it's end time)
+6. Requested amount of governance tokens if the proposals passes (if filled out during the proposal creation)
+7. Your voting power for this proposal (if your wallet is connected)
+8. Current voting participation
+9. Proposal choices
+10. Option to vote for the proposal (if your wallet is connected)
+11. Option to cancel the proposal (if you connect with the DAO admin wallet)
+12. Option to conclude the proposal (if you connect with the DAO admin wallet and the proposal is past it's end time)
 
 ### Proposal creation
 
@@ -48,10 +49,11 @@ Fields description:
 2. **Description**: a brief description or details about the proposal
 3. **URI**: unique IPFS resource identifier, linked to a file or content related to the proposal and describing it in details
 4. **Community URL**: link to the community or discussion platform relevant to the proposal
-5. **Accept choices**: options community members can choose to accept the proposal
-6. **Reject choices**: options community members can choose to reject the proposal
-7. **Start date**: start date of the poll (date & time, by default the same date will be used for voting power snapshot)
-8. **End date**: end date of the poll (date & time)
+5. **Requested amount**: the amount of the governance tokens that the proposal creator is requesting if the proposal passes
+6. **Accept choices**: options community members can choose to accept the proposal
+7. **Reject choices**: options community members can choose to reject the proposal
+8. **Start date**: start date of the poll (date & time, by default the same date will be used for voting power snapshot)
+9. **End date**: end date of the poll (date & time)
 
 > **_NOTE:_** The form has only limited validation and will allow you to submit potentially incorrect data.
 

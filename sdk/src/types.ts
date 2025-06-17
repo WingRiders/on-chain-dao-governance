@@ -36,6 +36,7 @@ export enum CborProposalField {
   PROPOSAL_COMMUNITY_URI = 'communityUri',
   PROPOSAL_ACCEPT_CHOICES = 'acceptChoices',
   PROPOSAL_REJECT_CHOICES = 'rejectChoices',
+  PROPOSAL_REQUESTED_AMOUNT = 'requestedAmount',
 }
 
 export enum CborPollField {
@@ -68,6 +69,7 @@ export type ProposalMetadatum = {
   communityUri: string /* community discussion link max 64 bytes. Use url shortener. Ideally community page link */
   acceptChoices: string[] /* List of choices that would lead to accept the proposal, each max 64 bytes */
   rejectChoices: string[] /* List of choices that would lead to reject the proposal, each max 64 bytes */
+  requestedAmount?: BigNumber
 }
 
 export type Proposal = ProposalMetadatum & {
@@ -218,6 +220,7 @@ export type ProposalDetails = {
   status: ProposalStatus
   acceptChoices: string[]
   rejectChoices: string[]
+  requestedAmount?: string
 }
 
 export type ProposalResponse = ProposalDetails & {

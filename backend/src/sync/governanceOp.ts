@@ -14,6 +14,7 @@ import {
 
 import {config, governanceToken, proposalsAddress} from '../config'
 import {Block, PrismaTxClient, ProposalChoiceType, ProposalStatus} from '../db/prismaClient'
+import {bigNumberToBigint} from '../helpers/number'
 import {logger} from '../logger'
 import {getTokenQuantity} from '../ogmios/getTokenQuantity'
 import {assertMetadatumMap, parseMetadatumLabel} from '../ogmios/metadata'
@@ -138,6 +139,9 @@ async function processAddProposal({
       description: manageData.proposal.description,
       uri: manageData.proposal.uri,
       communityUri: manageData.proposal.communityUri,
+      requestedAmount: manageData.proposal.requestedAmount
+        ? bigNumberToBigint(manageData.proposal.requestedAmount)
+        : null,
       poll: pollCreateSql,
       proposalChoices: {
         create: choices,
