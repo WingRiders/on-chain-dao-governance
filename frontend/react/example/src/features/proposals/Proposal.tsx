@@ -40,6 +40,7 @@ import {CancelProposalModal} from '../admin/CancelProposalModal'
 import {ActionResultDisplay} from '../../components/ActionResultDisplay'
 import {ConcludeProposalModal} from '../admin/ConcludeProposalModal'
 import {AssetQuantityDisplay} from '../../components/AssetQuantityDisplay'
+import {dateToSlot} from '../../common'
 
 type ProposalProps = {
   proposal: ProposalDetails
@@ -65,7 +66,7 @@ export const Proposal = ({proposal}: ProposalProps) => {
   const proposalUserVotes = userVotesData?.[proposal.txHash]
 
   const {data: userVotingDistributionData} = useUserVotingDistributionQuery(
-    ownerStakeKeyHash ? [{ownerStakeKeyHash, slot: proposal.poll.snapshot}] : undefined
+    ownerStakeKeyHash ? [{ownerStakeKeyHash, slot: dateToSlot(proposal.poll.snapshot)}] : undefined
   )
   const userVotingPower = userVotingDistributionData
     ? new BigNumber(userVotingDistributionData.walletTokens.votingPower)
